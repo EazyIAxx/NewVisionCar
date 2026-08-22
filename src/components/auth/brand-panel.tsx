@@ -23,15 +23,16 @@ export function BrandPanel() {
     <div className="relative hidden overflow-hidden bg-primary px-12 py-10 text-primary-foreground md:flex md:flex-col md:justify-between">
       <div
         aria-hidden
-        className="pointer-events-none absolute -right-24 -top-24 size-96 rotate-12 bg-brand-accent/90"
+        className="pointer-events-none absolute -right-24 -top-24 size-96 rotate-12 bg-white/10"
       />
       <div
         aria-hidden
-        className="pointer-events-none absolute -bottom-32 -right-10 size-72 rotate-45 bg-white/10"
+        className="pointer-events-none absolute -bottom-32 -right-10 size-72 rotate-45 bg-sky-300/20"
       />
 
+      {/* TODO: trocar por <Image src="/logo-mark.png" ... /> assim que o arquivo (só o ícone, sem o texto "New Vision") for enviado */}
       <span className="relative font-[family-name:var(--font-display)] text-xl font-bold tracking-tight">
-        Revenda<span className="text-brand-accent">Pro</span>
+        Revenda<span className="text-sky-300">Pro</span>
       </span>
 
       <div className="relative max-w-md">

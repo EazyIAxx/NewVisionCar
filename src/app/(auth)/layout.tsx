@@ -1,8 +1,8 @@
-import { Plus_Jakarta_Sans } from "next/font/google";
+import { Outfit } from "next/font/google";
 
 import { BrandPanel } from "@/components/auth/brand-panel";
 
-const displayFont = Plus_Jakarta_Sans({
+const displayFont = Outfit({
   variable: "--font-display",
   subsets: ["latin"],
   weight: ["500", "600", "700", "800"],
