@@ -1,4 +1,4 @@
-# RevendaPro — Plano de Execução
+# NewVisionCar — Plano de Execução
 
 Plano de execução do projeto dividido em milestones, do setup até o deploy. Em cada milestone, a interface (UI) é construída primeiro (com dados mockados/estáticos quando necessário), e o backend (schema Supabase, RLS, Server Actions) é ligado depois. Cada milestone é isolado em uma branch própria e fechado com um commit final antes de seguir para o próximo.
 
@@ -138,13 +138,13 @@ Convenção de branch: `feature/mN-nome-curto` (setup e deploy usam `chore/...`)
 
 **Branch:** `feature/m6-landing-page`
 
-**Objetivo:** Página pública de marketing do RevendaPro (a plataforma), não a vitrine de uma revenda específica.
+**Objetivo:** Página pública de marketing do NewVisionCar (a plataforma), não a vitrine de uma revenda específica.
 
 **Entregas:**
 - [ ] Hero, seção de funcionalidades, seção de preços (placeholder até M7), CTA de cadastro
 - [ ] Responsivo, usando os mesmos tokens de cor do app
 
-**Commit final:** `feat: landing page de marketing do RevendaPro`
+**Commit final:** `feat: landing page de marketing do NewVisionCar`
 
 ---
 

@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "RevendaPro",
+  title: "NewVisionCar",
   description:
     "Gestão completa de revendas de veículos: estoque, financeiro, CRM e comissões.",
 };

@@ -36,7 +36,7 @@ export default async function DashboardLayout({
         agencyName={agency?.name ?? "Minha Revenda"}
       />
       <SidebarInset>
-        <Topbar title="RevendaPro" />
+        <Topbar title="NewVisionCar" />
         <div className="flex flex-1 flex-col gap-4 p-4">{children}</div>
       </SidebarInset>
     </SidebarProvider>

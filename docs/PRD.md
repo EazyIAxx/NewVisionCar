@@ -1,4 +1,4 @@
-# RevendaPro — PRD
+# NewVisionCar — PRD
 
 ## 1. Contexto e Problema
 
@@ -6,7 +6,7 @@ Agências de veículos (categoria B) gerenciam estoque, financeiro e leads de fo
 
 ## 2. Solução Proposta
 
-RevendaPro é um SaaS multi-agência (multi-tenant) para gestão completa de revendas de veículos de passeio (categoria B). Cada agência tem seu próprio ambiente com controle de estoque de veículos (cadastro, fotos, status de disponibilidade), faturamento e fluxo de caixa (entradas e saídas de gastos, cálculo automático de lucro líquido por venda e por período), CRM de leads com funil (Kanban) para acompanhar contatos até o fechamento da venda, e um módulo de desempenho de funcionários visível apenas ao gestor, mostrando quanto cada vendedor vendeu e a comissão calculada automaticamente em 0,5% do valor de cada veículo vendido. O sistema tem login multiusuário com permissões por papel (gestor vs vendedor), e conta com um agente de IA integrado ao WhatsApp que atende os leads mostrando os veículos disponíveis, tirando dúvidas sobre preço e disponibilidade, e agendando visitas à loja para fechamento da venda presencial.
+NewVisionCar é um SaaS multi-agência (multi-tenant) para gestão completa de revendas de veículos de passeio (categoria B). Cada agência tem seu próprio ambiente com controle de estoque de veículos (cadastro, fotos, status de disponibilidade), faturamento e fluxo de caixa (entradas e saídas de gastos, cálculo automático de lucro líquido por venda e por período), CRM de leads com funil (Kanban) para acompanhar contatos até o fechamento da venda, e um módulo de desempenho de funcionários visível apenas ao gestor, mostrando quanto cada vendedor vendeu e a comissão calculada automaticamente em 0,5% do valor de cada veículo vendido. O sistema tem login multiusuário com permissões por papel (gestor vs vendedor), e conta com um agente de IA integrado ao WhatsApp que atende os leads mostrando os veículos disponíveis, tirando dúvidas sobre preço e disponibilidade, e agendando visitas à loja para fechamento da venda presencial.
 
 ## 3. Requisitos Funcionais
 
@@ -38,7 +38,7 @@ Módulos:
 - **Lead/Cliente** — Pessoa interessada em comprar um veículo, atendida pela IA no WhatsApp e acompanhada no funil de vendas até a visita à loja.
 - **Vendedor** — Funcionário da agência que atende os leads, atualiza o pipeline do CRM, registra vendas e acompanha o próprio desempenho (sem ver comissão de outros vendedores nem dados financeiros da empresa).
 - **Gestor/Admin da Agência** — Dono ou gerente da revenda; tem acesso total ao estoque, financeiro (faturamento, gastos, lucro líquido), CRM, e ao painel de desempenho/comissão (0,5% por carro vendido) de todos os vendedores.
-- **Admin da Plataforma (SaaS)** — Time do RevendaPro; gerencia as agências (tenants) cadastradas, assinaturas/planos e suporte técnico.
+- **Admin da Plataforma (SaaS)** — Time do NewVisionCar; gerencia as agências (tenants) cadastradas, assinaturas/planos e suporte técnico.
 
 ## 5. Stack Técnica
 
@@ -68,6 +68,6 @@ Kavak / Webmotors — referência para vitrine de veículos, cards com foto, pre
 - **M3 — Financeiro**: entradas/saídas, lucro líquido por veículo/vendedor/período.
 - **M4 — CRM Kanban**: funil de leads, atribuição a vendedores.
 - **M5 — Desempenho/Comissões**: cálculo de 0,5% por veículo vendido, ranking.
-- **M6 — Landing Page**: site de marketing do RevendaPro.
+- **M6 — Landing Page**: site de marketing do NewVisionCar.
 - **M7 — Billing Stripe**: assinatura por agência.
 - **M8 — Agente de IA no WhatsApp**: atendimento automático de leads e agendamento de visitas.
