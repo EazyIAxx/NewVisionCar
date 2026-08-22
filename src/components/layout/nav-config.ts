@@ -30,7 +30,6 @@ export const navItems: NavItem[] = [
     href: "/estoque",
     icon: Car,
     roles: ["gestor", "vendedor"],
-    comingSoon: true,
   },
   {
     label: "CRM",
