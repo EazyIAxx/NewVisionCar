@@ -21,7 +21,7 @@ Sem Prisma e sem tRPC — acesso ao banco é direto via `@supabase/ssr` / `@supa
 
 ```
 src/
-  middleware.ts                 # refresh de sessão + gate de auth/onboarding (não de papel)
+  proxy.ts                      # refresh de sessão + gate de auth/onboarding (não de papel) — Next.js 16 renomeou "middleware" para "proxy"
   lib/
     supabase/{client.ts, server.ts, middleware.ts}
     auth/get-profile.ts
@@ -77,7 +77,7 @@ get_my_agency_id() / get_my_role() / is_gestor()
 - Migrations são a única forma de alterar schema — nunca editar tabelas manualmente pelo dashboard em produção.
 
 **Autorização**
-- `middleware.ts` resolve apenas "autenticado?" e "tem agência (onboarding completo)?" — nunca checagem de papel específico de rota.
+- `proxy.ts` resolve apenas "autenticado?" e "tem agência (onboarding completo)?" — nunca checagem de papel específico de rota.
 - Checagem de papel por página vive no próprio server component/layout, que já busca o profile.
 - RLS é a barreira de segurança real; os checks de página são para UX (redirecionamento correto), não a última linha de defesa.
 
@@ -107,5 +107,5 @@ Referências: Kavak / Webmotors (vitrine de veículos — cards com foto, preço
 1. RLS habilitado em toda tabela nova — sem exceção, desde a criação da migration.
 2. Toda tabela de negócio carrega `agency_id` e usa `get_my_agency_id()`/`is_gestor()` nas políticas — nunca lógica de tenant duplicada.
 3. Vendedor nunca acessa dados financeiros da agência nem comissão de outros vendedores — nem por RLS, nem pela UI (nav oculta a mesma coisa que a RLS bloqueia).
-4. `middleware.ts` não faz gate de papel — isso é responsabilidade de cada página/layout + RLS.
+4. `proxy.ts` não faz gate de papel — isso é responsabilidade de cada página/layout + RLS.
 5. Nomes de tabelas/colunas em inglês; valores de domínio (`'gestor'`, `'vendedor'`) em português, por serem vocabulário de produto.

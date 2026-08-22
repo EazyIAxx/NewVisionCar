@@ -43,7 +43,7 @@ Convenção de branch: `feature/mN-nome-curto` (setup e deploy usam `chore/...`)
 - [ ] Trigger `on_auth_user_created` → `handle_new_user()` (cria profile esquelético no signup)
 - [ ] RPCs `create_agency_and_set_gestor(p_name)` e `join_agency_with_invite(p_code)`
 - [ ] Políticas RLS em `agencies`, `profiles`, `agency_invites`
-- [ ] `src/lib/supabase/{client.ts, server.ts, middleware.ts}` + `src/middleware.ts` (gate de autenticado/onboarding, sem checagem de papel)
+- [x] `src/lib/supabase/{client.ts, server.ts, middleware.ts}` + `src/proxy.ts` (gate de autenticado/onboarding, sem checagem de papel — Next.js 16 renomeou middleware.ts para proxy.ts)
 - [ ] `src/app/auth/confirm/route.ts` (confirmação de e-mail) + configuração manual de Site URL no dashboard Supabase
 - [ ] Ligar formulários e páginas da interface às Server Actions/RPCs reais
 
