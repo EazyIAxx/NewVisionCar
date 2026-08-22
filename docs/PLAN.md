@@ -1,8 +1,10 @@
 # NewVisionCar — Plano de Execução
 
-Plano de execução do projeto dividido em milestones, do setup até o deploy. Em cada milestone, a interface (UI) é construída primeiro (com dados mockados/estáticos quando necessário), e o backend (schema Supabase, RLS, Server Actions) é ligado depois. Cada milestone é isolado em uma branch própria e fechado com um commit final antes de seguir para o próximo.
+Plano de execução do projeto dividido em milestones, do setup até o deploy. Cada milestone é isolado em uma branch própria e fechado com um commit final antes de seguir para o próximo.
 
 Convenção de branch: `feature/mN-nome-curto` (setup e deploy usam `chore/...`).
+
+**Mudança de fluxo a partir do Milestone 3:** nos Milestones 0–2, cada feature teve interface e backend construídos e mesclados juntos, um de cada vez. A partir daqui, o fluxo passa a ser em duas fases: primeiro a **interface de todas as features restantes** (M3–M8), com dados mockados, cada uma em sua própria branch (`feature/mN-nome-ui`) mesclada assim que pronta; só depois, numa segunda passada, o **backend de cada uma** (`feature/mN-nome-backend`), também uma branch por feature. Isso significa mais um pente de branches (uma UI + uma backend por feature) em vez de uma só combinada.
 
 ---
 
@@ -51,94 +53,91 @@ Convenção de branch: `feature/mN-nome-curto` (setup e deploy usam `chore/...`)
 
 ---
 
-## Milestone 2 — Estoque
+## Milestone 2 — Estoque (Interface)
 
-**Branch:** `feature/m2-estoque`
+**Branch:** `feature/m2-estoque-ui`
 
-**Objetivo:** Gestor e Vendedor conseguem ver e gerenciar o estoque de veículos da agência; custo/margem fica visível só para o Gestor.
+**Objetivo:** Gestor e Vendedor conseguem ver e gerenciar o estoque de veículos da agência (com dados mockados); custo/margem só aparece no formulário para o Gestor.
 
-**Entregas — Interface:**
-- [ ] Grid de cards de veículo (estilo Kavak/Webmotors): foto, marca/modelo/ano, preço, badge de status
-- [ ] Formulário de cadastro/edição de veículo (marca, modelo, ano, placa, cor, km, categoria B, preço, custo — campo custo só aparece para Gestor)
-- [ ] Upload de fotos do veículo (múltiplas imagens)
-- [ ] Busca e filtros (marca, faixa de preço, status, ano)
-- [ ] Ação rápida de mudar status (disponível/reservado/vendido) disponível para Vendedor
+**Entregas:**
+- [x] Grid de cards de veículo (estilo Kavak/Webmotors): foto, marca/modelo/ano, preço, badge de status
+- [x] Formulário de cadastro/edição de veículo (marca, modelo, ano, placa, cor, km, preço, custo — campo custo só aparece para Gestor)
+- [x] Upload de fotos do veículo (múltiplas imagens, com preview e remoção antes de salvar)
+- [x] Busca e filtros (marca/modelo, status, preço máximo)
+- [x] Ação rápida de mudar status (disponível/reservado/vendido) disponível para Vendedor
 
-**Entregas — Backend:**
-- [ ] Migration `vehicles` (`agency_id`, dados do veículo, `status`, `cost_price`, `sale_price`)
-- [ ] Supabase Storage bucket para fotos, com política de acesso por agência
-- [ ] RLS: leitura/escrita por `agency_id`; coluna `cost_price` só legível por `is_gestor()` (view separada ou policy de coluna)
-- [ ] Server Actions de CRUD de veículo + upload de fotos
-
-**Commit final:** `feat: módulo de estoque — CRUD de veículos, fotos e status`
+**Commit final:** `feat: interface do estoque — grid, formulário e fotos (mock)`
 
 ---
 
-## Milestone 3 — Financeiro
+## Milestone 2 — Estoque (Backend)
 
-**Branch:** `feature/m3-financeiro`
+**Branch:** `feature/m2-estoque-backend`
 
-**Objetivo:** Gestor enxerga faturamento, despesas e lucro líquido por veículo, vendedor e período. Vendedor não tem nenhum acesso a este módulo.
+**Objetivo:** Ligar a interface do estoque ao Supabase — dados reais, RLS e upload de fotos.
 
-**Entregas — Interface:**
+**Entregas:**
+- [x] Migration `vehicles` (`agency_id`, dados do veículo, `status`, `cost_price`, `price`)
+- [x] Supabase Storage bucket `vehicle-photos` (leitura pública, escrita restrita por `agency_id` no path)
+- [x] RLS: leitura/escrita por `agency_id`; `cost_price` só visível para `is_gestor()` via view `vehicles_view` (RLS não restringe coluna nativamente)
+- [x] Server Actions de CRUD de veículo + upload de fotos (via `FormData` — arquivos aninhados num objeto comum não chegam ao Server Action) — validado com E2E real (Playwright + Admin API): criação com foto, edição com custo pré-preenchido, mudança de status, e vendedor sem acesso ao campo de custo
+
+**Commit final:** `feat: backend do estoque — migrations, RLS, upload de fotos`
+
+---
+
+## Fase A — Interfaces (M3–M8, dados mockados)
+
+### Milestone 3 — Financeiro (Interface)
+
+**Branch:** `feature/m3-financeiro-ui`
+
+**Objetivo:** Gestor enxerga faturamento, despesas e lucro líquido por veículo, vendedor e período (dados mockados). Vendedor não tem acesso a este módulo nem no nav.
+
+**Entregas:**
 - [ ] Dashboard financeiro (gráficos de receita/despesa/lucro por período) — só no nav do Gestor
 - [ ] Tela de lançamento de despesas (categoria: aluguel, funcionários, manutenção, marketing)
 - [ ] Tela de faturamento por venda com breakdown de lucro líquido
 
-**Entregas — Backend:**
-- [ ] Migration `expenses` (`agency_id`, categoria, valor, data)
-- [ ] Cálculo de lucro líquido por veículo (`sale_price - cost_price - despesas vinculadas`)
-- [ ] RLS: acesso total restrito a `is_gestor()` em todas as tabelas financeiras
-- [ ] Server Actions de CRUD de despesas + queries agregadas por período/vendedor
-
-**Commit final:** `feat: módulo financeiro — despesas, faturamento e lucro líquido`
+**Commit final:** `feat: interface do financeiro — dashboard, despesas e faturamento (mock)`
 
 ---
 
-## Milestone 4 — CRM Kanban
+### Milestone 4 — CRM Kanban (Interface)
 
-**Branch:** `feature/m4-crm-kanban`
+**Branch:** `feature/m4-crm-ui`
 
-**Objetivo:** Leads entram no funil (novo, contato feito, visita agendada, negociação, venda fechada, perdido) e são atribuídos a vendedores, que só veem os próprios.
+**Objetivo:** Leads entram no funil (novo, contato feito, visita agendada, negociação, venda fechada, perdido), com dados mockados.
 
-**Entregas — Interface:**
+**Entregas:**
 - [ ] Board Kanban estilo Pipedrive (colunas por estágio, cards de lead, drag-and-drop)
 - [ ] Formulário/modal de lead: dados de contato, origem (WhatsApp/site/indicação), veículo de interesse
 - [ ] Histórico de interações no card do lead
 - [ ] Calendário de visitas agendadas
 
-**Entregas — Backend:**
-- [ ] Migration `leads` (`agency_id`, `vendedor_id`, estágio, origem, veículo vinculado) + `lead_activities`
-- [ ] RLS: Gestor vê todos os leads da agência; Vendedor só os seus (`vendedor_id = auth.uid()`)
-- [ ] Server Actions de mudança de estágio, atribuição e histórico
-
-**Commit final:** `feat: CRM — funil kanban de leads`
+**Commit final:** `feat: interface do CRM — funil kanban de leads (mock)`
 
 ---
 
-## Milestone 5 — Desempenho e Comissões
+### Milestone 5 — Desempenho e Comissões (Interface)
 
-**Branch:** `feature/m5-desempenho`
+**Branch:** `feature/m5-desempenho-ui`
 
-**Objetivo:** Painel restrito ao Gestor mostrando total vendido e comissão (0,5% por veículo vendido) de cada vendedor.
+**Objetivo:** Painel restrito ao Gestor mostrando total vendido e comissão (0,5% por veículo vendido) de cada vendedor (dados mockados).
 
-**Entregas — Interface:**
+**Entregas:**
 - [ ] Painel de desempenho (ranking de vendedores, total vendido, comissão) — visível só no nav do Gestor
 - [ ] Vendedor vê uma versão restrita mostrando apenas os próprios números
 
-**Entregas — Backend:**
-- [ ] Cálculo de comissão (0,5% do `sale_price` por venda fechada), a partir dos dados de M2 (venda) e M4 (atribuição do fechamento)
-- [ ] RLS: Gestor vê todos; Vendedor só `vendedor_id = auth.uid()`
-
-**Commit final:** `feat: desempenho e comissões — 0,5% por veículo vendido`
+**Commit final:** `feat: interface de desempenho e comissões (mock)`
 
 ---
 
-## Milestone 6 — Landing Page
+### Milestone 6 — Landing Page
 
 **Branch:** `feature/m6-landing-page`
 
-**Objetivo:** Página pública de marketing do NewVisionCar (a plataforma), não a vitrine de uma revenda específica.
+**Objetivo:** Página pública de marketing do NewVisionCar (a plataforma), não a vitrine de uma revenda específica. Sem backend próprio — não entra na Fase B.
 
 **Entregas:**
 - [ ] Hero, seção de funcionalidades, seção de preços (placeholder até M7), CTA de cadastro
@@ -148,42 +147,99 @@ Convenção de branch: `feature/mN-nome-curto` (setup e deploy usam `chore/...`)
 
 ---
 
-## Milestone 7 — Billing Stripe
+### Milestone 7 — Billing Stripe (Interface)
 
-**Branch:** `feature/m7-billing-stripe`
+**Branch:** `feature/m7-billing-ui`
 
-**Objetivo:** Agências assinam um plano pago via Stripe para usar a plataforma.
+**Objetivo:** Agências assinam um plano pago via Stripe para usar a plataforma (fluxo de UI, sem o webhook real ainda).
 
-**Entregas — Interface:**
+**Entregas:**
 - [ ] Página de planos/preços
 - [ ] Redirecionamento para Stripe Checkout
 - [ ] Portal do cliente (gerenciar assinatura) acessível ao Gestor
 
-**Entregas — Backend:**
+**Commit final:** `feat: interface de billing — planos e checkout (mock)`
+
+---
+
+### Milestone 8 — Agente de IA no WhatsApp (Interface)
+
+**Branch:** `feature/m8-whatsapp-ui`
+
+**Objetivo:** Painel de configuração do agente e leads do WhatsApp aparecendo no Kanban (mock).
+
+**Entregas:**
+- [ ] Painel de configuração do agente (mensagens padrão, horários de atendimento) para o Gestor
+- [ ] Leads mockados com origem "WhatsApp" aparecendo no Kanban (M4)
+
+**Commit final:** `feat: interface do agente de ia no whatsapp (mock)`
+
+---
+
+## Fase B — Backends (M3–M8)
+
+### Milestone 3 — Financeiro (Backend)
+
+**Branch:** `feature/m3-financeiro-backend`
+
+**Entregas:**
+- [ ] Migration `expenses` (`agency_id`, categoria, valor, data)
+- [ ] Cálculo de lucro líquido por veículo (`sale_price - cost_price - despesas vinculadas`)
+- [ ] RLS: acesso total restrito a `is_gestor()` em todas as tabelas financeiras
+- [ ] Server Actions de CRUD de despesas + queries agregadas por período/vendedor
+
+**Commit final:** `feat: backend do financeiro — despesas, lucro líquido e RLS`
+
+---
+
+### Milestone 4 — CRM Kanban (Backend)
+
+**Branch:** `feature/m4-crm-backend`
+
+**Entregas:**
+- [ ] Migration `leads` (`agency_id`, `vendedor_id`, estágio, origem, veículo vinculado) + `lead_activities`
+- [ ] RLS: Gestor vê todos os leads da agência; Vendedor só os seus (`vendedor_id = auth.uid()`)
+- [ ] Server Actions de mudança de estágio, atribuição e histórico
+
+**Commit final:** `feat: backend do CRM — leads, estágios e RLS`
+
+---
+
+### Milestone 5 — Desempenho e Comissões (Backend)
+
+**Branch:** `feature/m5-desempenho-backend`
+
+**Entregas:**
+- [ ] Cálculo de comissão (0,5% do `sale_price` por venda fechada), a partir dos dados de M2 (venda) e M4 (atribuição do fechamento)
+- [ ] RLS: Gestor vê todos; Vendedor só `vendedor_id = auth.uid()`
+
+**Commit final:** `feat: backend de desempenho e comissões — 0,5% por veículo vendido`
+
+---
+
+### Milestone 7 — Billing Stripe (Backend)
+
+**Branch:** `feature/m7-billing-backend`
+
+**Entregas:**
 - [ ] Colunas `agencies.stripe_customer_id` / `agencies.plan_status`
 - [ ] `/api/stripe/webhook`: `checkout.session.completed`, `customer.subscription.updated`, `customer.subscription.deleted`, `invoice.payment_failed`
 - [ ] Bloqueio de acesso quando assinatura está inativa/inadimplente
 
-**Commit final:** `feat: billing — assinatura da agência via stripe`
+**Commit final:** `feat: backend de billing — webhook e assinatura da agência`
 
 ---
 
-## Milestone 8 — Agente de IA no WhatsApp
+### Milestone 8 — Agente de IA no WhatsApp (Backend)
 
-**Branch:** `feature/m8-whatsapp-ai`
+**Branch:** `feature/m8-whatsapp-backend`
 
-**Objetivo:** Agente de IA atende leads pelo WhatsApp, consulta estoque em tempo real e agenda visitas — sem negociar preço.
-
-**Entregas — Interface:**
-- [ ] Painel de configuração do agente (mensagens padrão, horários de atendimento) para o Gestor
-- [ ] Leads criados pelo agente aparecem automaticamente no Kanban (M4) com origem "WhatsApp"
-
-**Entregas — Backend:**
+**Entregas:**
 - [ ] `/api/whatsapp/webhook` (WhatsApp Business Cloud API ou Twilio)
 - [ ] Agente com acesso de leitura ao estoque (M2) para responder disponibilidade/preço
 - [ ] Criação de lead/agendamento de visita gravado no calendário e no CRM (M4)
 
-**Commit final:** `feat: agente de ia no whatsapp — atendimento e agendamento de visitas`
+**Commit final:** `feat: backend do agente de ia no whatsapp — webhook e integração`
 
 ---
 
