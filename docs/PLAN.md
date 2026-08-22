@@ -31,21 +31,21 @@ Convenção de branch: `feature/mN-nome-curto` (setup e deploy usam `chore/...`)
 **Objetivo:** Ter um app onde é possível criar conta, criar uma agência (virando Gestor) ou entrar em uma agência existente com convite (virando Vendedor), com um shell autenticado que já distingue os dois papéis.
 
 **Entregas — Interface:**
-- [ ] Layout `(auth)`: páginas de login e cadastro (`login/page.tsx`, `signup/page.tsx`) com formulário (`react-hook-form` + `zod`)
-- [ ] Página `/onboarding`: escolha entre "Criar minha revenda" e "Tenho um código de convite"
-- [ ] Shell autenticado `(dashboard)/layout.tsx`: sidebar (bloco `sidebar` do shadcn) + topbar, com `nav-config.ts` já listando Estoque/Financeiro/CRM/Desempenho como itens "em breve"
-- [ ] Página `/settings/team`: lista de membros da agência + botão para gerar código de convite (gestor-only na UI)
-- [ ] Sidebar renderiza itens diferentes para Gestor vs Vendedor (a partir do papel recebido por prop, ainda sem dado real do backend)
+- [x] Layout `(auth)`: páginas de login e cadastro (`login/page.tsx`, `signup/page.tsx`) com formulário (`react-hook-form` + `zod`)
+- [x] Página `/onboarding`: escolha entre "Criar minha revenda" e "Tenho um código de convite"
+- [x] Shell autenticado `(dashboard)/layout.tsx`: sidebar (bloco `sidebar` do shadcn) + topbar, com `nav-config.ts` já listando Estoque/Financeiro/CRM/Desempenho como itens "em breve"
+- [x] Página `/settings/team`: lista de membros da agência + botão para gerar código de convite (gestor-only na UI)
+- [x] Sidebar renderiza itens diferentes para Gestor vs Vendedor (a partir do papel recebido por prop, ainda sem dado real do backend)
 
 **Entregas — Backend:**
-- [ ] `supabase/migrations/0001_foundation.sql`: tabelas `agencies`, `profiles`, `agency_invites`
-- [ ] Funções `SECURITY DEFINER`: `get_my_agency_id()`, `get_my_role()`, `is_gestor()`
-- [ ] Trigger `on_auth_user_created` → `handle_new_user()` (cria profile esquelético no signup)
-- [ ] RPCs `create_agency_and_set_gestor(p_name)` e `join_agency_with_invite(p_code)`
-- [ ] Políticas RLS em `agencies`, `profiles`, `agency_invites`
+- [x] `supabase/migrations/0001_foundation.sql`: tabelas `agencies`, `profiles`, `agency_invites`
+- [x] Funções `SECURITY DEFINER`: `get_my_agency_id()`, `get_my_role()`, `is_gestor()`
+- [x] Trigger `on_auth_user_created` → `handle_new_user()` (cria profile esquelético no signup)
+- [x] RPCs `create_agency_and_set_gestor(p_name)` e `join_agency_with_invite(p_code)` (+ `create_agency_invite(p_role)` para gerar convites)
+- [x] Políticas RLS em `agencies`, `profiles`, `agency_invites` (migration 0003 corrigiu um gap: usuário sem agência não conseguia ler o próprio profile via RLS)
 - [x] `src/lib/supabase/{client.ts, server.ts, middleware.ts}` + `src/proxy.ts` (gate de autenticado/onboarding, sem checagem de papel — Next.js 16 renomeou middleware.ts para proxy.ts)
-- [ ] `src/app/auth/confirm/route.ts` (confirmação de e-mail) + configuração manual de Site URL no dashboard Supabase
-- [ ] Ligar formulários e páginas da interface às Server Actions/RPCs reais
+- [x] `src/app/auth/confirm/route.ts` (confirmação de e-mail) — configuração manual de Site URL no dashboard Supabase ainda pendente do lado do usuário
+- [x] Ligar formulários e páginas da interface às Server Actions/RPCs reais — validado com teste E2E real (Playwright + Supabase Admin API): gestor cria agência, gera convite, vendedor entra com o código, sidebar filtra corretamente por papel, `/settings/team` bloqueado para vendedor
 
 **Commit final:** `feat: fundação — auth, multi-tenant e papéis gestor/vendedor`
 
