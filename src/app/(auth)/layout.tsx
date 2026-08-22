@@ -1,17 +1,32 @@
+import { Plus_Jakarta_Sans } from "next/font/google";
+
+import { BrandPanel } from "@/components/auth/brand-panel";
+
+const displayFont = Plus_Jakarta_Sans({
+  variable: "--font-display",
+  subsets: ["latin"],
+  weight: ["500", "600", "700", "800"],
+});
+
 export default function AuthLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex min-h-svh items-center justify-center bg-muted/30 p-6">
-      <div className="w-full max-w-sm">
-        <div className="mb-8 text-center">
-          <span className="text-xl font-semibold tracking-tight">
-            Revenda<span className="text-primary">Pro</span>
-          </span>
+    <div className={`${displayFont.variable} grid min-h-svh md:grid-cols-2`}>
+      <BrandPanel />
+      <div className="flex items-center justify-center bg-background p-6 sm:p-10">
+        <div className="w-full max-w-sm">
+          <div className="mb-8 flex items-center gap-2 md:hidden">
+            <span
+              className="font-[family-name:var(--font-display)] text-lg font-bold tracking-tight"
+            >
+              Revenda<span className="text-primary">Pro</span>
+            </span>
+          </div>
+          {children}
         </div>
-        {children}
       </div>
     </div>
   );
