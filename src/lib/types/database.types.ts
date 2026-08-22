@@ -150,9 +150,120 @@ export type Database = {
           },
         ]
       }
+      vehicles: {
+        Row: {
+          agency_id: string
+          brand: string
+          color: string
+          cost_price: number | null
+          created_at: string
+          id: string
+          km: number
+          model: string
+          photos: string[]
+          plate: string
+          price: number
+          status: string
+          year: number
+        }
+        Insert: {
+          agency_id: string
+          brand: string
+          color: string
+          cost_price?: number | null
+          created_at?: string
+          id?: string
+          km?: number
+          model: string
+          photos?: string[]
+          plate: string
+          price: number
+          status?: string
+          year: number
+        }
+        Update: {
+          agency_id?: string
+          brand?: string
+          color?: string
+          cost_price?: number | null
+          created_at?: string
+          id?: string
+          km?: number
+          model?: string
+          photos?: string[]
+          plate?: string
+          price?: number
+          status?: string
+          year?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vehicles_agency_id_fkey"
+            columns: ["agency_id"]
+            isOneToOne: false
+            referencedRelation: "agencies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
-      [_ in never]: never
+      vehicles_view: {
+        Row: {
+          agency_id: string | null
+          brand: string | null
+          color: string | null
+          cost_price: number | null
+          created_at: string | null
+          id: string | null
+          km: number | null
+          model: string | null
+          photos: string[] | null
+          plate: string | null
+          price: number | null
+          status: string | null
+          year: number | null
+        }
+        Insert: {
+          agency_id?: string | null
+          brand?: string | null
+          color?: string | null
+          cost_price?: never
+          created_at?: string | null
+          id?: string | null
+          km?: number | null
+          model?: string | null
+          photos?: string[] | null
+          plate?: string | null
+          price?: number | null
+          status?: string | null
+          year?: number | null
+        }
+        Update: {
+          agency_id?: string | null
+          brand?: string | null
+          color?: string | null
+          cost_price?: never
+          created_at?: string | null
+          id?: string | null
+          km?: number | null
+          model?: string | null
+          photos?: string[] | null
+          plate?: string | null
+          price?: number | null
+          status?: string | null
+          year?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vehicles_agency_id_fkey"
+            columns: ["agency_id"]
+            isOneToOne: false
+            referencedRelation: "agencies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
       create_agency_and_set_gestor: {

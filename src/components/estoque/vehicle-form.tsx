@@ -31,12 +31,6 @@ type VehicleFormValues = z.infer<typeof vehicleSchema>;
 
 export type VehicleFormResult = { error: string | null };
 
-export type VehicleFormSubmitPayload = {
-  values: VehicleFormValues & { status: VehicleStatus };
-  existingPhotos: string[];
-  newFiles: File[];
-};
-
 type PhotoItem =
   | { type: "existing"; url: string }
   | { type: "new"; file: File; previewUrl: string };
@@ -50,7 +44,7 @@ export function VehicleForm({
   role: Role;
   mode: "create" | "edit";
   initialValues?: Vehicle;
-  onSubmit: (payload: VehicleFormSubmitPayload) => Promise<VehicleFormResult>;
+  onSubmit: (formData: FormData) => Promise<VehicleFormResult>;
 }) {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -98,15 +92,32 @@ export function VehicleForm({
 
   async function onValid(values: VehicleFormValues) {
     setIsSubmitting(true);
-    const result = await onSubmit({
-      values: { ...values, status },
-      existingPhotos: photos
-        .filter((p): p is Extract<PhotoItem, { type: "existing" }> => p.type === "existing")
-        .map((p) => p.url),
-      newFiles: photos
-        .filter((p): p is Extract<PhotoItem, { type: "new" }> => p.type === "new")
-        .map((p) => p.file),
-    });
+
+    const formData = new FormData();
+    formData.set("brand", values.brand);
+    formData.set("model", values.model);
+    formData.set("year", String(values.year));
+    formData.set("plate", values.plate);
+    formData.set("color", values.color);
+    formData.set("km", String(values.km));
+    formData.set("price", String(values.price));
+    if (values.costPrice !== undefined) {
+      formData.set("costPrice", String(values.costPrice));
+    }
+    formData.set("status", status);
+    formData.set(
+      "existingPhotos",
+      JSON.stringify(
+        photos
+          .filter((p): p is Extract<PhotoItem, { type: "existing" }> => p.type === "existing")
+          .map((p) => p.url),
+      ),
+    );
+    photos
+      .filter((p): p is Extract<PhotoItem, { type: "new" }> => p.type === "new")
+      .forEach((p) => formData.append("newFiles", p.file));
+
+    const result = await onSubmit(formData);
     if (result?.error) {
       toast.error(result.error);
       setIsSubmitting(false);

@@ -1,9 +1,10 @@
 import { notFound, redirect } from "next/navigation";
 
+import { createClient } from "@/lib/supabase/server";
 import { getCurrentProfile } from "@/lib/auth/get-profile";
 import { VehicleForm } from "@/components/estoque/vehicle-form";
 import { updateVehicle } from "@/app/(dashboard)/estoque/actions";
-import { mockVehicles } from "@/app/(dashboard)/estoque/mock-data";
+import type { Vehicle } from "@/lib/types/vehicle";
 
 export default async function EditarVeiculoPage({
   params,
@@ -16,11 +17,32 @@ export default async function EditarVeiculoPage({
     redirect("/login");
   }
 
-  // TODO(M2 backend): buscar o veículo real na tabela `vehicles` (respeitando RLS por agency_id).
-  const vehicle = mockVehicles.find((v) => v.id === id);
-  if (!vehicle) {
+  const supabase = await createClient();
+  const { data: row } = await supabase
+    .from("vehicles_view")
+    .select("*")
+    .eq("id", id)
+    .single();
+
+  if (!row) {
     notFound();
   }
+
+  const vehicle: Vehicle = {
+    // Colunas da view vêm tipadas como nullable, mas são NOT NULL na tabela
+    // base `vehicles` (exceto cost_price/photos).
+    id: row.id!,
+    brand: row.brand!,
+    model: row.model!,
+    year: row.year!,
+    plate: row.plate!,
+    color: row.color!,
+    km: row.km!,
+    price: Number(row.price),
+    costPrice: row.cost_price === null ? null : Number(row.cost_price),
+    status: row.status as Vehicle["status"],
+    photos: row.photos ?? [],
+  };
 
   return (
     <div className="flex flex-col gap-6">
