@@ -45,12 +45,12 @@ export function LoginForm() {
   }
 
   return (
-    <div>
-      <div className="mb-8">
-        <h2 className="font-[family-name:var(--font-display)] text-2xl font-bold tracking-tight">
+    <div className="rounded-xl border border-slate-800 bg-slate-900/60 p-6">
+      <div className="mb-6">
+        <h2 className="font-[family-name:var(--font-display)] text-xl font-bold tracking-tight text-white">
           Entrar
         </h2>
-        <p className="mt-1.5 text-sm text-muted-foreground">
+        <p className="mt-1 text-sm text-slate-400">
           Acesse sua conta para gerenciar sua revenda.
         </p>
       </div>
@@ -58,37 +58,39 @@ export function LoginForm() {
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
         <FieldGroup>
           <Field data-invalid={!!errors.email}>
-            <FieldLabel htmlFor="email">E-mail</FieldLabel>
+            <FieldLabel htmlFor="email" className="text-slate-200">
+              E-mail
+            </FieldLabel>
             <div className="relative">
-              <Mail className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+              <Mail className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-slate-500" />
               <Input
                 id="email"
                 type="email"
                 autoComplete="email"
                 placeholder="voce@revenda.com.br"
-                className="pl-9"
+                className="border-slate-700 bg-slate-800/60 pl-9 text-slate-100 placeholder:text-slate-500 focus-visible:border-blue-500"
                 {...register("email")}
               />
             </div>
             <FieldError errors={errors.email ? [errors.email] : undefined} />
           </Field>
           <Field data-invalid={!!errors.password}>
-            <div className="flex items-center justify-between">
-              <FieldLabel htmlFor="password">Senha</FieldLabel>
-            </div>
+            <FieldLabel htmlFor="password" className="text-slate-200">
+              Senha
+            </FieldLabel>
             <div className="relative">
-              <Lock className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+              <Lock className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-slate-500" />
               <Input
                 id="password"
                 type={showPassword ? "text" : "password"}
                 autoComplete="current-password"
-                className="px-9"
+                className="border-slate-700 bg-slate-800/60 px-9 text-slate-100 focus-visible:border-blue-500"
                 {...register("password")}
               />
               <button
                 type="button"
                 onClick={() => setShowPassword((v) => !v)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-muted-foreground transition-colors hover:text-foreground"
+                className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-slate-500 transition-colors hover:text-slate-300"
                 aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"}
               >
                 {showPassword ? (
@@ -104,15 +106,19 @@ export function LoginForm() {
           </Field>
         </FieldGroup>
 
-        <Button type="submit" className="w-full cursor-pointer" disabled={isSubmitting}>
+        <Button
+          type="submit"
+          className="w-full cursor-pointer bg-blue-600 text-white hover:bg-blue-500"
+          disabled={isSubmitting}
+        >
           {isSubmitting && <Loader2 className="animate-spin" />}
           {isSubmitting ? "Entrando..." : "Entrar"}
         </Button>
-        <p className="text-center text-sm text-muted-foreground">
+        <p className="border-t border-slate-800 pt-4 text-center text-sm text-slate-400">
           Não tem conta?{" "}
           <Link
             href="/signup"
-            className="font-medium text-primary underline-offset-4 hover:underline"
+            className="font-medium text-blue-400 underline-offset-4 hover:underline"
           >
             Criar conta
           </Link>
