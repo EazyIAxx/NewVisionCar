@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { Car, Kanban, Trophy } from "lucide-react";
 
 const valueProps = [
@@ -30,10 +31,19 @@ export function BrandPanel() {
         className="pointer-events-none absolute -bottom-32 -right-10 size-72 rotate-45 bg-sky-300/20"
       />
 
-      {/* TODO: trocar por <Image src="/logo-mark.png" ... /> assim que o arquivo (só o ícone, sem o texto "New Vision") for enviado */}
-      <span className="relative font-[family-name:var(--font-display)] text-xl font-bold tracking-tight">
-        Revenda<span className="text-sky-300">Pro</span>
-      </span>
+      <div className="relative flex items-center gap-2.5">
+        <Image
+          src="/logo-mark.png"
+          alt=""
+          width={60}
+          height={40}
+          className="h-9 w-auto"
+          priority
+        />
+        <span className="font-[family-name:var(--font-display)] text-xl font-bold tracking-tight">
+          Revenda<span className="text-sky-300">Pro</span>
+        </span>
+      </div>
 
       <div className="relative max-w-md">
         <h1 className="font-[family-name:var(--font-display)] text-4xl font-bold leading-tight tracking-tight text-balance">
