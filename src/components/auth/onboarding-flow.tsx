@@ -4,22 +4,14 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Building2, KeyRound } from "lucide-react";
+import { Building2, KeyRound, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
 import {
   createAgencyAndSetGestor,
   joinAgencyWithInvite,
-} from "@/app/onboarding/actions";
+} from "@/app/(auth)/onboarding/actions";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import {
   Field,
@@ -45,40 +37,36 @@ export function OnboardingFlow() {
 
   if (mode === "choose") {
     return (
-      <div className="grid gap-4">
+      <div className="flex flex-col gap-4">
         <button
           type="button"
           onClick={() => setMode("create")}
-          className="w-full text-left"
+          className="flex cursor-pointer items-center gap-3 rounded-xl border border-slate-800 bg-slate-900/60 p-4 text-left transition-colors hover:border-blue-500"
         >
-          <Card className="transition-colors hover:border-primary">
-            <CardHeader className="flex-row items-center gap-3 space-y-0">
-              <Building2 className="size-6 text-primary" />
-              <div>
-                <CardTitle>Criar minha revenda</CardTitle>
-                <CardDescription>
-                  Você será o Gestor da nova agência.
-                </CardDescription>
-              </div>
-            </CardHeader>
-          </Card>
+          <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-blue-500/10 text-blue-400">
+            <Building2 className="size-5" />
+          </span>
+          <div>
+            <p className="font-medium text-white">Criar minha revenda</p>
+            <p className="text-sm text-slate-400">
+              Você será o Gestor da nova agência.
+            </p>
+          </div>
         </button>
         <button
           type="button"
           onClick={() => setMode("join")}
-          className="w-full text-left"
+          className="flex cursor-pointer items-center gap-3 rounded-xl border border-slate-800 bg-slate-900/60 p-4 text-left transition-colors hover:border-blue-500"
         >
-          <Card className="transition-colors hover:border-primary">
-            <CardHeader className="flex-row items-center gap-3 space-y-0">
-              <KeyRound className="size-6 text-primary" />
-              <div>
-                <CardTitle>Tenho um código de convite</CardTitle>
-                <CardDescription>
-                  Entre em uma revenda existente como Vendedor.
-                </CardDescription>
-              </div>
-            </CardHeader>
-          </Card>
+          <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-blue-500/10 text-blue-400">
+            <KeyRound className="size-5" />
+          </span>
+          <div>
+            <p className="font-medium text-white">Tenho um código de convite</p>
+            <p className="text-sm text-slate-400">
+              Entre em uma revenda existente como Vendedor.
+            </p>
+          </div>
         </button>
       </div>
     );
@@ -109,35 +97,50 @@ function CreateAgencyForm({ onBack }: { onBack: () => void }) {
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Criar minha revenda</CardTitle>
-        <CardDescription>Dê um nome para sua agência.</CardDescription>
-      </CardHeader>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <CardContent>
-          <FieldGroup>
-            <Field data-invalid={!!errors.name}>
-              <FieldLabel htmlFor="name">Nome da revenda</FieldLabel>
-              <Input
-                id="name"
-                placeholder="Ex: Auto Center Silva"
-                {...register("name")}
-              />
-              <FieldError errors={errors.name ? [errors.name] : undefined} />
-            </Field>
-          </FieldGroup>
-        </CardContent>
-        <CardFooter className="flex gap-2">
-          <Button type="button" variant="outline" onClick={onBack}>
+    <div className="rounded-xl border border-slate-800 bg-slate-900/60 p-6">
+      <div className="mb-6">
+        <h2 className="text-xl font-bold tracking-tight text-white">
+          Criar minha revenda
+        </h2>
+        <p className="mt-1 text-sm text-slate-400">
+          Dê um nome para sua agência.
+        </p>
+      </div>
+      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
+        <FieldGroup>
+          <Field data-invalid={!!errors.name}>
+            <FieldLabel htmlFor="name" className="text-slate-200">
+              Nome da revenda
+            </FieldLabel>
+            <Input
+              id="name"
+              placeholder="Ex: Auto Center Silva"
+              className="border-slate-700 bg-slate-800/60 text-slate-100 placeholder:text-slate-500 focus-visible:border-blue-500"
+              {...register("name")}
+            />
+            <FieldError errors={errors.name ? [errors.name] : undefined} />
+          </Field>
+        </FieldGroup>
+        <div className="flex gap-2">
+          <Button
+            type="button"
+            variant="outline"
+            className="cursor-pointer"
+            onClick={onBack}
+          >
             Voltar
           </Button>
-          <Button type="submit" className="flex-1" disabled={isSubmitting}>
+          <Button
+            type="submit"
+            className="flex-1 cursor-pointer bg-blue-600 text-white hover:bg-blue-500"
+            disabled={isSubmitting}
+          >
+            {isSubmitting && <Loader2 className="animate-spin" />}
             {isSubmitting ? "Criando..." : "Criar revenda"}
           </Button>
-        </CardFooter>
+        </div>
       </form>
-    </Card>
+    </div>
   );
 }
 
@@ -159,36 +162,49 @@ function JoinAgencyForm({ onBack }: { onBack: () => void }) {
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Entrar com convite</CardTitle>
-        <CardDescription>
+    <div className="rounded-xl border border-slate-800 bg-slate-900/60 p-6">
+      <div className="mb-6">
+        <h2 className="text-xl font-bold tracking-tight text-white">
+          Entrar com convite
+        </h2>
+        <p className="mt-1 text-sm text-slate-400">
           Informe o código que o gestor da revenda te enviou.
-        </CardDescription>
-      </CardHeader>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <CardContent>
-          <FieldGroup>
-            <Field data-invalid={!!errors.code}>
-              <FieldLabel htmlFor="code">Código de convite</FieldLabel>
-              <Input
-                id="code"
-                placeholder="Ex: A1B2C3"
-                {...register("code")}
-              />
-              <FieldError errors={errors.code ? [errors.code] : undefined} />
-            </Field>
-          </FieldGroup>
-        </CardContent>
-        <CardFooter className="flex gap-2">
-          <Button type="button" variant="outline" onClick={onBack}>
+        </p>
+      </div>
+      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
+        <FieldGroup>
+          <Field data-invalid={!!errors.code}>
+            <FieldLabel htmlFor="code" className="text-slate-200">
+              Código de convite
+            </FieldLabel>
+            <Input
+              id="code"
+              placeholder="Ex: A1B2C3"
+              className="border-slate-700 bg-slate-800/60 text-slate-100 placeholder:text-slate-500 focus-visible:border-blue-500"
+              {...register("code")}
+            />
+            <FieldError errors={errors.code ? [errors.code] : undefined} />
+          </Field>
+        </FieldGroup>
+        <div className="flex gap-2">
+          <Button
+            type="button"
+            variant="outline"
+            className="cursor-pointer"
+            onClick={onBack}
+          >
             Voltar
           </Button>
-          <Button type="submit" className="flex-1" disabled={isSubmitting}>
+          <Button
+            type="submit"
+            className="flex-1 cursor-pointer bg-blue-600 text-white hover:bg-blue-500"
+            disabled={isSubmitting}
+          >
+            {isSubmitting && <Loader2 className="animate-spin" />}
             {isSubmitting ? "Entrando..." : "Entrar na revenda"}
           </Button>
-        </CardFooter>
+        </div>
       </form>
-    </Card>
+    </div>
   );
 }

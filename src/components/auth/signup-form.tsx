@@ -54,7 +54,7 @@ export function SignupForm() {
         <span className="mx-auto flex size-14 items-center justify-center rounded-full bg-blue-500/10 text-blue-400">
           <MailCheck className="size-7" />
         </span>
-        <h2 className="mt-5 font-[family-name:var(--font-display)] text-xl font-bold tracking-tight text-white">
+        <h2 className="mt-5 text-xl font-bold tracking-tight text-white">
           Confirme seu e-mail
         </h2>
         <p className="mt-1.5 text-sm text-slate-400 text-balance">
@@ -69,7 +69,7 @@ export function SignupForm() {
   return (
     <div className="rounded-xl border border-slate-800 bg-slate-900/60 p-6">
       <div className="mb-6">
-        <h2 className="font-[family-name:var(--font-display)] text-xl font-bold tracking-tight text-white">
+        <h2 className="text-xl font-bold tracking-tight text-white">
           Criar conta
         </h2>
         <p className="mt-1 text-sm text-slate-400">
