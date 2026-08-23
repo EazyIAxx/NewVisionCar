@@ -38,3 +38,9 @@ export async function signup(
 
   return { error: error?.message ?? null };
 }
+
+export async function signOut(): Promise<void> {
+  const supabase = await createClient();
+  await supabase.auth.signOut();
+  redirect("/login");
+}

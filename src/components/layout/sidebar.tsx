@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { LogOut } from "lucide-react";
 
 import {
   Sidebar,
@@ -18,7 +19,14 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { navItems, type Role } from "@/components/layout/nav-config";
+import { signOut } from "@/app/(auth)/actions";
 
 type AppSidebarProps = {
   role: Role;
@@ -78,17 +86,33 @@ export function AppSidebar({ role, fullName, agencyName }: AppSidebarProps) {
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>
-        <div className="flex items-center gap-2 px-2 py-1">
-          <Avatar className="size-8">
-            <AvatarFallback>{initials || "?"}</AvatarFallback>
-          </Avatar>
-          <div className="min-w-0 group-data-[collapsible=icon]:hidden">
-            <p className="truncate text-sm font-medium">{fullName}</p>
-            <p className="truncate text-xs capitalize text-muted-foreground">
-              {role}
-            </p>
-          </div>
-        </div>
+        <DropdownMenu>
+          <DropdownMenuTrigger
+            className="flex w-full cursor-pointer items-center gap-2 rounded-lg px-2 py-1 outline-none hover:bg-sidebar-accent"
+          >
+            <Avatar className="size-8">
+              <AvatarFallback>{initials || "?"}</AvatarFallback>
+            </Avatar>
+            <div className="min-w-0 group-data-[collapsible=icon]:hidden">
+              <p className="truncate text-left text-sm font-medium">
+                {fullName}
+              </p>
+              <p className="truncate text-left text-xs capitalize text-muted-foreground">
+                {role}
+              </p>
+            </div>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="start" side="top">
+            <DropdownMenuItem
+              variant="destructive"
+              className="cursor-pointer"
+              onClick={() => signOut()}
+            >
+              <LogOut />
+              Sair
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </SidebarFooter>
     </Sidebar>
   );
