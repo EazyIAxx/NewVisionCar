@@ -59,7 +59,7 @@ export default async function EstoquePage({
         <Button
           render={<Link href="/estoque/novo" />}
           nativeButton={false}
-          className="cursor-pointer"
+          className="cursor-pointer bg-gradient-to-r from-[#1b2a8f] via-[#2596e0] to-[#56d3f2] text-white hover:brightness-110"
         >
           <Plus />
           Novo veículo

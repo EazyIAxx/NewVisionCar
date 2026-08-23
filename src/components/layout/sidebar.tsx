@@ -1,8 +1,8 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Building2 } from "lucide-react";
 
 import {
   Sidebar,
@@ -40,7 +40,13 @@ export function AppSidebar({ role, fullName, agencyName }: AppSidebarProps) {
     <Sidebar collapsible="icon">
       <SidebarHeader>
         <div className="flex items-center gap-2 px-2 py-1">
-          <Building2 className="size-5 text-primary" />
+          <Image
+            src="/logo-mark.png"
+            alt=""
+            width={60}
+            height={40}
+            className="h-6 w-auto shrink-0"
+          />
           <span className="truncate font-semibold group-data-[collapsible=icon]:hidden">
             {agencyName}
           </span>
@@ -57,6 +63,7 @@ export function AppSidebar({ role, fullName, agencyName }: AppSidebarProps) {
                     render={<Link href={item.comingSoon ? "#" : item.href} />}
                     isActive={pathname === item.href}
                     tooltip={item.label}
+                    className="data-active:bg-gradient-to-r data-active:from-[#1b2a8f] data-active:via-[#2596e0] data-active:to-[#56d3f2] data-active:text-white"
                   >
                     <item.icon />
                     <span>{item.label}</span>

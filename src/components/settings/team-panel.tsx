@@ -96,7 +96,7 @@ export function TeamPanel({ initialMembers }: { initialMembers: Member[] }) {
           <Button
             onClick={handleGenerateInvite}
             disabled={isGenerating}
-            className="w-fit"
+            className="w-fit cursor-pointer bg-gradient-to-r from-[#1b2a8f] via-[#2596e0] to-[#56d3f2] text-white hover:brightness-110"
           >
             <Plus />
             {isGenerating ? "Gerando..." : "Gerar código de convite"}

@@ -47,7 +47,7 @@ export function LoginForm() {
   return (
     <div className="rounded-xl border border-slate-800 bg-slate-900/60 p-6">
       <div className="mb-6">
-        <h2 className="font-[family-name:var(--font-display)] text-xl font-bold tracking-tight text-white">
+        <h2 className="text-xl font-bold tracking-tight text-white">
           Entrar
         </h2>
         <p className="mt-1 text-sm text-slate-400">
@@ -108,7 +108,7 @@ export function LoginForm() {
 
         <Button
           type="submit"
-          className="w-full cursor-pointer bg-blue-600 text-white hover:bg-blue-500"
+          className="w-full cursor-pointer bg-gradient-to-r from-[#1b2a8f] via-[#2596e0] to-[#56d3f2] text-white hover:brightness-110"
           disabled={isSubmitting}
         >
           {isSubmitting && <Loader2 className="animate-spin" />}

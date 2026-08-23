@@ -261,7 +261,11 @@ export function VehicleForm({
             >
               Cancelar
             </Button>
-            <Button type="submit" className="flex-1 cursor-pointer" disabled={isSubmitting}>
+            <Button
+              type="submit"
+              className="flex-1 cursor-pointer bg-gradient-to-r from-[#1b2a8f] via-[#2596e0] to-[#56d3f2] text-white hover:brightness-110"
+              disabled={isSubmitting}
+            >
               {isSubmitting && <Loader2 className="animate-spin" />}
               {mode === "create" ? "Cadastrar veículo" : "Salvar alterações"}
             </Button>
