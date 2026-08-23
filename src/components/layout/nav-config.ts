@@ -9,6 +9,7 @@ import {
   Trophy,
   Users,
   CreditCard,
+  Bot,
 } from "lucide-react";
 
 export type Role = "gestor" | "vendedor";
@@ -74,6 +75,12 @@ export const navItems: NavItem[] = [
     label: "Assinatura",
     href: "/settings/billing",
     icon: CreditCard,
+    roles: ["gestor"],
+  },
+  {
+    label: "BIA",
+    href: "/settings/whatsapp",
+    icon: Bot,
     roles: ["gestor"],
   },
 ];

@@ -170,8 +170,8 @@ Convenção de branch: `feature/mN-nome-curto` (setup e deploy usam `chore/...`)
 **Objetivo:** Painel de configuração do agente e leads do WhatsApp aparecendo no Kanban (mock).
 
 **Entregas:**
-- [ ] Painel de configuração do agente (mensagens padrão, horários de atendimento) para o Gestor
-- [ ] Leads mockados com origem "WhatsApp" aparecendo no Kanban (M4)
+- [x] Página `/settings/whatsapp` (gestor-only): status/número, horário de atendimento por dia da semana, mensagens padrão (boas-vindas, fora do horário, visita agendada) com prévia em bolha de chat
+- [x] Leads mockados com origem "WhatsApp" aparecendo no Kanban (M4) — já existia nos mocks do CRM, confirmado via E2E
 
 **Commit final:** `feat: interface do agente de ia no whatsapp (mock)`
 
