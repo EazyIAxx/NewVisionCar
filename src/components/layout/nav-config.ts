@@ -3,6 +3,7 @@ import {
   Car,
   LayoutDashboard,
   Kanban,
+  Receipt,
   Wallet,
   Trophy,
   Users,
@@ -35,6 +36,12 @@ export const navItems: NavItem[] = [
     label: "CRM",
     href: "/crm",
     icon: Kanban,
+    roles: ["gestor", "vendedor"],
+  },
+  {
+    label: "Vendas",
+    href: "/vendas",
+    icon: Receipt,
     roles: ["gestor", "vendedor"],
   },
   {

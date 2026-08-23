@@ -19,16 +19,6 @@ export type Expense = {
   date: string; // ISO
 };
 
-export type Sale = {
-  id: string;
-  vehicleBrand: string;
-  vehicleModel: string;
-  vendedorName: string;
-  saleDate: string; // ISO
-  salePrice: number;
-  costPrice: number;
-};
-
 export type MonthlyFinance = {
   month: string;
   revenue: number;

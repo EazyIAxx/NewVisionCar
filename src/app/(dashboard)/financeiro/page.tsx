@@ -6,7 +6,7 @@ import { FinanceOverviewChart } from "@/components/financeiro/finance-overview-c
 import { mockExpenses, mockMonthlyFinance, mockSales } from "@/app/(dashboard)/financeiro/mock-data";
 
 export default function FinanceiroPage() {
-  const totalRevenue = mockSales.reduce((sum, sale) => sum + sale.salePrice, 0);
+  const totalRevenue = mockSales.reduce((sum, sale) => sum + sale.amount, 0);
   const totalCost = mockSales.reduce((sum, sale) => sum + sale.costPrice, 0);
   const totalExpenses = mockExpenses.reduce((sum, expense) => sum + expense.amount, 0);
   const netProfit = totalRevenue - totalCost - totalExpenses;
