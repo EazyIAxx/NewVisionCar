@@ -47,8 +47,7 @@ export const navItems: NavItem[] = [
     label: "Desempenho",
     href: "/desempenho",
     icon: Trophy,
-    roles: ["gestor"],
-    comingSoon: true,
+    roles: ["gestor", "vendedor"],
   },
   {
     label: "Equipe",
