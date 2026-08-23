@@ -261,116 +261,166 @@ Convenção de branch: `feature/mN-nome-curto` (setup e deploy usam `chore/...`)
 
 ---
 
-## Fase C — Módulos Avançados (M10–M15)
+## Fase C — Módulos Avançados: Interfaces (M10–M15, dados mockados)
 
-Expansões pós-MVP, cada uma seguindo o mesmo fluxo interface → backend das fases anteriores (branch `-ui` mesclada antes da `-backend`), a definir em detalhe quando a fase for iniciada.
+Expansões pós-MVP. Mesmo fluxo em duas fases das Milestones 3–8: primeiro a interface de todos os módulos (M10–M15) com dados mockados, cada uma na sua branch `feature/mN-nome-ui`; só depois, na Fase D, o backend de cada uma (`feature/mN-nome-backend`). Detalhar cada milestone (telas exatas, textos, componentes) quando a fase for iniciada — os itens abaixo são o objetivo de alto nível.
 
-### Milestone 10 — Emissor de Nota Fiscal
+### Milestone 10 — Emissor de Nota Fiscal (Interface)
 
-**Branch:** `feature/m10-nota-fiscal`
+**Branch:** `feature/m10-nota-fiscal-ui`
 
-**Objetivo:** Gestor emite a nota fiscal da venda (NF-e/NFS-e conforme o município/regime) direto da plataforma, sem sistema fiscal separado.
+**Objetivo:** Gestor consegue configurar os dados fiscais da agência e disparar a emissão de nota fiscal a partir de uma venda (mock — sem provedor de NF-e real ainda).
 
-**Entregas — Interface:**
+**Entregas:**
 - [ ] Configuração de dados fiscais da agência (CNPJ, inscrição estadual/municipal, regime tributário) em Settings
-- [ ] Botão "Emitir nota fiscal" na venda (M2/Vendas), com status (pendente, emitida, cancelada) na listagem
+- [ ] Botão "Emitir nota fiscal" na venda (Vendas), com status (pendente, emitida, cancelada) mockado na listagem
 
-**Entregas — Backend:**
+**Commit final:** `feat: interface do emissor de nota fiscal (mock)`
+
+---
+
+### Milestone 11 — Integrador de Anúncios (Interface)
+
+**Branch:** `feature/m11-integrador-anuncios-ui`
+
+**Objetivo:** Gestor/Vendedor consegue "publicar" um veículo do Estoque na OLX e no Webmotors pela UI (mock — sem chamada real às APIs dos portais ainda).
+
+**Entregas:**
+- [ ] Botão "Publicar anúncio" no veículo, com seleção de portal (OLX, Webmotors)
+- [ ] Status de publicação por portal (não publicado, publicado, erro) mockado na página do veículo
+
+**Commit final:** `feat: interface do integrador de anúncios (mock)`
+
+---
+
+### Milestone 12 — Vitrine Pública da Revenda (Interface)
+
+**Branch:** `feature/m12-vitrine-publica-ui`
+
+**Objetivo:** Rota pública (sem login) mostrando os veículos disponíveis da revenda, com dados mockados — a vitrine é o site público da revenda em si, não um site institucional à parte.
+
+**Entregas:**
+- [ ] Rota pública `/vitrine/[slug-da-agencia]`: grid de veículos disponíveis, filtros básicos, página de detalhe com fotos
+- [ ] Botão "Tenho interesse" no detalhe do veículo (formulário de contato, mock)
+- [ ] Configuração da vitrine (logo, cores, slug) para o Gestor
+
+**Commit final:** `feat: interface da vitrine pública da revenda (mock)`
+
+---
+
+### Milestone 13 — Ordem de Serviço (Interface)
+
+**Branch:** `feature/m13-ordem-servico-ui`
+
+**Objetivo:** Gestor/Vendedor registra serviços feitos num veículo antes da venda (revisão, higienização, funilaria), com dados mockados.
+
+**Entregas:**
+- [ ] Lista de ordens de serviço vinculadas a um veículo (tipo, fornecedor, valor, status) na página de detalhe do veículo
+- [ ] Formulário de nova OS
+
+**Commit final:** `feat: interface de ordem de serviço (mock)`
+
+---
+
+### Milestone 14 — Integração RENAVE (Interface)
+
+**Branch:** `feature/m14-renave-ui`
+
+**Objetivo:** Painel de status da transferência RENAVE por venda, com dados mockados (sem integração real com a API do RENAVE ainda).
+
+**Entregas:**
+- [ ] Painel de status da transferência RENAVE por venda (pendente, em andamento, concluída, erro)
+- [ ] Formulário de dados complementares exigidos pelo RENAVE (dados do comprador, forma de pagamento)
+
+**Commit final:** `feat: interface de integração com o renave (mock)`
+
+---
+
+### Milestone 15 — Simulação e Integração de Financiamento (Interface)
+
+**Branch:** `feature/m15-financiamento-ui`
+
+**Objetivo:** Simulador de parcelas de financiamento na página do veículo, com taxas mockadas (sem parceiro financeiro real ainda).
+
+**Entregas:**
+- [ ] Simulador de financiamento (entrada, prazo, parcela estimada) na página do veículo — vitrine pública (M12) e Estoque interno
+- [ ] Formulário de envio de proposta (dados do comprador) para análise
+
+**Commit final:** `feat: interface de simulação de financiamento (mock)`
+
+---
+
+## Fase D — Backends (M10–M15)
+
+### Milestone 10 — Emissor de Nota Fiscal (Backend)
+
+**Branch:** `feature/m10-nota-fiscal-backend`
+
+**Entregas:**
 - [ ] Integração com provedor de emissão (ex: Focus NFe, NFE.io — a definir)
 - [ ] Migration `invoices` (`agency_id`, `sale_id`, status, número, chave de acesso, PDF/XML no Storage)
 - [ ] Webhook/polling de atualização de status da nota
 
-**Commit final:** `feat: emissor de nota fiscal`
+**Commit final:** `feat: backend do emissor de nota fiscal`
 
 ---
 
-### Milestone 11 — Integrador de Anúncios (OLX, Webmotors)
+### Milestone 11 — Integrador de Anúncios (Backend)
 
-**Branch:** `feature/m11-integrador-anuncios`
+**Branch:** `feature/m11-integrador-anuncios-backend`
 
-**Objetivo:** Veículo do Estoque é publicado como anúncio na OLX e no Webmotors sem recadastro manual em cada portal, e some do portal quando some do estoque.
-
-**Entregas — Interface:**
-- [ ] Botão "Publicar anúncio" no veículo, com seleção de portal (OLX, Webmotors)
-- [ ] Status de publicação por portal (não publicado, publicado, erro) na página do veículo
-
-**Entregas — Backend:**
+**Entregas:**
 - [ ] Integração com as APIs (ou parceiro agregador — acesso direto pode exigir parceria comercial com cada portal)
 - [ ] Migration `listings` (`vehicle_id`, portal, status, `external_id`, `published_at`)
 - [ ] Sincronização: veículo vendido/removido do estoque despublica automaticamente nos portais
 
-**Commit final:** `feat: integrador de anúncios — olx e webmotors`
+**Commit final:** `feat: backend do integrador de anúncios — olx e webmotors`
 
 ---
 
-### Milestone 12 — Vitrine Pública da Revenda
+### Milestone 12 — Vitrine Pública da Revenda (Backend)
 
-**Branch:** `feature/m12-vitrine-publica`
+**Branch:** `feature/m12-vitrine-publica-backend`
 
-**Objetivo:** Cada revenda tem uma página pública (sem login) com os veículos disponíveis do seu estoque, para compartilhar com clientes — a vitrine é o site público da revenda em si, não um site institucional à parte.
-
-**Entregas — Interface:**
-- [ ] Rota pública `/vitrine/[slug-da-agencia]`: grid de veículos disponíveis, filtros básicos, página de detalhe com fotos
-- [ ] Botão "Tenho interesse" no detalhe do veículo (formulário de contato)
-- [ ] Configuração da vitrine (logo, cores, slug) para o Gestor
-
-**Entregas — Backend:**
+**Entregas:**
 - [ ] Rota pública sem autenticação; RLS liberando leitura pública só de veículos com status "disponível"
 - [ ] "Tenho interesse" cria lead automaticamente no CRM (M4), com origem "site"
 
-**Commit final:** `feat: vitrine pública da revenda`
+**Commit final:** `feat: backend da vitrine pública da revenda`
 
 ---
 
-### Milestone 13 — Ordem de Serviço
+### Milestone 13 — Ordem de Serviço (Backend)
 
-**Branch:** `feature/m13-ordem-servico`
+**Branch:** `feature/m13-ordem-servico-backend`
 
-**Objetivo:** Gestor/Vendedor registra serviços feitos num veículo antes da venda (revisão, higienização, funilaria), e o custo entra automaticamente no lucro líquido do Financeiro (M3).
-
-**Entregas — Interface:**
-- [ ] Lista de ordens de serviço vinculadas a um veículo (tipo, fornecedor, valor, status) na página de detalhe do veículo
-- [ ] Formulário de nova OS
-
-**Entregas — Backend:**
+**Entregas:**
 - [ ] Migration `service_orders` (`agency_id`, `vehicle_id`, tipo, fornecedor, valor, status, data)
 - [ ] RLS por `agency_id`
 - [ ] Valor da OS somado ao `cost_price` do veículo no cálculo de lucro (M3)
 
-**Commit final:** `feat: ordem de serviço`
+**Commit final:** `feat: backend de ordem de serviço`
 
 ---
 
-### Milestone 14 — Integração RENAVE
+### Milestone 14 — Integração RENAVE (Backend)
 
-**Branch:** `feature/m14-renave`
+**Branch:** `feature/m14-renave-backend`
 
-**Objetivo:** Transferência de propriedade do veículo vendido é registrada digitalmente via RENAVE (Registro Nacional de Veículos Automotores), como exigido de revendas pela legislação.
-
-**Entregas — Interface:**
-- [ ] Painel de status da transferência RENAVE por venda (pendente, em andamento, concluída, erro)
-- [ ] Formulário de dados complementares exigidos pelo RENAVE (dados do comprador, forma de pagamento)
-
-**Entregas — Backend:**
+**Entregas:**
 - [ ] Integração com a API do RENAVE (via DETRAN do estado ou provedor homologado — a definir)
 - [ ] Migration `renave_transfers` (`agency_id`, `sale_id`, status, protocolo, payload de resposta)
 
-**Commit final:** `feat: integração com o renave`
+**Commit final:** `feat: backend de integração com o renave`
 
 ---
 
-### Milestone 15 — Simulação e Integração de Financiamento
+### Milestone 15 — Simulação e Integração de Financiamento (Backend)
 
-**Branch:** `feature/m15-financiamento`
+**Branch:** `feature/m15-financiamento-backend`
 
-**Objetivo:** Cliente (na vitrine pública, M12) ou vendedor (internamente) simula parcelas de financiamento para um veículo e envia a proposta para análise de um parceiro financeiro.
-
-**Entregas — Interface:**
-- [ ] Simulador de financiamento (entrada, prazo, parcela estimada) na página do veículo — vitrine pública e Estoque interno
-- [ ] Formulário de envio de proposta (dados do comprador) para análise
-
-**Entregas — Backend:**
+**Entregas:**
 - [ ] Integração com API de parceiro(s) financeiro(s) para simulação com taxas reais (a definir)
 - [ ] Migration `financing_requests` (`agency_id`, `vehicle_id`, `lead_id`/`sale_id`, status, valor solicitado, resposta do parceiro)
 
-**Commit final:** `feat: simulação e integração de financiamento`
+**Commit final:** `feat: backend de simulação e integração de financiamento`
