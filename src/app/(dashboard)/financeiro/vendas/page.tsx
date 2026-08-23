@@ -10,7 +10,7 @@ import { formatCurrency } from "@/lib/utils";
 import { mockSales } from "@/app/(dashboard)/financeiro/mock-data";
 
 export default function VendasPage() {
-  const sales = [...mockSales].sort((a, b) => (a.saleDate < b.saleDate ? 1 : -1));
+  const sales = [...mockSales].sort((a, b) => (a.date < b.date ? 1 : -1));
 
   return (
     <div className="flex flex-col gap-4">
@@ -27,18 +27,18 @@ export default function VendasPage() {
         </TableHeader>
         <TableBody>
           {sales.map((sale) => {
-            const profit = sale.salePrice - sale.costPrice;
+            const profit = sale.amount - sale.costPrice;
             return (
               <TableRow key={sale.id}>
                 <TableCell className="text-muted-foreground">
-                  {new Date(sale.saleDate).toLocaleDateString("pt-BR")}
+                  {new Date(sale.date).toLocaleDateString("pt-BR")}
                 </TableCell>
                 <TableCell className="font-medium">
                   {sale.vehicleBrand} {sale.vehicleModel}
                 </TableCell>
                 <TableCell>{sale.vendedorName}</TableCell>
                 <TableCell className="text-right">
-                  {formatCurrency(sale.salePrice)}
+                  {formatCurrency(sale.amount)}
                 </TableCell>
                 <TableCell className="text-right text-muted-foreground">
                   {formatCurrency(sale.costPrice)}

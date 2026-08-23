@@ -1,6 +1,7 @@
-import type { Expense, MonthlyFinance, Sale } from "@/lib/types/finance";
+import type { Expense, MonthlyFinance } from "@/lib/types/finance";
+import { mockSales } from "@/lib/mock/sales";
 
-// TODO(M3 backend): remover e substituir por query real nas tabelas `expenses` e vendas de veículos.
+// TODO(M3 backend): remover e substituir por query real na tabela `expenses`.
 export const mockExpenses: Expense[] = [
   {
     id: "1",
@@ -46,43 +47,40 @@ export const mockExpenses: Expense[] = [
   },
 ];
 
-// TODO(M3 backend): substituir por veículos reais com status "vendido" (tabela `vehicles`).
-export const mockSales: Sale[] = [
-  {
-    id: "1",
-    vehicleBrand: "Chevrolet",
-    vehicleModel: "Onix Premier",
-    vendedorName: "Ana Souza",
-    saleDate: "2026-10-14",
-    salePrice: 78900,
-    costPrice: 64000,
-  },
-  {
-    id: "2",
-    vehicleBrand: "Jeep",
-    vehicleModel: "Compass Longitude",
-    vendedorName: "Carlos Lima",
-    saleDate: "2026-10-08",
-    salePrice: 168900,
-    costPrice: 142000,
-  },
-  {
-    id: "3",
-    vehicleBrand: "Honda",
-    vehicleModel: "HR-V EXL",
-    vendedorName: "Ana Souza",
-    saleDate: "2026-09-22",
-    salePrice: 119900,
-    costPrice: 99500,
-  },
+// Reexportado para uso no módulo Financeiro — fonte única de vendas
+// compartilhada com Vendas e Desempenho (ver `@/lib/mock/sales`).
+export { mockSales };
+
+const monthLabel = [
+  "Jan", "Fev", "Mar", "Abr", "Mai", "Jun",
+  "Jul", "Ago", "Set", "Out", "Nov", "Dez",
 ];
 
+function monthKey(iso: string) {
+  return iso.slice(0, 7); // YYYY-MM
+}
+
+const months = Array.from(
+  new Set([
+    ...mockSales.map((sale) => monthKey(sale.date)),
+    ...mockExpenses.map((expense) => monthKey(expense.date)),
+  ]),
+).sort();
+
 // TODO(M3 backend): calcular a partir de vendas + despesas reais por período.
-export const mockMonthlyFinance: MonthlyFinance[] = [
-  { month: "Mai", revenue: 145000, expenses: 32000, profit: 113000 },
-  { month: "Jun", revenue: 168000, expenses: 35500, profit: 132500 },
-  { month: "Jul", revenue: 121000, expenses: 30800, profit: 90200 },
-  { month: "Ago", revenue: 189000, expenses: 38200, profit: 150800 },
-  { month: "Set", revenue: 119900, expenses: 33500, profit: 86400 },
-  { month: "Out", revenue: 247800, expenses: 36950, profit: 210850 },
-];
+export const mockMonthlyFinance: MonthlyFinance[] = months.map((key) => {
+  const monthIndex = Number(key.split("-")[1]) - 1;
+  const salesInMonth = mockSales.filter((sale) => monthKey(sale.date) === key);
+  const expensesInMonth = mockExpenses.filter(
+    (expense) => monthKey(expense.date) === key,
+  );
+  const revenue = salesInMonth.reduce((sum, sale) => sum + sale.amount, 0);
+  const cost = salesInMonth.reduce((sum, sale) => sum + sale.costPrice, 0);
+  const expenses = expensesInMonth.reduce((sum, expense) => sum + expense.amount, 0);
+  return {
+    month: monthLabel[monthIndex],
+    revenue,
+    expenses,
+    profit: revenue - cost - expenses,
+  };
+});

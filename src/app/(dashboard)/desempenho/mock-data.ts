@@ -1,8 +1,21 @@
 import type { VendedorPerformance } from "@/lib/types/performance";
+import { mockSales } from "@/lib/mock/sales";
 
-// TODO(M5 backend): remover e substituir por agregação real de vendas (M2) + atribuição de fechamento (M4).
-export const mockPerformance: VendedorPerformance[] = [
-  { id: "1", name: "Ana Souza", vehiclesSold: 5, totalSold: 620000 },
-  { id: "2", name: "Carlos Lima", vehiclesSold: 4, totalSold: 512000 },
-  { id: "3", name: "Bianca Alves", vehiclesSold: 3, totalSold: 398000 },
-];
+// Agregado a partir da fonte única de vendas (`@/lib/mock/sales`), compartilhada
+// com Vendas e Financeiro, para não haver números divergentes entre módulos.
+// TODO(M5 backend): trocar por agregação real de vendas (M2) + atribuição de fechamento (M4).
+const totals = new Map<string, { vehiclesSold: number; totalSold: number }>();
+for (const sale of mockSales) {
+  const current = totals.get(sale.vendedorName) ?? { vehiclesSold: 0, totalSold: 0 };
+  current.vehiclesSold += 1;
+  current.totalSold += sale.amount;
+  totals.set(sale.vendedorName, current);
+}
+
+export const mockPerformance: VendedorPerformance[] = Array.from(
+  totals.entries(),
+).map(([name, stats], index) => ({
+  id: String(index + 1),
+  name,
+  ...stats,
+}));
