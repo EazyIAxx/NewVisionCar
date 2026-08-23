@@ -110,10 +110,10 @@ Convenção de branch: `feature/mN-nome-curto` (setup e deploy usam `chore/...`)
 **Objetivo:** Leads entram no funil (novo, contato feito, visita agendada, negociação, venda fechada, perdido), com dados mockados.
 
 **Entregas:**
-- [ ] Board Kanban estilo Pipedrive (colunas por estágio, cards de lead, drag-and-drop)
-- [ ] Formulário/modal de lead: dados de contato, origem (WhatsApp/site/indicação), veículo de interesse
-- [ ] Histórico de interações no card do lead
-- [ ] Calendário de visitas agendadas
+- [x] Board Kanban estilo Pipedrive (colunas por estágio, cards de lead, drag-and-drop via `@dnd-kit`)
+- [x] Formulário/modal de lead: dados de contato, origem (WhatsApp/site/indicação), veículo de interesse
+- [x] Histórico de interações no card do lead (timeline no modal de detalhe + adicionar nota)
+- [x] Calendário de visitas agendadas (componente `calendar` do shadcn, dias com visita marcados)
 
 **Commit final:** `feat: interface do CRM — funil kanban de leads (mock)`
 

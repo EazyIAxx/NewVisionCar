@@ -36,7 +36,6 @@ export const navItems: NavItem[] = [
     href: "/crm",
     icon: Kanban,
     roles: ["gestor", "vendedor"],
-    comingSoon: true,
   },
   {
     label: "Financeiro",
