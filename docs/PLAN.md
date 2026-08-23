@@ -255,8 +255,8 @@ Expansões pós-MVP. Mesmo fluxo em duas fases das Milestones 3–8: primeiro a 
 **Objetivo:** Gestor consegue configurar os dados fiscais da agência e disparar a emissão de nota fiscal a partir de uma venda (mock — sem provedor de NF-e real ainda).
 
 **Entregas:**
-- [ ] Configuração de dados fiscais da agência (CNPJ, inscrição estadual/municipal, regime tributário) em Settings
-- [ ] Botão "Emitir nota fiscal" na venda (Vendas), com status (pendente, emitida, cancelada) mockado na listagem
+- [x] Página `/settings/fiscal` (gestor-only): CNPJ, inscrição estadual/municipal, regime tributário
+- [x] Coluna "Nota fiscal" em Vendas com status (pendente, emitida, cancelada) e botão "Emitir nota fiscal" por venda (mock, atualiza a tela na hora)
 
 **Commit final:** `feat: interface do emissor de nota fiscal (mock)`
 

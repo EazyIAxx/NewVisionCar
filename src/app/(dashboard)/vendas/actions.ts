@@ -20,3 +20,10 @@ export async function createSale(input: SaleInput): Promise<ActionResult> {
   console.log("create sale (mock)", input);
   return { error: null };
 }
+
+// TODO(M10 backend): substituir por chamada real ao provedor de NF-e (ex:
+// Focus NFe, NFE.io) + insert na tabela `invoices`.
+export async function emitInvoice(saleId: string): Promise<ActionResult> {
+  console.log("emit invoice (mock)", saleId);
+  return { error: null };
+}
