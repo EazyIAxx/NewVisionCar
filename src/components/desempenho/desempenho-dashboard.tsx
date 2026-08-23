@@ -1,0 +1,34 @@
+"use client";
+
+import { useState } from "react";
+
+import { Leaderboard } from "@/components/desempenho/leaderboard";
+import { PerformanceChart } from "@/components/desempenho/performance-chart";
+import { CommissionRatesPanel } from "@/components/desempenho/commission-rates-panel";
+import type { CommissionRates, VendedorPerformance } from "@/lib/types/performance";
+import { calculateVendedorCommission } from "@/app/(dashboard)/desempenho/mock-data";
+
+export function DesempenhoDashboard({
+  performance,
+  initialRates,
+}: {
+  performance: VendedorPerformance[];
+  initialRates: CommissionRates;
+}) {
+  const [rates, setRates] = useState(initialRates);
+
+  const ranking = performance
+    .map((vendedor) => ({
+      ...vendedor,
+      commission: calculateVendedorCommission(vendedor.name, rates),
+    }))
+    .sort((a, b) => b.totalSold - a.totalSold);
+
+  return (
+    <div className="flex flex-col gap-6">
+      <PerformanceChart ranking={ranking} />
+      <Leaderboard ranking={ranking} />
+      <CommissionRatesPanel rates={rates} onChange={setRates} />
+    </div>
+  );
+}

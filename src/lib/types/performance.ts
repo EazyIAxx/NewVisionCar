@@ -1,4 +1,6 @@
-export const COMMISSION_RATE = 0.005; // 0,5% por veículo vendido
+import type { PaymentMethod } from "./sale";
+
+export type CommissionRates = Record<PaymentMethod, number>;
 
 export type VendedorPerformance = {
   id: string;

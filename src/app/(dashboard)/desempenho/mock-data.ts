@@ -1,4 +1,4 @@
-import type { VendedorPerformance } from "@/lib/types/performance";
+import type { CommissionRates, VendedorPerformance } from "@/lib/types/performance";
 import { mockSales } from "@/lib/mock/sales";
 
 // Agregado a partir da fonte única de vendas (`@/lib/mock/sales`), compartilhada
@@ -19,3 +19,14 @@ export const mockPerformance: VendedorPerformance[] = Array.from(
   name,
   ...stats,
 }));
+
+// Comissão varia por forma de pagamento (definida pelo Gestor em Desempenho),
+// não é mais um percentual único sobre o total vendido.
+export function calculateVendedorCommission(
+  vendedorName: string,
+  rates: CommissionRates,
+): number {
+  return mockSales
+    .filter((sale) => sale.vendedorName === vendedorName)
+    .reduce((sum, sale) => sum + sale.amount * rates[sale.paymentMethod], 0);
+}

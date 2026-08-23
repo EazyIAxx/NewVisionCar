@@ -40,7 +40,8 @@ export function MyPerformance({
         </CardHeader>
       </Card>
       <p className="col-span-full text-sm text-muted-foreground">
-        Comissão calculada em 0,5% sobre o valor de cada veículo vendido.
+        Comissão varia por forma de pagamento, conforme regra definida pelo
+        Gestor.
       </p>
     </div>
   );
