@@ -145,4 +145,10 @@
   html {
     @apply font-sans;
   }
+  /* Navegadores renderizam o popup de <option> com cores do sistema, ignorando
+     o tema — sem isso, o texto some (claro sobre claro) no dark mode. */
+  select option {
+    color: var(--foreground);
+    background-color: var(--background);
+  }
 }
