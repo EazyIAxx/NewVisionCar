@@ -126,8 +126,8 @@ Convenção de branch: `feature/mN-nome-curto` (setup e deploy usam `chore/...`)
 **Objetivo:** Painel restrito ao Gestor mostrando total vendido e comissão (0,5% por veículo vendido) de cada vendedor (dados mockados).
 
 **Entregas:**
-- [ ] Painel de desempenho (ranking de vendedores, total vendido, comissão) — visível só no nav do Gestor
-- [ ] Vendedor vê uma versão restrita mostrando apenas os próprios números
+- [x] Painel de desempenho (ranking de vendedores, total vendido, comissão) — Gestor vê todos, com o 1º lugar destacado
+- [x] Vendedor vê uma versão restrita ("Meu desempenho") mostrando apenas os próprios números — nav-config.ts liberado para os dois papéis
 
 **Commit final:** `feat: interface de desempenho e comissões (mock)`
 
