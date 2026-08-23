@@ -155,9 +155,9 @@ Convenção de branch: `feature/mN-nome-curto` (setup e deploy usam `chore/...`)
 **Objetivo:** Agências assinam um plano pago via Stripe para usar a plataforma (fluxo de UI, sem o webhook real ainda).
 
 **Entregas:**
-- [ ] Página de planos/preços
-- [ ] Redirecionamento para Stripe Checkout
-- [ ] Portal do cliente (gerenciar assinatura) acessível ao Gestor
+- [x] Três planos definidos (Start/Profissional/Ilimitado, por faixa de veículos e usuários) + seção de preços pública na landing page
+- [x] Página `/settings/billing` (gestor-only): status do plano (mock trial), comparação dos planos, botão "Assinar" (mock — simula redirecionamento pro Stripe Checkout)
+- [x] "Gerenciar assinatura" (mock — simula o portal do cliente Stripe) acessível ao Gestor
 
 **Commit final:** `feat: interface de billing — planos e checkout (mock)`
 
