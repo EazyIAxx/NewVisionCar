@@ -20,6 +20,8 @@ import { ptBR } from "date-fns/locale";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import type { Lead } from "@/lib/types/lead";
 import { LeadDetailDialog } from "@/components/crm/lead-detail-dialog";
@@ -78,7 +80,28 @@ export function VisitCalendar({ leads }: { leads: Lead[] }) {
           <Button variant="outline" className="cursor-pointer" onClick={() => setCurrent(new Date())}>
             Hoje
           </Button>
-          <h2 className="ml-2 text-lg font-semibold capitalize">{periodLabel}</h2>
+          <Popover>
+            <PopoverTrigger
+              render={
+                <button
+                  type="button"
+                  className="ml-2 cursor-pointer rounded-md px-2 py-1 text-lg font-semibold capitalize hover:bg-muted"
+                />
+              }
+            >
+              {periodLabel}
+            </PopoverTrigger>
+            <PopoverContent align="start" className="w-auto p-0">
+              <Calendar
+                mode="single"
+                locale={ptBR}
+                captionLayout="dropdown"
+                defaultMonth={current}
+                selected={current}
+                onSelect={(date) => date && setCurrent(date)}
+              />
+            </PopoverContent>
+          </Popover>
         </div>
 
         <div className="flex gap-1 rounded-lg border p-1">
