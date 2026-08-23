@@ -95,9 +95,9 @@ Convenção de branch: `feature/mN-nome-curto` (setup e deploy usam `chore/...`)
 **Objetivo:** Gestor enxerga faturamento, despesas e lucro líquido por veículo, vendedor e período (dados mockados). Vendedor não tem acesso a este módulo nem no nav.
 
 **Entregas:**
-- [ ] Dashboard financeiro (gráficos de receita/despesa/lucro por período) — só no nav do Gestor
-- [ ] Tela de lançamento de despesas (categoria: aluguel, funcionários, manutenção, marketing)
-- [ ] Tela de faturamento por venda com breakdown de lucro líquido
+- [x] Dashboard financeiro (gráfico de receita/despesa/lucro por mês, componente `chart` oficial do shadcn/Recharts) — só no nav do Gestor
+- [x] Tela de lançamento de despesas (categoria: aluguel, funcionários, manutenção, marketing) via modal
+- [x] Tela de faturamento por venda com breakdown de lucro líquido
 
 **Commit final:** `feat: interface do financeiro — dashboard, despesas e faturamento (mock)`
 

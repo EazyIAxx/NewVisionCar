@@ -43,7 +43,6 @@ export const navItems: NavItem[] = [
     href: "/financeiro",
     icon: Wallet,
     roles: ["gestor"],
-    comingSoon: true,
   },
   {
     label: "Desempenho",
