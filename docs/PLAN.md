@@ -140,10 +140,11 @@ Convenção de branch: `feature/mN-nome-curto` (setup e deploy usam `chore/...`)
 **Objetivo:** Página pública de marketing do NewVisionCar (a plataforma), não a vitrine de uma revenda específica. Sem backend próprio — não entra na Fase B.
 
 **Entregas:**
-- [ ] Hero, seção de funcionalidades, seção de preços (placeholder até M7), CTA de cadastro
-- [ ] Responsivo, usando os mesmos tokens de cor do app
+- [x] Hero com CTA de cadastro, seção "BIA" (diferencial da IA no WhatsApp, com mockup de conversa), recursos (card stack arrastável), como funciona, benefícios e FAQ
+- [x] Responsivo, usando os mesmos tokens de cor do app
+- [ ] Seção de preços — adiada pro M7 (Billing Stripe), quando os planos existirem de fato
 
-**Commit final:** `feat: landing page de marketing do NewVisionCar`
+**Commit final:** `feat: landing page de marketing do NewVisionCar (M6)`
 
 ---
 
