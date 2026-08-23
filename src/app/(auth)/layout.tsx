@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 export default function AuthLayout({
   children,
@@ -7,7 +8,7 @@ export default function AuthLayout({
 }) {
   return (
     <div className="flex min-h-svh flex-col items-center justify-center gap-6 bg-slate-950 p-6">
-      <div className="flex flex-col items-center gap-3">
+      <Link href="/" className="flex flex-col items-center gap-3">
         <Image
           src="/logo-mark.png"
           alt=""
@@ -19,7 +20,7 @@ export default function AuthLayout({
         <span className="text-xl font-bold tracking-tight text-white">
           NewVisionCar
         </span>
-      </div>
+      </Link>
       <div className="w-full max-w-sm">{children}</div>
     </div>
   );

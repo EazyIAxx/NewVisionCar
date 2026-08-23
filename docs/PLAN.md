@@ -140,10 +140,11 @@ Convenção de branch: `feature/mN-nome-curto` (setup e deploy usam `chore/...`)
 **Objetivo:** Página pública de marketing do NewVisionCar (a plataforma), não a vitrine de uma revenda específica. Sem backend próprio — não entra na Fase B.
 
 **Entregas:**
-- [ ] Hero, seção de funcionalidades, seção de preços (placeholder até M7), CTA de cadastro
-- [ ] Responsivo, usando os mesmos tokens de cor do app
+- [x] Hero com CTA de cadastro, seção "BIA" (diferencial da IA no WhatsApp, com mockup de conversa), recursos (card stack arrastável), como funciona, benefícios e FAQ
+- [x] Responsivo, usando os mesmos tokens de cor do app
+- [ ] Seção de preços — adiada pro M7 (Billing Stripe), quando os planos existirem de fato
 
-**Commit final:** `feat: landing page de marketing do NewVisionCar`
+**Commit final:** `feat: landing page de marketing do NewVisionCar (M6)`
 
 ---
 
@@ -257,3 +258,119 @@ Convenção de branch: `feature/mN-nome-curto` (setup e deploy usam `chore/...`)
 - [ ] Teste fumaça: cadastro, onboarding, estoque, CRM, comissão e checkout funcionando em produção
 
 **Commit final:** `chore: deploy em produção`
+
+---
+
+## Fase C — Módulos Avançados (M10–M15)
+
+Expansões pós-MVP, cada uma seguindo o mesmo fluxo interface → backend das fases anteriores (branch `-ui` mesclada antes da `-backend`), a definir em detalhe quando a fase for iniciada.
+
+### Milestone 10 — Emissor de Nota Fiscal
+
+**Branch:** `feature/m10-nota-fiscal`
+
+**Objetivo:** Gestor emite a nota fiscal da venda (NF-e/NFS-e conforme o município/regime) direto da plataforma, sem sistema fiscal separado.
+
+**Entregas — Interface:**
+- [ ] Configuração de dados fiscais da agência (CNPJ, inscrição estadual/municipal, regime tributário) em Settings
+- [ ] Botão "Emitir nota fiscal" na venda (M2/Vendas), com status (pendente, emitida, cancelada) na listagem
+
+**Entregas — Backend:**
+- [ ] Integração com provedor de emissão (ex: Focus NFe, NFE.io — a definir)
+- [ ] Migration `invoices` (`agency_id`, `sale_id`, status, número, chave de acesso, PDF/XML no Storage)
+- [ ] Webhook/polling de atualização de status da nota
+
+**Commit final:** `feat: emissor de nota fiscal`
+
+---
+
+### Milestone 11 — Integrador de Anúncios (OLX, Webmotors)
+
+**Branch:** `feature/m11-integrador-anuncios`
+
+**Objetivo:** Veículo do Estoque é publicado como anúncio na OLX e no Webmotors sem recadastro manual em cada portal, e some do portal quando some do estoque.
+
+**Entregas — Interface:**
+- [ ] Botão "Publicar anúncio" no veículo, com seleção de portal (OLX, Webmotors)
+- [ ] Status de publicação por portal (não publicado, publicado, erro) na página do veículo
+
+**Entregas — Backend:**
+- [ ] Integração com as APIs (ou parceiro agregador — acesso direto pode exigir parceria comercial com cada portal)
+- [ ] Migration `listings` (`vehicle_id`, portal, status, `external_id`, `published_at`)
+- [ ] Sincronização: veículo vendido/removido do estoque despublica automaticamente nos portais
+
+**Commit final:** `feat: integrador de anúncios — olx e webmotors`
+
+---
+
+### Milestone 12 — Vitrine Pública da Revenda
+
+**Branch:** `feature/m12-vitrine-publica`
+
+**Objetivo:** Cada revenda tem uma página pública (sem login) com os veículos disponíveis do seu estoque, para compartilhar com clientes — a vitrine é o site público da revenda em si, não um site institucional à parte.
+
+**Entregas — Interface:**
+- [ ] Rota pública `/vitrine/[slug-da-agencia]`: grid de veículos disponíveis, filtros básicos, página de detalhe com fotos
+- [ ] Botão "Tenho interesse" no detalhe do veículo (formulário de contato)
+- [ ] Configuração da vitrine (logo, cores, slug) para o Gestor
+
+**Entregas — Backend:**
+- [ ] Rota pública sem autenticação; RLS liberando leitura pública só de veículos com status "disponível"
+- [ ] "Tenho interesse" cria lead automaticamente no CRM (M4), com origem "site"
+
+**Commit final:** `feat: vitrine pública da revenda`
+
+---
+
+### Milestone 13 — Ordem de Serviço
+
+**Branch:** `feature/m13-ordem-servico`
+
+**Objetivo:** Gestor/Vendedor registra serviços feitos num veículo antes da venda (revisão, higienização, funilaria), e o custo entra automaticamente no lucro líquido do Financeiro (M3).
+
+**Entregas — Interface:**
+- [ ] Lista de ordens de serviço vinculadas a um veículo (tipo, fornecedor, valor, status) na página de detalhe do veículo
+- [ ] Formulário de nova OS
+
+**Entregas — Backend:**
+- [ ] Migration `service_orders` (`agency_id`, `vehicle_id`, tipo, fornecedor, valor, status, data)
+- [ ] RLS por `agency_id`
+- [ ] Valor da OS somado ao `cost_price` do veículo no cálculo de lucro (M3)
+
+**Commit final:** `feat: ordem de serviço`
+
+---
+
+### Milestone 14 — Integração RENAVE
+
+**Branch:** `feature/m14-renave`
+
+**Objetivo:** Transferência de propriedade do veículo vendido é registrada digitalmente via RENAVE (Registro Nacional de Veículos Automotores), como exigido de revendas pela legislação.
+
+**Entregas — Interface:**
+- [ ] Painel de status da transferência RENAVE por venda (pendente, em andamento, concluída, erro)
+- [ ] Formulário de dados complementares exigidos pelo RENAVE (dados do comprador, forma de pagamento)
+
+**Entregas — Backend:**
+- [ ] Integração com a API do RENAVE (via DETRAN do estado ou provedor homologado — a definir)
+- [ ] Migration `renave_transfers` (`agency_id`, `sale_id`, status, protocolo, payload de resposta)
+
+**Commit final:** `feat: integração com o renave`
+
+---
+
+### Milestone 15 — Simulação e Integração de Financiamento
+
+**Branch:** `feature/m15-financiamento`
+
+**Objetivo:** Cliente (na vitrine pública, M12) ou vendedor (internamente) simula parcelas de financiamento para um veículo e envia a proposta para análise de um parceiro financeiro.
+
+**Entregas — Interface:**
+- [ ] Simulador de financiamento (entrada, prazo, parcela estimada) na página do veículo — vitrine pública e Estoque interno
+- [ ] Formulário de envio de proposta (dados do comprador) para análise
+
+**Entregas — Backend:**
+- [ ] Integração com API de parceiro(s) financeiro(s) para simulação com taxas reais (a definir)
+- [ ] Migration `financing_requests` (`agency_id`, `vehicle_id`, `lead_id`/`sale_id`, status, valor solicitado, resposta do parceiro)
+
+**Commit final:** `feat: simulação e integração de financiamento`
