@@ -6,6 +6,7 @@ import { FeaturesGrid } from "@/components/landing/features-grid";
 import { HowItWorks } from "@/components/landing/how-it-works";
 import { ModuleListSection } from "@/components/landing/module-list-section";
 import { WhyUs } from "@/components/landing/why-us";
+import { PricingSection } from "@/components/landing/pricing-section";
 import { CtaSection } from "@/components/landing/cta-section";
 import { Faq } from "@/components/landing/faq";
 import { LandingFooter } from "@/components/landing/footer";
@@ -22,6 +23,7 @@ export function LandingPage() {
         <HowItWorks />
         <ModuleListSection />
         <WhyUs />
+        <PricingSection />
         <CtaSection />
         <Faq />
       </main>
