@@ -244,23 +244,6 @@ Convenção de branch: `feature/mN-nome-curto` (setup e deploy usam `chore/...`)
 
 ---
 
-## Milestone 9 — Deploy
-
-**Branch:** `chore/deploy-producao`
-
-**Objetivo:** Aplicação publicada em produção, com o projeto Supabase de produção configurado.
-
-**Entregas:**
-- [ ] Deploy na Vercel ligado ao repositório
-- [ ] Variáveis de ambiente de produção configuradas (Supabase, Stripe, WhatsApp)
-- [ ] Migrations aplicadas no projeto Supabase de produção
-- [ ] Site URL/redirects de Auth e webhooks (Stripe, WhatsApp) apontando para o domínio de produção
-- [ ] Teste fumaça: cadastro, onboarding, estoque, CRM, comissão e checkout funcionando em produção
-
-**Commit final:** `chore: deploy em produção`
-
----
-
 ## Fase C — Módulos Avançados: Interfaces (M10–M15, dados mockados)
 
 Expansões pós-MVP. Mesmo fluxo em duas fases das Milestones 3–8: primeiro a interface de todos os módulos (M10–M15) com dados mockados, cada uma na sua branch `feature/mN-nome-ui`; só depois, na Fase D, o backend de cada uma (`feature/mN-nome-backend`). Detalhar cada milestone (telas exatas, textos, componentes) quando a fase for iniciada — os itens abaixo são o objetivo de alto nível.
@@ -424,3 +407,20 @@ Expansões pós-MVP. Mesmo fluxo em duas fases das Milestones 3–8: primeiro a 
 - [ ] Migration `financing_requests` (`agency_id`, `vehicle_id`, `lead_id`/`sale_id`, status, valor solicitado, resposta do parceiro)
 
 **Commit final:** `feat: backend de simulação e integração de financiamento`
+
+---
+
+## Milestone 16 — Deploy
+
+**Branch:** `chore/deploy-producao`
+
+**Objetivo:** Aplicação publicada em produção, com o projeto Supabase de produção configurado — só depois de todos os módulos (M0–M15) estarem prontos.
+
+**Entregas:**
+- [ ] Deploy na Vercel ligado ao repositório
+- [ ] Variáveis de ambiente de produção configuradas (Supabase, Stripe, WhatsApp, provedor de NF-e, RENAVE, parceiro de financiamento)
+- [ ] Migrations aplicadas no projeto Supabase de produção
+- [ ] Site URL/redirects de Auth e webhooks (Stripe, WhatsApp, NF-e, RENAVE) apontando para o domínio de produção
+- [ ] Teste fumaça: cadastro, onboarding, estoque, CRM, vendas, financeiro, comissão, checkout, nota fiscal, integrador de anúncios, vitrine pública, ordem de serviço, RENAVE e financiamento funcionando em produção
+
+**Commit final:** `chore: deploy em produção`
