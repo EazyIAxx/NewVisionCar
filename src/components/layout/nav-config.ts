@@ -4,6 +4,7 @@ import {
   LayoutDashboard,
   Kanban,
   Receipt,
+  Contact,
   Wallet,
   Trophy,
   Users,
@@ -42,6 +43,12 @@ export const navItems: NavItem[] = [
     label: "Vendas",
     href: "/vendas",
     icon: Receipt,
+    roles: ["gestor", "vendedor"],
+  },
+  {
+    label: "Clientes",
+    href: "/clientes",
+    icon: Contact,
     roles: ["gestor", "vendedor"],
   },
   {
