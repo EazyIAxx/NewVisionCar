@@ -6,14 +6,14 @@ export default function AuthLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex min-h-svh flex-col items-center justify-center gap-8 bg-slate-950 p-6">
-      <div className="flex items-center gap-2.5">
+    <div className="flex min-h-svh flex-col items-center justify-center gap-6 bg-slate-950 p-6">
+      <div className="flex flex-col items-center gap-3">
         <Image
           src="/logo-mark.png"
           alt=""
-          width={60}
-          height={40}
-          className="h-9 w-auto"
+          width={90}
+          height={60}
+          className="h-16 w-auto"
           priority
         />
         <span className="text-xl font-bold tracking-tight text-white">

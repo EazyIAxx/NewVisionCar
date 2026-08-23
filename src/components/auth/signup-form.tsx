@@ -51,7 +51,7 @@ export function SignupForm() {
   if (sentTo) {
     return (
       <div className="rounded-xl border border-slate-800 bg-slate-900/60 p-6 text-center">
-        <span className="mx-auto flex size-14 items-center justify-center rounded-full bg-blue-500/10 text-blue-400">
+        <span className="mx-auto flex size-14 items-center justify-center rounded-full bg-gradient-to-br from-[#1b2a8f] via-[#2596e0] to-[#56d3f2] text-white">
           <MailCheck className="size-7" />
         </span>
         <h2 className="mt-5 text-xl font-bold tracking-tight text-white">
@@ -148,7 +148,7 @@ export function SignupForm() {
 
         <Button
           type="submit"
-          className="w-full cursor-pointer bg-blue-600 text-white hover:bg-blue-500"
+          className="w-full cursor-pointer bg-gradient-to-r from-[#1b2a8f] via-[#2596e0] to-[#56d3f2] text-white hover:brightness-110"
           disabled={isSubmitting}
         >
           {isSubmitting && <Loader2 className="animate-spin" />}

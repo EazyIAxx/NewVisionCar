@@ -108,7 +108,7 @@ export function LoginForm() {
 
         <Button
           type="submit"
-          className="w-full cursor-pointer bg-blue-600 text-white hover:bg-blue-500"
+          className="w-full cursor-pointer bg-gradient-to-r from-[#1b2a8f] via-[#2596e0] to-[#56d3f2] text-white hover:brightness-110"
           disabled={isSubmitting}
         >
           {isSubmitting && <Loader2 className="animate-spin" />}

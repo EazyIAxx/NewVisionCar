@@ -43,7 +43,7 @@ export function OnboardingFlow() {
           onClick={() => setMode("create")}
           className="flex cursor-pointer items-center gap-3 rounded-xl border border-slate-800 bg-slate-900/60 p-4 text-left transition-colors hover:border-blue-500"
         >
-          <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-blue-500/10 text-blue-400">
+          <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#1b2a8f] via-[#2596e0] to-[#56d3f2] text-white">
             <Building2 className="size-5" />
           </span>
           <div>
@@ -58,7 +58,7 @@ export function OnboardingFlow() {
           onClick={() => setMode("join")}
           className="flex cursor-pointer items-center gap-3 rounded-xl border border-slate-800 bg-slate-900/60 p-4 text-left transition-colors hover:border-blue-500"
         >
-          <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-blue-500/10 text-blue-400">
+          <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#1b2a8f] via-[#2596e0] to-[#56d3f2] text-white">
             <KeyRound className="size-5" />
           </span>
           <div>
@@ -132,7 +132,7 @@ function CreateAgencyForm({ onBack }: { onBack: () => void }) {
           </Button>
           <Button
             type="submit"
-            className="flex-1 cursor-pointer bg-blue-600 text-white hover:bg-blue-500"
+            className="flex-1 cursor-pointer bg-gradient-to-r from-[#1b2a8f] via-[#2596e0] to-[#56d3f2] text-white hover:brightness-110"
             disabled={isSubmitting}
           >
             {isSubmitting && <Loader2 className="animate-spin" />}
@@ -197,7 +197,7 @@ function JoinAgencyForm({ onBack }: { onBack: () => void }) {
           </Button>
           <Button
             type="submit"
-            className="flex-1 cursor-pointer bg-blue-600 text-white hover:bg-blue-500"
+            className="flex-1 cursor-pointer bg-gradient-to-r from-[#1b2a8f] via-[#2596e0] to-[#56d3f2] text-white hover:brightness-110"
             disabled={isSubmitting}
           >
             {isSubmitting && <Loader2 className="animate-spin" />}
