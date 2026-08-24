@@ -5,8 +5,29 @@ import { randomUUID } from "node:crypto";
 import { createClient } from "@/lib/supabase/server";
 import { getCurrentProfile } from "@/lib/auth/get-profile";
 import type { VehicleStatus } from "@/lib/types/vehicle";
+import type { ListingPortal } from "@/lib/types/listing";
 
 export type ActionResult = { error: string | null };
+
+// TODO(M11 backend): substituir por chamada real à API da OLX/Webmotors (ou
+// parceiro agregador) + insert/update na tabela `listings`.
+export async function publishListing(
+  vehicleId: string,
+  portal: ListingPortal,
+): Promise<ActionResult> {
+  console.log("publish listing (mock)", vehicleId, portal);
+  return { error: null };
+}
+
+// TODO(M11 backend): substituir por remoção real do anúncio no portal +
+// update de status na tabela `listings`.
+export async function unpublishListing(
+  vehicleId: string,
+  portal: ListingPortal,
+): Promise<ActionResult> {
+  console.log("unpublish listing (mock)", vehicleId, portal);
+  return { error: null };
+}
 
 export async function updateVehicleStatus(
   vehicleId: string,
