@@ -2,6 +2,7 @@ export type VitrineSettings = {
   slug: string;
   displayName: string;
   accentColor: string;
+  whatsapp: string;
 };
 
 export type Transmission = "manual" | "automatico";
@@ -39,6 +40,7 @@ export type VitrineVehicle = {
 export type InterestFormInput = {
   vehicleId: string;
   name: string;
+  email?: string;
   phone: string;
   message?: string;
 };

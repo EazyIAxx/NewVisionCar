@@ -6,6 +6,7 @@ export const mockVitrineSettings: VitrineSettings = {
   slug: "newvisioncar-demo",
   displayName: "NewVisionCar Demo",
   accentColor: "#2596e0",
+  whatsapp: "5511988880000",
 };
 
 export const mockVitrineVehicles: VitrineVehicle[] = [
