@@ -6,8 +6,25 @@ import { createClient } from "@/lib/supabase/server";
 import { getCurrentProfile } from "@/lib/auth/get-profile";
 import type { VehicleStatus } from "@/lib/types/vehicle";
 import type { ListingPortal } from "@/lib/types/listing";
+import type { ServiceOrderStatus, ServiceOrderType } from "@/lib/types/service-order";
 
 export type ActionResult = { error: string | null };
+
+type ServiceOrderInput = {
+  vehicleId: string;
+  type: ServiceOrderType;
+  supplier: string;
+  amount: number;
+  status: ServiceOrderStatus;
+  date: string;
+};
+
+// TODO(M13 backend): substituir por insert real na tabela `service_orders`
+// (o valor entra no cálculo de lucro do Financeiro, somado ao cost_price).
+export async function createServiceOrder(input: ServiceOrderInput): Promise<ActionResult> {
+  console.log("create service order (mock)", input);
+  return { error: null };
+}
 
 // TODO(M11 backend): substituir por chamada real à API da OLX/Webmotors (ou
 // parceiro agregador) + insert/update na tabela `listings`.
