@@ -1,11 +1,20 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import Link from "next/link";
 import { Car, Search } from "lucide-react";
 
 import { formatCurrency, formatKm } from "@/lib/utils";
 import type { VitrineVehicle } from "@/lib/types/vitrine";
+
+type SortOption = "relevancia" | "menor_preco" | "maior_preco" | "az";
+
+const sortLabel: Record<SortOption, string> = {
+  relevancia: "Relevância",
+  menor_preco: "Menor preço",
+  maior_preco: "Maior preço",
+  az: "A a Z",
+};
 
 export function VitrineGrid({
   slug,
@@ -15,15 +24,34 @@ export function VitrineGrid({
   vehicles: VitrineVehicle[];
 }) {
   const [query, setQuery] = useState("");
-  const [maxPrice, setMaxPrice] = useState("");
+  const [brand, setBrand] = useState("todas");
+  const [sort, setSort] = useState<SortOption>("relevancia");
 
-  const filtered = vehicles.filter((vehicle) => {
-    const matchesQuery = `${vehicle.brand} ${vehicle.model}`
-      .toLowerCase()
-      .includes(query.trim().toLowerCase());
-    const matchesPrice = maxPrice ? vehicle.price <= Number(maxPrice) : true;
-    return matchesQuery && matchesPrice;
-  });
+  const brands = useMemo(
+    () => Array.from(new Set(vehicles.map((v) => v.brand))).sort((a, b) => a.localeCompare(b, "pt-BR")),
+    [vehicles],
+  );
+
+  const filtered = vehicles
+    .filter((vehicle) => {
+      const matchesQuery = `${vehicle.brand} ${vehicle.model}`
+        .toLowerCase()
+        .includes(query.trim().toLowerCase());
+      const matchesBrand = brand === "todas" || vehicle.brand === brand;
+      return matchesQuery && matchesBrand;
+    })
+    .sort((a, b) => {
+      switch (sort) {
+        case "menor_preco":
+          return a.price - b.price;
+        case "maior_preco":
+          return b.price - a.price;
+        case "az":
+          return `${a.brand} ${a.model}`.localeCompare(`${b.brand} ${b.model}`, "pt-BR");
+        default:
+          return 0;
+      }
+    });
 
   return (
     <div className="flex flex-col gap-6">
@@ -37,13 +65,29 @@ export function VitrineGrid({
             className="h-10 w-full rounded-lg border border-slate-200 bg-white pl-9 pr-3 text-sm outline-none focus:border-[#2596e0]"
           />
         </div>
-        <input
-          value={maxPrice}
-          onChange={(e) => setMaxPrice(e.target.value)}
-          type="number"
-          placeholder="Preço máximo"
+        <select
+          value={brand}
+          onChange={(e) => setBrand(e.target.value)}
           className="h-10 rounded-lg border border-slate-200 bg-white px-3 text-sm outline-none focus:border-[#2596e0] sm:w-44"
-        />
+        >
+          <option value="todas">Todas as marcas</option>
+          {brands.map((b) => (
+            <option key={b} value={b}>
+              {b}
+            </option>
+          ))}
+        </select>
+        <select
+          value={sort}
+          onChange={(e) => setSort(e.target.value as SortOption)}
+          className="h-10 rounded-lg border border-slate-200 bg-white px-3 text-sm outline-none focus:border-[#2596e0] sm:w-44"
+        >
+          {(Object.keys(sortLabel) as SortOption[]).map((option) => (
+            <option key={option} value={option}>
+              {sortLabel[option]}
+            </option>
+          ))}
+        </select>
       </div>
 
       {filtered.length === 0 ? (
