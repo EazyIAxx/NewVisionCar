@@ -46,7 +46,7 @@ export function ProposalPanel({ vehicleId }: { vehicleId: string }) {
   }
 
   return (
-    <div className="rounded-2xl border border-slate-200 p-5">
+    <div className="rounded-2xl border border-slate-900 p-5">
       <h2 className="font-semibold text-slate-900">Envie sua proposta</h2>
       <form
         onSubmit={handleSubmit(onSubmit)}
