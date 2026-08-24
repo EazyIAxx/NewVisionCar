@@ -283,9 +283,9 @@ Expansões pós-MVP. Mesmo fluxo em duas fases das Milestones 3–8: primeiro a 
 **Objetivo:** Rota pública (sem login) mostrando os veículos disponíveis da revenda, com dados mockados — a vitrine é o site público da revenda em si, não um site institucional à parte.
 
 **Entregas:**
-- [ ] Rota pública `/vitrine/[slug-da-agencia]`: grid de veículos disponíveis, filtros básicos, página de detalhe com fotos
-- [ ] Botão "Tenho interesse" no detalhe do veículo (formulário de contato, mock)
-- [ ] Configuração da vitrine (logo, cores, slug) para o Gestor
+- [x] Rota pública `/vitrine/[slug]` (layout próprio, sem sidebar): grid de veículos disponíveis, filtros básicos, página de detalhe com fotos
+- [x] Botão "Tenho interesse" no detalhe do veículo (formulário de contato, mock)
+- [x] Página `/settings/vitrine` (gestor-only): nome de exibição, slug e cor de destaque
 
 **Commit final:** `feat: interface da vitrine pública da revenda (mock)`
 

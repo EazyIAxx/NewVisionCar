@@ -25,12 +25,12 @@ const available = [
   { icon: Contact, title: "Clientes", description: "Contato, status e histórico de compras, consolidado num só lugar." },
   { icon: Wallet, title: "Financeiro", description: "Faturamento, despesas e lucro líquido por período." },
   { icon: Trophy, title: "Desempenho", description: "Ranking e comissão dos vendedores, sem planilha paralela." },
+  { icon: FileText, title: "Nota Fiscal", description: "Emissão direto da venda registrada." },
+  { icon: Megaphone, title: "Integrador de anúncios", description: "Publica o veículo na OLX e no Webmotors." },
+  { icon: Store, title: "Vitrine pública", description: "Página pública do seu estoque pra compartilhar com clientes." },
 ];
 
 const comingSoon = [
-  { icon: FileText, title: "Nota Fiscal" },
-  { icon: Megaphone, title: "Integrador de anúncios" },
-  { icon: Store, title: "Vitrine pública" },
   { icon: Wrench, title: "Ordem de serviço" },
   { icon: ShieldCheck, title: "RENAVE" },
   { icon: Landmark, title: "Financiamento" },
@@ -68,8 +68,8 @@ export function FeaturesGrid() {
             Tudo que sua revenda precisa
           </h2>
           <p className="mt-4 max-w-md text-slate-400">
-            Estoque, CRM, vendas, clientes, financeiro e desempenho já estão
-            de pé. Arraste os cards ao lado pra conhecer cada um.
+            Do estoque à nota fiscal, passando por CRM, vendas, financeiro e
+            anúncios — arraste os cards ao lado pra conhecer cada módulo.
           </p>
 
           <p className="mt-10 text-sm font-medium text-slate-500">
