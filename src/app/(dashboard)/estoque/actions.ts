@@ -29,6 +29,12 @@ export async function unpublishListing(
   return { error: null };
 }
 
+export async function deleteVehicle(vehicleId: string): Promise<ActionResult> {
+  const supabase = await createClient();
+  const { error } = await supabase.from("vehicles").delete().eq("id", vehicleId);
+  return { error: error?.message ?? null };
+}
+
 export async function updateVehicleStatus(
   vehicleId: string,
   status: VehicleStatus,
