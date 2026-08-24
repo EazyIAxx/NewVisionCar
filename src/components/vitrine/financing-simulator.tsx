@@ -36,7 +36,7 @@ export function FinancingSimulator({ price }: { price: number }) {
   }
 
   return (
-    <div className="rounded-2xl border border-slate-200 p-5">
+    <div className="rounded-2xl border border-slate-900 p-5">
       <h2 className="font-semibold text-slate-900">Simular financiamento</h2>
       <p className="mt-1 text-xs text-slate-500">
         Simulação ilustrativa. Condições reais dependem de análise de crédito.
