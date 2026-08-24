@@ -1,9 +1,13 @@
+import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
+import { ArrowLeft } from "lucide-react";
 
 import { createClient } from "@/lib/supabase/server";
 import { getCurrentProfile } from "@/lib/auth/get-profile";
+import { Button } from "@/components/ui/button";
 import { VehicleForm } from "@/components/estoque/vehicle-form";
 import { ListingPublisher } from "@/components/estoque/listing-publisher";
+import { DeleteVehicleButton } from "@/components/estoque/delete-vehicle-button";
 import { updateVehicle } from "@/app/(dashboard)/estoque/actions";
 import type { Vehicle } from "@/lib/types/vehicle";
 
@@ -47,9 +51,27 @@ export default async function EditarVeiculoPage({
 
   return (
     <div className="flex flex-col gap-6">
-      <h1 className="text-2xl font-semibold tracking-tight">
-        Editar veículo
-      </h1>
+      <div className="flex items-center justify-between gap-4">
+        <div className="flex items-center gap-2">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="cursor-pointer"
+            render={<Link href="/estoque" />}
+            nativeButton={false}
+            aria-label="Voltar para o estoque"
+          >
+            <ArrowLeft />
+          </Button>
+          <h1 className="text-2xl font-semibold tracking-tight">
+            Editar veículo
+          </h1>
+        </div>
+        <DeleteVehicleButton
+          vehicleId={vehicle.id}
+          vehicleLabel={`${vehicle.brand} ${vehicle.model}`}
+        />
+      </div>
       <VehicleForm
         role={profile.role}
         mode="edit"
