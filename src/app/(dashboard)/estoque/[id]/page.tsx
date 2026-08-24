@@ -7,6 +7,7 @@ import { getCurrentProfile } from "@/lib/auth/get-profile";
 import { Button } from "@/components/ui/button";
 import { VehicleForm } from "@/components/estoque/vehicle-form";
 import { ListingPublisher } from "@/components/estoque/listing-publisher";
+import { ServiceOrdersPanel } from "@/components/estoque/service-orders-panel";
 import { DeleteVehicleButton } from "@/components/estoque/delete-vehicle-button";
 import { updateVehicle } from "@/app/(dashboard)/estoque/actions";
 import type { Vehicle } from "@/lib/types/vehicle";
@@ -79,6 +80,7 @@ export default async function EditarVeiculoPage({
         onSubmit={updateVehicle.bind(null, vehicle.id)}
       />
       <ListingPublisher vehicleId={vehicle.id} />
+      <ServiceOrdersPanel vehicleId={vehicle.id} />
     </div>
   );
 }

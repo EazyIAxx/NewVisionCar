@@ -298,8 +298,8 @@ Expansões pós-MVP. Mesmo fluxo em duas fases das Milestones 3–8: primeiro a 
 **Objetivo:** Gestor/Vendedor registra serviços feitos num veículo antes da venda (revisão, higienização, funilaria), com dados mockados.
 
 **Entregas:**
-- [ ] Lista de ordens de serviço vinculadas a um veículo (tipo, fornecedor, valor, status) na página de detalhe do veículo
-- [ ] Formulário de nova OS
+- [x] Card "Ordens de Serviço" na página de edição do veículo, com lista (tipo, fornecedor, valor, status) — mockado
+- [x] Formulário "Nova OS" (tipo, fornecedor, valor, data), status inicial "Pendente"
 
 **Commit final:** `feat: interface de ordem de serviço (mock)`
 
