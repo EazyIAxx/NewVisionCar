@@ -3,6 +3,7 @@ import { notFound, redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getCurrentProfile } from "@/lib/auth/get-profile";
 import { VehicleForm } from "@/components/estoque/vehicle-form";
+import { ListingPublisher } from "@/components/estoque/listing-publisher";
 import { updateVehicle } from "@/app/(dashboard)/estoque/actions";
 import type { Vehicle } from "@/lib/types/vehicle";
 
@@ -55,6 +56,7 @@ export default async function EditarVeiculoPage({
         initialValues={vehicle}
         onSubmit={updateVehicle.bind(null, vehicle.id)}
       />
+      <ListingPublisher vehicleId={vehicle.id} />
     </div>
   );
 }

@@ -269,8 +269,8 @@ Expansões pós-MVP. Mesmo fluxo em duas fases das Milestones 3–8: primeiro a 
 **Objetivo:** Gestor/Vendedor consegue "publicar" um veículo do Estoque na OLX e no Webmotors pela UI (mock — sem chamada real às APIs dos portais ainda).
 
 **Entregas:**
-- [ ] Botão "Publicar anúncio" no veículo, com seleção de portal (OLX, Webmotors)
-- [ ] Status de publicação por portal (não publicado, publicado, erro) mockado na página do veículo
+- [x] Card "Anúncios" na página de edição do veículo, com botão "Publicar anúncio"/"Remover anúncio" por portal (OLX, Webmotors)
+- [x] Status de publicação por portal (não publicado, publicado, erro) mockado, atualizado na hora
 
 **Commit final:** `feat: interface do integrador de anúncios (mock)`
 
