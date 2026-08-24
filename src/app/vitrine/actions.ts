@@ -5,6 +5,7 @@ export type ActionResult = { error: string | null };
 type InterestInput = {
   vehicleId: string;
   name: string;
+  email?: string;
   phone: string;
   message?: string;
 };

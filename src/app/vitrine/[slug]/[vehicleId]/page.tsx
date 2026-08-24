@@ -5,7 +5,8 @@ import { ArrowLeft, Car } from "lucide-react";
 import { formatCurrency, formatKm } from "@/lib/utils";
 import { mockVitrineVehicles } from "@/lib/mock/vitrine";
 import { fuelTypeLabel, transmissionLabel } from "@/lib/types/vitrine";
-import { InterestFormDialog } from "@/components/vitrine/interest-form-dialog";
+import { ProposalPanel } from "@/components/vitrine/proposal-panel";
+import { FinancingSimulator } from "@/components/vitrine/financing-simulator";
 
 export default async function VitrineVehicleDetailPage({
   params,
@@ -27,7 +28,7 @@ export default async function VitrineVehicleDetailPage({
   ];
 
   return (
-    <div className="mx-auto max-w-4xl px-6 py-10">
+    <div className="mx-auto max-w-6xl px-6 py-10">
       <Link
         href={`/vitrine/${slug}`}
         className="mb-6 inline-flex items-center gap-1 text-sm text-slate-500 hover:text-slate-900"
@@ -36,21 +37,21 @@ export default async function VitrineVehicleDetailPage({
         Voltar pra vitrine
       </Link>
 
-      <div className="grid gap-8 sm:grid-cols-2">
-        <div className="flex aspect-[4/3] w-full items-center justify-center overflow-hidden rounded-2xl bg-slate-100 text-slate-300">
-          {vehicle.photos[0] ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={vehicle.photos[0]}
-              alt={`${vehicle.brand} ${vehicle.model}`}
-              className="h-full w-full object-cover"
-            />
-          ) : (
-            <Car className="size-16" />
-          )}
-        </div>
+      <div className="grid gap-8 lg:grid-cols-[2fr_1fr]">
+        <div className="flex flex-col gap-6">
+          <div className="flex aspect-[4/3] w-full items-center justify-center overflow-hidden rounded-2xl bg-slate-100 text-slate-300">
+            {vehicle.photos[0] ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={vehicle.photos[0]}
+                alt={`${vehicle.brand} ${vehicle.model}`}
+                className="h-full w-full object-cover"
+              />
+            ) : (
+              <Car className="size-16" />
+            )}
+          </div>
 
-        <div className="flex flex-col gap-4">
           <div>
             <span className="inline-flex w-fit rounded-md bg-gradient-to-r from-[#1b2a8f] via-[#2596e0] to-[#56d3f2] px-2 py-0.5 text-xs font-bold uppercase tracking-wide text-white">
               {vehicle.brand}
@@ -75,39 +76,39 @@ export default async function VitrineVehicleDetailPage({
             ))}
           </div>
 
-          <InterestFormDialog
-            vehicleId={vehicle.id}
-            vehicleLabel={`${vehicle.brand} ${vehicle.model}`}
-          />
+          {vehicle.features.length > 0 && (
+            <div className="rounded-2xl border border-slate-200 p-6">
+              <h2 className="mb-4 font-semibold text-slate-900">Opcionais</h2>
+              <div className="flex flex-wrap gap-2">
+                {vehicle.features.map((feature) => (
+                  <span
+                    key={feature}
+                    className="rounded-full bg-slate-100 px-3 py-1 text-sm text-slate-600"
+                  >
+                    {feature}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {vehicle.description && (
+            <div className="rounded-2xl border border-slate-200 p-6">
+              <h2 className="mb-3 font-semibold text-slate-900">
+                Informações do veículo
+              </h2>
+              <p className="whitespace-pre-line text-sm leading-relaxed text-slate-600">
+                {vehicle.description}
+              </p>
+            </div>
+          )}
+        </div>
+
+        <div className="flex flex-col gap-4 lg:sticky lg:top-6 lg:self-start">
+          <ProposalPanel vehicleId={vehicle.id} />
+          <FinancingSimulator price={vehicle.price} />
         </div>
       </div>
-
-      {vehicle.features.length > 0 && (
-        <div className="mt-8 rounded-2xl border border-slate-200 p-6">
-          <h2 className="mb-4 font-semibold text-slate-900">Opcionais</h2>
-          <div className="flex flex-wrap gap-2">
-            {vehicle.features.map((feature) => (
-              <span
-                key={feature}
-                className="rounded-full bg-slate-100 px-3 py-1 text-sm text-slate-600"
-              >
-                {feature}
-              </span>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {vehicle.description && (
-        <div className="mt-6 rounded-2xl border border-slate-200 p-6">
-          <h2 className="mb-3 font-semibold text-slate-900">
-            Informações do veículo
-          </h2>
-          <p className="whitespace-pre-line text-sm leading-relaxed text-slate-600">
-            {vehicle.description}
-          </p>
-        </div>
-      )}
     </div>
   );
 }
