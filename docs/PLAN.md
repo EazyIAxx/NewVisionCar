@@ -326,8 +326,8 @@ Expansões pós-MVP. Mesmo fluxo em duas fases das Milestones 3–8: primeiro a 
 **Objetivo:** Simulador de parcelas de financiamento na página do veículo, com taxas mockadas (sem parceiro financeiro real ainda).
 
 **Entregas:**
-- [ ] Simulador de financiamento (entrada, prazo, parcela estimada) na página do veículo — vitrine pública (M12) e Estoque interno
-- [ ] Formulário de envio de proposta (dados do comprador) para análise
+- [x] Simulador de financiamento (entrada, prazo, parcela estimada) na página do veículo — vitrine pública (M12) e Estoque interno
+- [x] Formulário de envio de proposta (dados do comprador) para análise — painel "Envie sua proposta" na vitrine
 
 **Commit final:** `feat: interface de simulação de financiamento (mock)`
 
