@@ -27,3 +27,24 @@ export async function emitInvoice(saleId: string): Promise<ActionResult> {
   console.log("emit invoice (mock)", saleId);
   return { error: null };
 }
+
+type RenaveTransferInput = {
+  saleId: string;
+  buyerDocument: string;
+  buyerRg: string;
+  buyerAddress: string;
+};
+
+// TODO(M14 backend): substituir por chamada real à API do RENAVE (via
+// DETRAN do estado ou provedor homologado) + insert na tabela `renave_transfers`.
+export async function startRenaveTransfer(input: RenaveTransferInput): Promise<ActionResult> {
+  console.log("start renave transfer (mock)", input);
+  return { error: null };
+}
+
+// TODO(M14 backend): status real vem do retorno assíncrono da API do RENAVE
+// (webhook/polling), não de uma ação disparada pelo usuário.
+export async function completeRenaveTransfer(saleId: string): Promise<ActionResult> {
+  console.log("complete renave transfer (mock)", saleId);
+  return { error: null };
+}

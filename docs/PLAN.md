@@ -312,8 +312,8 @@ Expansões pós-MVP. Mesmo fluxo em duas fases das Milestones 3–8: primeiro a 
 **Objetivo:** Painel de status da transferência RENAVE por venda, com dados mockados (sem integração real com a API do RENAVE ainda).
 
 **Entregas:**
-- [ ] Painel de status da transferência RENAVE por venda (pendente, em andamento, concluída, erro)
-- [ ] Formulário de dados complementares exigidos pelo RENAVE (dados do comprador, forma de pagamento)
+- [x] Coluna "RENAVE" na listagem de Vendas com status (pendente, em andamento, concluída, erro)
+- [x] Formulário "Iniciar transferência" (CPF, RG e endereço do comprador — forma de pagamento já vem da venda)
 
 **Commit final:** `feat: interface de integração com o renave (mock)`
 
