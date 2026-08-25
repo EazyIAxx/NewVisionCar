@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { VehicleForm } from "@/components/estoque/vehicle-form";
 import { ListingPublisher } from "@/components/estoque/listing-publisher";
 import { ServiceOrdersPanel } from "@/components/estoque/service-orders-panel";
+import { FinancingSimulatorPanel } from "@/components/estoque/financing-simulator-panel";
 import { DeleteVehicleButton } from "@/components/estoque/delete-vehicle-button";
 import { updateVehicle } from "@/app/(dashboard)/estoque/actions";
 import type { Vehicle } from "@/lib/types/vehicle";
@@ -81,6 +82,7 @@ export default async function EditarVeiculoPage({
       />
       <ListingPublisher vehicleId={vehicle.id} />
       <ServiceOrdersPanel vehicleId={vehicle.id} />
+      <FinancingSimulatorPanel price={vehicle.price} />
     </div>
   );
 }
