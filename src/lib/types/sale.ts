@@ -12,12 +12,13 @@ export type Sale = {
   customerName: string;
   vehicleBrand: string;
   vehicleModel: string;
-  // Custo do veículo — não aparece no formulário de "Registrar venda" (quem
-  // registra a venda não vê/edita o custo), só é usado para calcular o lucro
-  // líquido no módulo Financeiro.
-  costPrice: number;
+  // Custo do veículo — null quando o usuário logado é vendedor (a
+  // `sales_view` esconde a coluna via RLS de coluna, mesmo padrão do
+  // vehicles_view). Só é usado para calcular o lucro líquido no Financeiro.
+  costPrice: number | null;
   amount: number;
   paymentMethod: PaymentMethod;
   date: string; // ISO
+  vendedorId: string;
   vendedorName: string;
 };

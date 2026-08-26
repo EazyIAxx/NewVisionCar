@@ -4,10 +4,11 @@ import { getCurrentProfile } from "@/lib/auth/get-profile";
 import { MyPerformance } from "@/components/desempenho/my-performance";
 import { DesempenhoDashboard } from "@/components/desempenho/desempenho-dashboard";
 import {
-  mockPerformance,
+  computePerformance,
   calculateVendedorCommission,
 } from "@/app/(dashboard)/desempenho/mock-data";
 import { defaultCommissionRates } from "@/lib/mock/commission-rates";
+import { fetchSales } from "@/lib/data/sales";
 
 export default async function DesempenhoPage() {
   const profile = await getCurrentProfile();
@@ -15,11 +16,33 @@ export default async function DesempenhoPage() {
     redirect("/login");
   }
 
+  const sales = await fetchSales();
+  const performance = computePerformance(sales);
+
   if (profile.role === "vendedor") {
-    // TODO(M5 backend): trocar por vendas reais filtradas por vendedor_id = auth.uid() (RLS).
     const vendedor =
-      mockPerformance.find((v) => v.name === profile.full_name) ?? mockPerformance[0];
-    const commission = calculateVendedorCommission(vendedor.name, defaultCommissionRates);
+      performance.find((v) => v.id === profile.id) ?? performance[0];
+
+    if (!vendedor) {
+      return (
+        <div className="flex flex-col gap-6">
+          <div>
+            <h1 className="text-2xl font-semibold tracking-tight">
+              Meu desempenho
+            </h1>
+            <p className="text-sm text-muted-foreground">
+              Você ainda não tem vendas registradas.
+            </p>
+          </div>
+        </div>
+      );
+    }
+
+    const commission = calculateVendedorCommission(
+      sales,
+      vendedor.name,
+      defaultCommissionRates,
+    );
 
     return (
       <div className="flex flex-col gap-6">
@@ -45,7 +68,8 @@ export default async function DesempenhoPage() {
         </p>
       </div>
       <DesempenhoDashboard
-        performance={mockPerformance}
+        performance={performance}
+        sales={sales}
         initialRates={defaultCommissionRates}
       />
     </div>

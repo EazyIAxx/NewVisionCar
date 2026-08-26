@@ -3,13 +3,17 @@ import { TrendingDown, TrendingUp, Wallet } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatCurrency } from "@/lib/utils";
 import { FinanceOverviewChart } from "@/components/financeiro/finance-overview-chart";
-import { mockExpenses, mockMonthlyFinance, mockSales } from "@/app/(dashboard)/financeiro/mock-data";
+import { fetchSales } from "@/lib/data/sales";
+import { mockExpenses, computeMonthlyFinance } from "@/app/(dashboard)/financeiro/mock-data";
 
-export default function FinanceiroPage() {
-  const totalRevenue = mockSales.reduce((sum, sale) => sum + sale.amount, 0);
-  const totalCost = mockSales.reduce((sum, sale) => sum + sale.costPrice, 0);
+export default async function FinanceiroPage() {
+  const sales = await fetchSales();
+
+  const totalRevenue = sales.reduce((sum, sale) => sum + sale.amount, 0);
+  const totalCost = sales.reduce((sum, sale) => sum + (sale.costPrice ?? 0), 0);
   const totalExpenses = mockExpenses.reduce((sum, expense) => sum + expense.amount, 0);
   const netProfit = totalRevenue - totalCost - totalExpenses;
+  const monthlyFinance = computeMonthlyFinance(sales, mockExpenses);
 
   return (
     <div className="flex flex-col gap-6">
@@ -45,10 +49,10 @@ export default function FinanceiroPage() {
       <Card>
         <CardHeader>
           <CardTitle>Faturamento, despesas e lucro por mês</CardTitle>
-          <CardDescription>Últimos 6 meses</CardDescription>
+          <CardDescription>Últimos meses</CardDescription>
         </CardHeader>
         <CardContent>
-          <FinanceOverviewChart data={mockMonthlyFinance} />
+          <FinanceOverviewChart data={monthlyFinance} />
         </CardContent>
       </Card>
     </div>

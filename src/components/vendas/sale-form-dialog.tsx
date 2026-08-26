@@ -22,8 +22,7 @@ import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field
 import { paymentMethodLabel, type PaymentMethod } from "@/lib/types/sale";
 import { createSale } from "@/app/(dashboard)/vendas/actions";
 
-// TODO(backend): substituir por lista real de vendedores da agência (profiles).
-const mockVendedores = ["Ana Souza", "Carlos Lima", "Bianca Alves"];
+type Vendedor = { id: string; fullName: string };
 
 const saleSchema = z.object({
   customerName: z.string().min(2, "Informe o cliente"),
@@ -32,12 +31,12 @@ const saleSchema = z.object({
   amount: z.number().min(0.01, "Informe o valor"),
   paymentMethod: z.enum(["a_vista", "financiado", "cartao", "consorcio"]),
   date: z.string().min(1, "Informe a data"),
-  vendedorName: z.string().min(1, "Selecione o vendedor"),
+  vendedorId: z.string().min(1, "Selecione o vendedor"),
 });
 
 type SaleFormValues = z.infer<typeof saleSchema>;
 
-export function SaleFormDialog() {
+export function SaleFormDialog({ vendedores }: { vendedores: Vendedor[] }) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -48,7 +47,7 @@ export function SaleFormDialog() {
     formState: { errors },
   } = useForm<SaleFormValues>({
     resolver: zodResolver(saleSchema),
-    defaultValues: { paymentMethod: "a_vista", vendedorName: mockVendedores[0] },
+    defaultValues: { paymentMethod: "a_vista", vendedorId: vendedores[0]?.id ?? "" },
   });
 
   async function onSubmit(values: SaleFormValues) {
@@ -151,19 +150,22 @@ export function SaleFormDialog() {
               <Input id="date" type="date" {...register("date")} />
               <FieldError errors={errors.date ? [errors.date] : undefined} />
             </Field>
-            <Field>
-              <FieldLabel htmlFor="vendedorName">Vendedor</FieldLabel>
+            <Field data-invalid={!!errors.vendedorId}>
+              <FieldLabel htmlFor="vendedorId">Vendedor</FieldLabel>
               <select
-                id="vendedorName"
+                id="vendedorId"
                 className="h-8 rounded-md border border-input bg-transparent px-3 text-sm dark:bg-input/30"
-                {...register("vendedorName")}
+                {...register("vendedorId")}
               >
-                {mockVendedores.map((name) => (
-                  <option key={name} value={name}>
-                    {name}
+                {vendedores.map((vendedor) => (
+                  <option key={vendedor.id} value={vendedor.id}>
+                    {vendedor.fullName}
                   </option>
                 ))}
               </select>
+              <FieldError
+                errors={errors.vendedorId ? [errors.vendedorId] : undefined}
+              />
             </Field>
           </FieldGroup>
           <Button

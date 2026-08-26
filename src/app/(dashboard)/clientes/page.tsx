@@ -1,8 +1,10 @@
 import { CustomersTable } from "@/components/clientes/customers-table";
 import { CustomerFormDialog } from "@/components/clientes/customer-form-dialog";
-import { mockCustomers } from "@/lib/mock/customers";
+import { getCustomers } from "@/lib/data/customers";
 
-export default function ClientesPage() {
+export default async function ClientesPage() {
+  const customers = await getCustomers();
+
   return (
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between">
@@ -15,7 +17,7 @@ export default function ClientesPage() {
         </div>
         <CustomerFormDialog />
       </div>
-      <CustomersTable customers={mockCustomers} />
+      <CustomersTable customers={customers} />
     </div>
   );
 }

@@ -7,10 +7,10 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { formatCurrency } from "@/lib/utils";
-import { mockSales } from "@/app/(dashboard)/financeiro/mock-data";
+import { fetchSales } from "@/lib/data/sales";
 
-export default function VendasPage() {
-  const sales = [...mockSales].sort((a, b) => (a.date < b.date ? 1 : -1));
+export default async function VendasPage() {
+  const sales = await fetchSales();
 
   return (
     <div className="flex flex-col gap-4">
@@ -27,7 +27,8 @@ export default function VendasPage() {
         </TableHeader>
         <TableBody>
           {sales.map((sale) => {
-            const profit = sale.amount - sale.costPrice;
+            const cost = sale.costPrice ?? 0;
+            const profit = sale.amount - cost;
             return (
               <TableRow key={sale.id}>
                 <TableCell className="text-muted-foreground">
@@ -41,7 +42,7 @@ export default function VendasPage() {
                   {formatCurrency(sale.amount)}
                 </TableCell>
                 <TableCell className="text-right text-muted-foreground">
-                  {formatCurrency(sale.costPrice)}
+                  {formatCurrency(cost)}
                 </TableCell>
                 <TableCell className="text-right font-medium text-status-available">
                   {formatCurrency(profit)}

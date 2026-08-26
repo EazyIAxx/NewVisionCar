@@ -1,5 +1,5 @@
 import type { Expense, MonthlyFinance } from "@/lib/types/finance";
-import { mockSales } from "@/lib/mock/sales";
+import type { Sale } from "@/lib/types/sale";
 
 // TODO(M3 backend): remover e substituir por query real na tabela `expenses`.
 export const mockExpenses: Expense[] = [
@@ -47,10 +47,6 @@ export const mockExpenses: Expense[] = [
   },
 ];
 
-// Reexportado para uso no módulo Financeiro — fonte única de vendas
-// compartilhada com Vendas e Desempenho (ver `@/lib/mock/sales`).
-export { mockSales };
-
 const monthLabel = [
   "Jan", "Fev", "Mar", "Abr", "Mai", "Jun",
   "Jul", "Ago", "Set", "Out", "Nov", "Dez",
@@ -60,27 +56,30 @@ function monthKey(iso: string) {
   return iso.slice(0, 7); // YYYY-MM
 }
 
-const months = Array.from(
-  new Set([
-    ...mockSales.map((sale) => monthKey(sale.date)),
-    ...mockExpenses.map((expense) => monthKey(expense.date)),
-  ]),
-).sort();
+// TODO(M3 backend): calcular a partir de vendas + despesas reais por período
+// (despesas ainda mockadas até o backend do Financeiro existir).
+export function computeMonthlyFinance(sales: Sale[], expenses: Expense[]): MonthlyFinance[] {
+  const months = Array.from(
+    new Set([
+      ...sales.map((sale) => monthKey(sale.date)),
+      ...expenses.map((expense) => monthKey(expense.date)),
+    ]),
+  ).sort();
 
-// TODO(M3 backend): calcular a partir de vendas + despesas reais por período.
-export const mockMonthlyFinance: MonthlyFinance[] = months.map((key) => {
-  const monthIndex = Number(key.split("-")[1]) - 1;
-  const salesInMonth = mockSales.filter((sale) => monthKey(sale.date) === key);
-  const expensesInMonth = mockExpenses.filter(
-    (expense) => monthKey(expense.date) === key,
-  );
-  const revenue = salesInMonth.reduce((sum, sale) => sum + sale.amount, 0);
-  const cost = salesInMonth.reduce((sum, sale) => sum + sale.costPrice, 0);
-  const expenses = expensesInMonth.reduce((sum, expense) => sum + expense.amount, 0);
-  return {
-    month: monthLabel[monthIndex],
-    revenue,
-    expenses,
-    profit: revenue - cost - expenses,
-  };
-});
+  return months.map((key) => {
+    const monthIndex = Number(key.split("-")[1]) - 1;
+    const salesInMonth = sales.filter((sale) => monthKey(sale.date) === key);
+    const expensesInMonth = expenses.filter(
+      (expense) => monthKey(expense.date) === key,
+    );
+    const revenue = salesInMonth.reduce((sum, sale) => sum + sale.amount, 0);
+    const cost = salesInMonth.reduce((sum, sale) => sum + (sale.costPrice ?? 0), 0);
+    const expensesTotal = expensesInMonth.reduce((sum, expense) => sum + expense.amount, 0);
+    return {
+      month: monthLabel[monthIndex],
+      revenue,
+      expenses: expensesTotal,
+      profit: revenue - cost - expensesTotal,
+    };
+  });
+}
