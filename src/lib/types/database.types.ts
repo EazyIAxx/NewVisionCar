@@ -10,7 +10,7 @@ export type Database = {
   // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
-    PostgrestVersion: "14.15"
+    PostgrestVersion: "14.17"
   }
   graphql_public: {
     Tables: {
@@ -150,6 +150,80 @@ export type Database = {
           },
         ]
       }
+      sales: {
+        Row: {
+          agency_id: string
+          amount: number
+          cost_price: number
+          created_at: string
+          customer_name: string
+          id: string
+          payment_method: string
+          sale_date: string
+          vehicle_brand: string
+          vehicle_id: string | null
+          vehicle_model: string
+          vendedor_id: string
+        }
+        Insert: {
+          agency_id: string
+          amount: number
+          cost_price?: number
+          created_at?: string
+          customer_name: string
+          id?: string
+          payment_method: string
+          sale_date: string
+          vehicle_brand: string
+          vehicle_id?: string | null
+          vehicle_model: string
+          vendedor_id: string
+        }
+        Update: {
+          agency_id?: string
+          amount?: number
+          cost_price?: number
+          created_at?: string
+          customer_name?: string
+          id?: string
+          payment_method?: string
+          sale_date?: string
+          vehicle_brand?: string
+          vehicle_id?: string | null
+          vehicle_model?: string
+          vendedor_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sales_agency_id_fkey"
+            columns: ["agency_id"]
+            isOneToOne: false
+            referencedRelation: "agencies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sales_vehicle_id_fkey"
+            columns: ["vehicle_id"]
+            isOneToOne: false
+            referencedRelation: "vehicles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sales_vehicle_id_fkey"
+            columns: ["vehicle_id"]
+            isOneToOne: false
+            referencedRelation: "vehicles_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sales_vendedor_id_fkey"
+            columns: ["vendedor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       vehicles: {
         Row: {
           agency_id: string
@@ -208,6 +282,53 @@ export type Database = {
       }
     }
     Views: {
+      sales_view: {
+        Row: {
+          agency_id: string | null
+          amount: number | null
+          cost_price: number | null
+          created_at: string | null
+          customer_name: string | null
+          id: string | null
+          payment_method: string | null
+          sale_date: string | null
+          vehicle_brand: string | null
+          vehicle_id: string | null
+          vehicle_model: string | null
+          vendedor_id: string | null
+          vendedor_name: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sales_agency_id_fkey"
+            columns: ["agency_id"]
+            isOneToOne: false
+            referencedRelation: "agencies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sales_vehicle_id_fkey"
+            columns: ["vehicle_id"]
+            isOneToOne: false
+            referencedRelation: "vehicles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sales_vehicle_id_fkey"
+            columns: ["vehicle_id"]
+            isOneToOne: false
+            referencedRelation: "vehicles_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sales_vendedor_id_fkey"
+            columns: ["vendedor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       vehicles_view: {
         Row: {
           agency_id: string | null

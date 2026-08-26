@@ -6,13 +6,16 @@ import { Leaderboard } from "@/components/desempenho/leaderboard";
 import { PerformanceChart } from "@/components/desempenho/performance-chart";
 import { CommissionRatesPanel } from "@/components/desempenho/commission-rates-panel";
 import type { CommissionRates, VendedorPerformance } from "@/lib/types/performance";
+import type { Sale } from "@/lib/types/sale";
 import { calculateVendedorCommission } from "@/app/(dashboard)/desempenho/mock-data";
 
 export function DesempenhoDashboard({
   performance,
+  sales,
   initialRates,
 }: {
   performance: VendedorPerformance[];
+  sales: Sale[];
   initialRates: CommissionRates;
 }) {
   const [rates, setRates] = useState(initialRates);
@@ -20,7 +23,7 @@ export function DesempenhoDashboard({
   const ranking = performance
     .map((vendedor) => ({
       ...vendedor,
-      commission: calculateVendedorCommission(vendedor.name, rates),
+      commission: calculateVendedorCommission(sales, vendedor.name, rates),
     }))
     .sort((a, b) => b.totalSold - a.totalSold);
 

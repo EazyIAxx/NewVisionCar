@@ -335,6 +335,22 @@ Expansões pós-MVP. Mesmo fluxo em duas fases das Milestones 3–8: primeiro a 
 
 ## Fase D — Backends (M10–M15)
 
+### Backend de Vendas (pré-requisito para M10/M14)
+
+**Branch:** `feature/vendas-backend`
+
+**Objetivo:** Vendas nunca teve um milestone de backend próprio (foi adicionada fora do roadmap M0–M9 original) — mas M10 (Nota Fiscal) e M14 (RENAVE) referenciam `sale_id`, que precisa apontar pra uma tabela `sales` real.
+
+**Entregas:**
+- [x] Migration `sales` (`agency_id`, `vehicle_id` opcional, `vendedor_id`, cliente, forma de pagamento, valor, custo, data) + RLS (Gestor vê tudo da agência; Vendedor só as próprias vendas) + `sales_view` (esconde `cost_price` de quem não é gestor, mesmo padrão de `vehicles_view`)
+- [x] `createSale` grava de verdade; listagem de Vendas lê da `sales_view`; seletor de "Vendedor" no formulário passa a listar os membros reais da equipe
+- [x] Financeiro e Desempenho passam a ler da mesma `sales_view` real, mantendo os números consistentes entre os três módulos
+- [x] Clientes (consolidação CRM + Vendas) passa a usar vendas reais — CRM/leads continuam mockados até o backend do M4
+
+**Commit final:** `feat: backend de vendas — migration, RLS e rewire de financeiro/desempenho/clientes`
+
+---
+
 ### Milestone 10 — Emissor de Nota Fiscal (Backend)
 
 **Branch:** `feature/m10-nota-fiscal-backend`

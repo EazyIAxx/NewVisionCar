@@ -1,5 +1,7 @@
 "use server";
 
+import { createClient } from "@/lib/supabase/server";
+import { getCurrentProfile } from "@/lib/auth/get-profile";
 import type { PaymentMethod } from "@/lib/types/sale";
 
 export type ActionResult = { error: string | null };
@@ -11,14 +13,29 @@ type SaleInput = {
   amount: number;
   paymentMethod: PaymentMethod;
   date: string;
-  vendedorName: string;
+  vendedorId: string;
 };
 
-// TODO(backend): substituir por insert real na tabela `sales` (RLS: Gestor
-// vê todas as vendas da agência, Vendedor só as próprias).
 export async function createSale(input: SaleInput): Promise<ActionResult> {
-  console.log("create sale (mock)", input);
-  return { error: null };
+  const profile = await getCurrentProfile();
+  if (!profile?.agency_id) return { error: "Sessão inválida." };
+
+  const supabase = await createClient();
+  const { error } = await supabase.from("sales").insert({
+    agency_id: profile.agency_id,
+    vendedor_id: input.vendedorId,
+    customer_name: input.customerName,
+    vehicle_brand: input.vehicleBrand,
+    vehicle_model: input.vehicleModel,
+    amount: input.amount,
+    payment_method: input.paymentMethod,
+    sale_date: input.date,
+    // TODO: permitir vincular a um veículo do estoque pra herdar o
+    // cost_price automaticamente, em vez de 0.
+    cost_price: 0,
+  });
+
+  return { error: error?.message ?? null };
 }
 
 // TODO(M10 backend): substituir por chamada real ao provedor de NF-e (ex:

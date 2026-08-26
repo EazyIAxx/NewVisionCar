@@ -1,9 +1,25 @@
-import { mockSales } from "@/lib/mock/sales";
+import { createClient } from "@/lib/supabase/server";
+import { getCurrentProfile } from "@/lib/auth/get-profile";
+import { fetchSales } from "@/lib/data/sales";
 import { SaleFormDialog } from "@/components/vendas/sale-form-dialog";
 import { SalesTable } from "@/components/vendas/sales-table";
 
-export default function VendasPage() {
-  const sales = [...mockSales].sort((a, b) => (a.date < b.date ? 1 : -1));
+export default async function VendasPage() {
+  const profile = await getCurrentProfile();
+  const sales = await fetchSales();
+
+  const supabase = await createClient();
+  const { data: members } = profile?.agency_id
+    ? await supabase
+        .from("profiles")
+        .select("id, full_name")
+        .eq("agency_id", profile.agency_id)
+        .order("full_name", { ascending: true })
+    : { data: null };
+
+  const vendedores = (members ?? [])
+    .filter((m): m is { id: string; full_name: string } => !!m.full_name)
+    .map((m) => ({ id: m.id, fullName: m.full_name }));
 
   return (
     <div className="flex flex-col gap-6">
@@ -14,7 +30,7 @@ export default function VendasPage() {
             Todas as vendas registradas pela equipe.
           </p>
         </div>
-        <SaleFormDialog />
+        <SaleFormDialog vendedores={vendedores} />
       </div>
       <SalesTable sales={sales} />
     </div>
