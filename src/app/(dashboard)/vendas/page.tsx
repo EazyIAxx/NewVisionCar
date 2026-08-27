@@ -1,12 +1,14 @@
 import { createClient } from "@/lib/supabase/server";
 import { getCurrentProfile } from "@/lib/auth/get-profile";
 import { fetchSales } from "@/lib/data/sales";
+import { fetchInvoicesBySaleId } from "@/lib/data/invoices";
 import { SaleFormDialog } from "@/components/vendas/sale-form-dialog";
 import { SalesTable } from "@/components/vendas/sales-table";
 
 export default async function VendasPage() {
   const profile = await getCurrentProfile();
   const sales = await fetchSales();
+  const invoices = await fetchInvoicesBySaleId();
 
   const supabase = await createClient();
   const { data: members } = profile?.agency_id
@@ -32,7 +34,11 @@ export default async function VendasPage() {
         </div>
         <SaleFormDialog vendedores={vendedores} />
       </div>
-      <SalesTable sales={sales} />
+      <SalesTable
+        sales={sales}
+        invoices={invoices}
+        isGestor={profile?.role === "gestor"}
+      />
     </div>
   );
 }
