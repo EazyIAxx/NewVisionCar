@@ -369,9 +369,9 @@ Expansões pós-MVP. Mesmo fluxo em duas fases das Milestones 3–8: primeiro a 
 **Branch:** `feature/m11-integrador-anuncios-backend`
 
 **Entregas:**
-- [ ] Integração com as APIs (ou parceiro agregador — acesso direto pode exigir parceria comercial com cada portal)
-- [ ] Migration `listings` (`vehicle_id`, portal, status, `external_id`, `published_at`)
-- [ ] Sincronização: veículo vendido/removido do estoque despublica automaticamente nos portais
+- [ ] Integração com as APIs (ou parceiro agregador — acesso direto pode exigir parceria comercial com cada portal); por enquanto, "Publicar anúncio" grava `status: publicado` real no banco representando a intenção da revenda, não uma confirmação do portal
+- [x] Migration `listings` (`vehicle_id`, portal, status, `external_id`, `published_at`)
+- [x] Sincronização: veículo vendido despublica automaticamente nos portais (via `updateVehicleStatus`/`updateVehicle`)
 
 **Commit final:** `feat: backend do integrador de anúncios — olx e webmotors`
 

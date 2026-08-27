@@ -7,6 +7,7 @@ import { getCurrentProfile } from "@/lib/auth/get-profile";
 import { Button } from "@/components/ui/button";
 import { VehicleForm } from "@/components/estoque/vehicle-form";
 import { ListingPublisher } from "@/components/estoque/listing-publisher";
+import { fetchListingStatuses } from "@/lib/data/listings";
 import { ServiceOrdersPanel } from "@/components/estoque/service-orders-panel";
 import { FinancingSimulatorPanel } from "@/components/estoque/financing-simulator-panel";
 import { DeleteVehicleButton } from "@/components/estoque/delete-vehicle-button";
@@ -34,6 +35,8 @@ export default async function EditarVeiculoPage({
   if (!row) {
     notFound();
   }
+
+  const listingStatuses = await fetchListingStatuses(id);
 
   const vehicle: Vehicle = {
     // Colunas da view vêm tipadas como nullable, mas são NOT NULL na tabela
@@ -80,7 +83,7 @@ export default async function EditarVeiculoPage({
         initialValues={vehicle}
         onSubmit={updateVehicle.bind(null, vehicle.id)}
       />
-      <ListingPublisher vehicleId={vehicle.id} />
+      <ListingPublisher vehicleId={vehicle.id} initialStatuses={listingStatuses} />
       <ServiceOrdersPanel vehicleId={vehicle.id} />
       <FinancingSimulatorPanel price={vehicle.price} />
     </div>

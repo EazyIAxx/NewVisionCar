@@ -182,6 +182,61 @@ export type Database = {
           },
         ]
       }
+      listings: {
+        Row: {
+          agency_id: string
+          created_at: string
+          external_id: string | null
+          id: string
+          portal: string
+          published_at: string | null
+          status: string
+          vehicle_id: string
+        }
+        Insert: {
+          agency_id: string
+          created_at?: string
+          external_id?: string | null
+          id?: string
+          portal: string
+          published_at?: string | null
+          status?: string
+          vehicle_id: string
+        }
+        Update: {
+          agency_id?: string
+          created_at?: string
+          external_id?: string | null
+          id?: string
+          portal?: string
+          published_at?: string | null
+          status?: string
+          vehicle_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "listings_agency_id_fkey"
+            columns: ["agency_id"]
+            isOneToOne: false
+            referencedRelation: "agencies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "listings_vehicle_id_fkey"
+            columns: ["vehicle_id"]
+            isOneToOne: false
+            referencedRelation: "vehicles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "listings_vehicle_id_fkey"
+            columns: ["vehicle_id"]
+            isOneToOne: false
+            referencedRelation: "vehicles_view"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           agency_id: string | null
