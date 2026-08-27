@@ -17,23 +17,29 @@ import { Button } from "@/components/ui/button";
 import { formatCurrency } from "@/lib/utils";
 import type { Sale } from "@/lib/types/sale";
 import { paymentMethodLabel } from "@/lib/types/sale";
-import type { InvoiceStatus } from "@/lib/types/invoice";
-import { getInvoiceForSale } from "@/lib/mock/invoices";
+import type { Invoice } from "@/lib/types/invoice";
 import type { RenaveStatus } from "@/lib/types/renave";
 import { getRenaveTransferForSale } from "@/lib/mock/renave";
 import { InvoiceStatusBadge } from "@/components/vendas/invoice-status-badge";
 import { RenaveStatusBadge } from "@/components/vendas/renave-status-badge";
 import { RenaveTransferDialog } from "@/components/vendas/renave-transfer-dialog";
-import { emitInvoice, completeRenaveTransfer } from "@/app/(dashboard)/vendas/actions";
+import {
+  emitInvoice,
+  markInvoiceEmitted,
+  completeRenaveTransfer,
+} from "@/app/(dashboard)/vendas/actions";
 
-export function SalesTable({ sales }: { sales: Sale[] }) {
+export function SalesTable({
+  sales,
+  invoices,
+  isGestor,
+}: {
+  sales: Sale[];
+  invoices: Record<string, Invoice>;
+  isGestor: boolean;
+}) {
   const [query, setQuery] = useState("");
-  const [invoiceStatuses, setInvoiceStatuses] = useState<Record<string, InvoiceStatus>>(
-    () =>
-      Object.fromEntries(
-        sales.map((sale) => [sale.id, getInvoiceForSale(sale.id)?.status ?? "pendente"]),
-      ),
-  );
+  const [localInvoices, setLocalInvoices] = useState(invoices);
   const [renaveStatuses, setRenaveStatuses] = useState<Record<string, RenaveStatus>>(
     () =>
       Object.fromEntries(
@@ -53,8 +59,26 @@ export function SalesTable({ sales }: { sales: Sale[] }) {
     if (result?.error) {
       toast.error(result.error);
     } else {
+      toast.success("Emissão solicitada — status pendente até o provedor confirmar");
+      setLocalInvoices((prev) => ({
+        ...prev,
+        [saleId]: { id: "", saleId, status: "pendente", numero: null, chaveAcesso: null, emittedAt: null },
+      }));
+    }
+    setEmitting(null);
+  }
+
+  async function handleMarkEmitted(saleId: string) {
+    setEmitting(saleId);
+    const result = await markInvoiceEmitted(saleId);
+    if (result?.error) {
+      toast.error(result.error);
+    } else {
       toast.success("Nota fiscal emitida");
-      setInvoiceStatuses((prev) => ({ ...prev, [saleId]: "emitida" }));
+      setLocalInvoices((prev) => ({
+        ...prev,
+        [saleId]: { ...prev[saleId], status: "emitida" },
+      }));
     }
     setEmitting(null);
   }
@@ -70,6 +94,8 @@ export function SalesTable({ sales }: { sales: Sale[] }) {
     }
     setCompleting(null);
   }
+
+  const columnCount = 6 + (isGestor ? 2 : 1);
 
   return (
     <div className="flex flex-col gap-4">
@@ -91,7 +117,7 @@ export function SalesTable({ sales }: { sales: Sale[] }) {
             <TableHead>Forma de pagamento</TableHead>
             <TableHead>Vendedor</TableHead>
             <TableHead className="text-right">Valor</TableHead>
-            <TableHead>Nota fiscal</TableHead>
+            {isGestor && <TableHead>Nota fiscal</TableHead>}
             <TableHead>RENAVE</TableHead>
           </TableRow>
         </TableHeader>
@@ -99,7 +125,7 @@ export function SalesTable({ sales }: { sales: Sale[] }) {
           {filtered.length === 0 && (
             <TableRow>
               <TableCell
-                colSpan={8}
+                colSpan={columnCount}
                 className="text-center text-sm text-muted-foreground"
               >
                 Nenhuma venda encontrada.
@@ -107,7 +133,7 @@ export function SalesTable({ sales }: { sales: Sale[] }) {
             </TableRow>
           )}
           {filtered.map((sale) => {
-            const invoiceStatus = invoiceStatuses[sale.id] ?? "pendente";
+            const invoice = localInvoices[sale.id];
             const renaveStatus = renaveStatuses[sale.id] ?? "pendente";
             return (
               <TableRow key={sale.id}>
@@ -123,21 +149,36 @@ export function SalesTable({ sales }: { sales: Sale[] }) {
                 <TableCell className="text-right font-medium">
                   {formatCurrency(sale.amount)}
                 </TableCell>
-                <TableCell>
-                  {invoiceStatus === "pendente" ? (
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      className="cursor-pointer"
-                      disabled={emitting === sale.id}
-                      onClick={() => handleEmit(sale.id)}
-                    >
-                      {emitting === sale.id ? "Emitindo..." : "Emitir nota fiscal"}
-                    </Button>
-                  ) : (
-                    <InvoiceStatusBadge status={invoiceStatus} />
-                  )}
-                </TableCell>
+                {isGestor && (
+                  <TableCell>
+                    {!invoice ? (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="cursor-pointer"
+                        disabled={emitting === sale.id}
+                        onClick={() => handleEmit(sale.id)}
+                      >
+                        {emitting === sale.id ? "Solicitando..." : "Emitir nota fiscal"}
+                      </Button>
+                    ) : (
+                      <div className="flex items-center gap-2">
+                        <InvoiceStatusBadge status={invoice.status} />
+                        {invoice.status === "pendente" && (
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            className="cursor-pointer text-xs"
+                            disabled={emitting === sale.id}
+                            onClick={() => handleMarkEmitted(sale.id)}
+                          >
+                            {emitting === sale.id ? "Emitindo..." : "Simular emissão"}
+                          </Button>
+                        )}
+                      </div>
+                    )}
+                  </TableCell>
+                )}
                 <TableCell>
                   {renaveStatus === "pendente" ? (
                     <RenaveTransferDialog

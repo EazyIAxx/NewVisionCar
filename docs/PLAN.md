@@ -356,11 +356,11 @@ Expansões pós-MVP. Mesmo fluxo em duas fases das Milestones 3–8: primeiro a 
 **Branch:** `feature/m10-nota-fiscal-backend`
 
 **Entregas:**
-- [ ] Integração com provedor de emissão (ex: Focus NFe, NFE.io — a definir)
-- [ ] Migration `invoices` (`agency_id`, `sale_id`, status, número, chave de acesso, PDF/XML no Storage)
-- [ ] Webhook/polling de atualização de status da nota
+- [ ] Integração com provedor de emissão (ex: Focus NFe, NFE.io — a definir) — pendente até haver conta/chave de API
+- [x] Migration `invoices` (`agency_id`, `sale_id`, status, número, chave de acesso) + dados fiscais em `agencies` (CNPJ, IE, IM, regime tributário) + RLS restrita a Gestor
+- [ ] Webhook/polling de atualização de status da nota — depende do provedor real; por enquanto, "Emitir nota fiscal" cria um registro "pendente" de verdade e um botão "Simular emissão" (gestor) simula a conclusão
 
-**Commit final:** `feat: backend do emissor de nota fiscal`
+**Commit final:** `feat: backend do emissor de nota fiscal — migration, RLS e fluxo sem provedor real`
 
 ---
 

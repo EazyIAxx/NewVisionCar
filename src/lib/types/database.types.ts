@@ -41,21 +41,33 @@ export type Database = {
     Tables: {
       agencies: {
         Row: {
+          cnpj: string | null
           created_at: string
           id: string
+          inscricao_estadual: string | null
+          inscricao_municipal: string | null
           name: string
+          regime_tributario: string | null
           slug: string | null
         }
         Insert: {
+          cnpj?: string | null
           created_at?: string
           id?: string
+          inscricao_estadual?: string | null
+          inscricao_municipal?: string | null
           name: string
+          regime_tributario?: string | null
           slug?: string | null
         }
         Update: {
+          cnpj?: string | null
           created_at?: string
           id?: string
+          inscricao_estadual?: string | null
+          inscricao_municipal?: string | null
           name?: string
+          regime_tributario?: string | null
           slug?: string | null
         }
         Relationships: []
@@ -111,6 +123,61 @@ export type Database = {
             columns: ["used_by"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      invoices: {
+        Row: {
+          agency_id: string
+          chave_acesso: string | null
+          created_at: string
+          emitted_at: string | null
+          id: string
+          numero: string | null
+          sale_id: string
+          status: string
+        }
+        Insert: {
+          agency_id: string
+          chave_acesso?: string | null
+          created_at?: string
+          emitted_at?: string | null
+          id?: string
+          numero?: string | null
+          sale_id: string
+          status?: string
+        }
+        Update: {
+          agency_id?: string
+          chave_acesso?: string | null
+          created_at?: string
+          emitted_at?: string | null
+          id?: string
+          numero?: string | null
+          sale_id?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "invoices_agency_id_fkey"
+            columns: ["agency_id"]
+            isOneToOne: false
+            referencedRelation: "agencies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "invoices_sale_id_fkey"
+            columns: ["sale_id"]
+            isOneToOne: false
+            referencedRelation: "sales"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "invoices_sale_id_fkey"
+            columns: ["sale_id"]
+            isOneToOne: false
+            referencedRelation: "sales_view"
             referencedColumns: ["id"]
           },
         ]
