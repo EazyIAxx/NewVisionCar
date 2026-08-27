@@ -23,9 +23,11 @@ import { paymentMethodLabel, type PaymentMethod } from "@/lib/types/sale";
 import { createSale } from "@/app/(dashboard)/vendas/actions";
 
 type Vendedor = { id: string; fullName: string };
+type StockVehicle = { id: string; brand: string; model: string };
 
 const saleSchema = z.object({
   customerName: z.string().min(2, "Informe o cliente"),
+  vehicleId: z.string(),
   vehicleBrand: z.string().min(1, "Informe a marca"),
   vehicleModel: z.string().min(1, "Informe o modelo"),
   amount: z.number().min(0.01, "Informe o valor"),
@@ -36,7 +38,15 @@ const saleSchema = z.object({
 
 type SaleFormValues = z.infer<typeof saleSchema>;
 
-export function SaleFormDialog({ vendedores }: { vendedores: Vendedor[] }) {
+const NO_VEHICLE = "avulsa";
+
+export function SaleFormDialog({
+  vendedores,
+  vehicles,
+}: {
+  vendedores: Vendedor[];
+  vehicles: StockVehicle[];
+}) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -44,15 +54,36 @@ export function SaleFormDialog({ vendedores }: { vendedores: Vendedor[] }) {
     register,
     handleSubmit,
     reset,
+    setValue,
+    watch,
     formState: { errors },
   } = useForm<SaleFormValues>({
     resolver: zodResolver(saleSchema),
-    defaultValues: { paymentMethod: "a_vista", vendedorId: vendedores[0]?.id ?? "" },
+    defaultValues: {
+      paymentMethod: "a_vista",
+      vendedorId: vendedores[0]?.id ?? "",
+      vehicleId: NO_VEHICLE,
+    },
   });
+
+  const selectedVehicleId = watch("vehicleId");
+  const isLinkedToStock = selectedVehicleId !== NO_VEHICLE;
+
+  function handleVehicleChange(vehicleId: string) {
+    setValue("vehicleId", vehicleId);
+    const vehicle = vehicles.find((v) => v.id === vehicleId);
+    if (vehicle) {
+      setValue("vehicleBrand", vehicle.brand);
+      setValue("vehicleModel", vehicle.model);
+    }
+  }
 
   async function onSubmit(values: SaleFormValues) {
     setIsSubmitting(true);
-    const result = await createSale(values);
+    const result = await createSale({
+      ...values,
+      vehicleId: values.vehicleId === NO_VEHICLE ? undefined : values.vehicleId,
+    });
     if (result?.error) {
       toast.error(result.error);
       setIsSubmitting(false);
@@ -95,12 +126,29 @@ export function SaleFormDialog({ vendedores }: { vendedores: Vendedor[] }) {
                 errors={errors.customerName ? [errors.customerName] : undefined}
               />
             </Field>
+            <Field>
+              <FieldLabel htmlFor="vehicleId">Veículo do estoque</FieldLabel>
+              <select
+                id="vehicleId"
+                value={selectedVehicleId}
+                onChange={(e) => handleVehicleChange(e.target.value)}
+                className="h-8 rounded-md border border-input bg-transparent px-3 text-sm dark:bg-input/30"
+              >
+                <option value={NO_VEHICLE}>Venda avulsa (fora do estoque)</option>
+                {vehicles.map((vehicle) => (
+                  <option key={vehicle.id} value={vehicle.id}>
+                    {vehicle.brand} {vehicle.model}
+                  </option>
+                ))}
+              </select>
+            </Field>
             <div className="grid grid-cols-2 gap-4">
               <Field data-invalid={!!errors.vehicleBrand}>
                 <FieldLabel htmlFor="vehicleBrand">Marca</FieldLabel>
                 <Input
                   id="vehicleBrand"
                   placeholder="Toyota"
+                  readOnly={isLinkedToStock}
                   {...register("vehicleBrand")}
                 />
                 <FieldError
@@ -112,6 +160,7 @@ export function SaleFormDialog({ vendedores }: { vendedores: Vendedor[] }) {
                 <Input
                   id="vehicleModel"
                   placeholder="Corolla XEi"
+                  readOnly={isLinkedToStock}
                   {...register("vehicleModel")}
                 />
                 <FieldError

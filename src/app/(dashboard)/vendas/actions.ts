@@ -14,6 +14,7 @@ type SaleInput = {
   paymentMethod: PaymentMethod;
   date: string;
   vendedorId: string;
+  vehicleId?: string;
 };
 
 export async function createSale(input: SaleInput): Promise<ActionResult> {
@@ -21,18 +22,31 @@ export async function createSale(input: SaleInput): Promise<ActionResult> {
   if (!profile?.agency_id) return { error: "Sessão inválida." };
 
   const supabase = await createClient();
+
+  // Venda avulsa (sem veículo do estoque vinculado) não tem como apurar
+  // custo real, então fica 0 — a que vincula um veículo herda
+  // automaticamente cost_price do veículo + soma das ordens de serviço, via
+  // RPC (Vendedor não tem select em `vehicles.cost_price`/`service_orders`,
+  // mas precisa registrar vendas com o custo correto).
+  let costPrice = 0;
+  if (input.vehicleId) {
+    const { data } = await supabase.rpc("compute_vehicle_cost", {
+      p_vehicle_id: input.vehicleId,
+    });
+    costPrice = Number(data ?? 0);
+  }
+
   const { error } = await supabase.from("sales").insert({
     agency_id: profile.agency_id,
     vendedor_id: input.vendedorId,
+    vehicle_id: input.vehicleId ?? null,
     customer_name: input.customerName,
     vehicle_brand: input.vehicleBrand,
     vehicle_model: input.vehicleModel,
     amount: input.amount,
     payment_method: input.paymentMethod,
     sale_date: input.date,
-    // TODO: permitir vincular a um veículo do estoque pra herdar o
-    // cost_price automaticamente, em vez de 0.
-    cost_price: 0,
+    cost_price: costPrice,
   });
 
   return { error: error?.message ?? null };

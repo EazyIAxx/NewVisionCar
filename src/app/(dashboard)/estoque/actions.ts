@@ -32,11 +32,22 @@ type ServiceOrderInput = {
   date: string;
 };
 
-// TODO(M13 backend): substituir por insert real na tabela `service_orders`
-// (o valor entra no cálculo de lucro do Financeiro, somado ao cost_price).
 export async function createServiceOrder(input: ServiceOrderInput): Promise<ActionResult> {
-  console.log("create service order (mock)", input);
-  return { error: null };
+  const profile = await getCurrentProfile();
+  if (!profile?.agency_id) return { error: "Sessão inválida." };
+
+  const supabase = await createClient();
+  const { error } = await supabase.from("service_orders").insert({
+    agency_id: profile.agency_id,
+    vehicle_id: input.vehicleId,
+    type: input.type,
+    supplier: input.supplier,
+    amount: input.amount,
+    status: input.status,
+    date: input.date,
+  });
+
+  return { error: error?.message ?? null };
 }
 
 // TODO: substituir por chamada real à API da OLX/Webmotors (ou parceiro
