@@ -22,11 +22,14 @@ const statusClassName: Record<ListingStatus, string> = {
   erro: "bg-status-lost/15 text-status-lost",
 };
 
-export function ListingPublisher({ vehicleId }: { vehicleId: string }) {
-  const [statuses, setStatuses] = useState<Record<ListingPortal, ListingStatus>>({
-    olx: "nao_publicado",
-    webmotors: "nao_publicado",
-  });
+export function ListingPublisher({
+  vehicleId,
+  initialStatuses,
+}: {
+  vehicleId: string;
+  initialStatuses: Record<ListingPortal, ListingStatus>;
+}) {
+  const [statuses, setStatuses] = useState(initialStatuses);
   const [loadingPortal, setLoadingPortal] = useState<ListingPortal | null>(null);
 
   async function handlePublish(portal: ListingPortal) {

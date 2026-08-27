@@ -10,6 +10,19 @@ import type { ServiceOrderStatus, ServiceOrderType } from "@/lib/types/service-o
 
 export type ActionResult = { error: string | null };
 
+// Sincronização: veículo vendido despublica automaticamente os anúncios
+// ativos (a remoção no portal em si ainda depende da API real — TODO).
+async function unpublishActiveListings(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  vehicleId: string,
+) {
+  await supabase
+    .from("listings")
+    .update({ status: "nao_publicado", published_at: null })
+    .eq("vehicle_id", vehicleId)
+    .eq("status", "publicado");
+}
+
 type ServiceOrderInput = {
   vehicleId: string;
   type: ServiceOrderType;
@@ -26,26 +39,49 @@ export async function createServiceOrder(input: ServiceOrderInput): Promise<Acti
   return { error: null };
 }
 
-// TODO(M11 backend): substituir por chamada real à API da OLX/Webmotors (ou
-// parceiro agregador) + insert/update na tabela `listings`.
+// TODO: substituir por chamada real à API da OLX/Webmotors (ou parceiro
+// agregador) assim que houver parceria comercial — por enquanto, "publicado"
+// representa a intenção da revenda, não uma confirmação do portal.
 export async function publishListing(
   vehicleId: string,
   portal: ListingPortal,
 ): Promise<ActionResult> {
-  console.log("publish listing (mock)", vehicleId, portal);
-  return { error: null };
+  const profile = await getCurrentProfile();
+  if (!profile?.agency_id) return { error: "Sessão inválida." };
+
+  const supabase = await createClient();
+  const { error } = await supabase.from("listings").upsert(
+    {
+      agency_id: profile.agency_id,
+      vehicle_id: vehicleId,
+      portal,
+      status: "publicado",
+      published_at: new Date().toISOString(),
+    },
+    { onConflict: "vehicle_id,portal" },
+  );
+
+  return { error: error?.message ?? null };
 }
 
-// TODO(M11 backend): substituir por remoção real do anúncio no portal +
-// update de status na tabela `listings`.
+// TODO: substituir por remoção real do anúncio no portal assim que a
+// integração existir.
 export async function unpublishListing(
   vehicleId: string,
   portal: ListingPortal,
 ): Promise<ActionResult> {
-  console.log("unpublish listing (mock)", vehicleId, portal);
-  return { error: null };
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("listings")
+    .update({ status: "nao_publicado", published_at: null })
+    .eq("vehicle_id", vehicleId)
+    .eq("portal", portal);
+
+  return { error: error?.message ?? null };
 }
 
+// Ao excluir o veículo, os anúncios saem junto (on delete cascade) — some da
+// nossa tabela, mas a remoção no portal em si depende da API real (TODO).
 export async function deleteVehicle(vehicleId: string): Promise<ActionResult> {
   const supabase = await createClient();
   const { error } = await supabase.from("vehicles").delete().eq("id", vehicleId);
@@ -62,7 +98,13 @@ export async function updateVehicleStatus(
     .update({ status })
     .eq("id", vehicleId);
 
-  return { error: error?.message ?? null };
+  if (error) return { error: error.message };
+
+  if (status === "vendido") {
+    await unpublishActiveListings(supabase, vehicleId);
+  }
+
+  return { error: null };
 }
 
 type ParsedVehicleForm = {
@@ -203,5 +245,11 @@ export async function updateVehicle(
     })
     .eq("id", vehicleId);
 
-  return { error: error?.message ?? null };
+  if (error) return { error: error.message };
+
+  if (form.status === "vendido") {
+    await unpublishActiveListings(supabase, vehicleId);
+  }
+
+  return { error: null };
 }
