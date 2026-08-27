@@ -346,6 +346,64 @@ export type Database = {
           },
         ]
       }
+      service_orders: {
+        Row: {
+          agency_id: string
+          amount: number
+          created_at: string
+          date: string
+          id: string
+          status: string
+          supplier: string
+          type: string
+          vehicle_id: string
+        }
+        Insert: {
+          agency_id: string
+          amount: number
+          created_at?: string
+          date: string
+          id?: string
+          status?: string
+          supplier: string
+          type: string
+          vehicle_id: string
+        }
+        Update: {
+          agency_id?: string
+          amount?: number
+          created_at?: string
+          date?: string
+          id?: string
+          status?: string
+          supplier?: string
+          type?: string
+          vehicle_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "service_orders_agency_id_fkey"
+            columns: ["agency_id"]
+            isOneToOne: false
+            referencedRelation: "agencies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "service_orders_vehicle_id_fkey"
+            columns: ["vehicle_id"]
+            isOneToOne: false
+            referencedRelation: "vehicles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "service_orders_vehicle_id_fkey"
+            columns: ["vehicle_id"]
+            isOneToOne: false
+            referencedRelation: "vehicles_view"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       vehicles: {
         Row: {
           agency_id: string
@@ -509,6 +567,7 @@ export type Database = {
       }
     }
     Functions: {
+      compute_vehicle_cost: { Args: { p_vehicle_id: string }; Returns: number }
       create_agency_and_set_gestor: {
         Args: { p_name: string }
         Returns: string

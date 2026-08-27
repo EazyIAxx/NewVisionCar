@@ -43,8 +43,14 @@ const serviceOrderSchema = z.object({
 
 type ServiceOrderFormValues = z.infer<typeof serviceOrderSchema>;
 
-export function ServiceOrdersPanel({ vehicleId }: { vehicleId: string }) {
-  const [orders, setOrders] = useState<ServiceOrder[]>([]);
+export function ServiceOrdersPanel({
+  vehicleId,
+  initialOrders,
+}: {
+  vehicleId: string;
+  initialOrders: ServiceOrder[];
+}) {
+  const [orders, setOrders] = useState<ServiceOrder[]>(initialOrders);
   const [open, setOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const {

@@ -394,9 +394,9 @@ Expansões pós-MVP. Mesmo fluxo em duas fases das Milestones 3–8: primeiro a 
 **Branch:** `feature/m13-ordem-servico-backend`
 
 **Entregas:**
-- [ ] Migration `service_orders` (`agency_id`, `vehicle_id`, tipo, fornecedor, valor, status, data)
-- [ ] RLS por `agency_id`
-- [ ] Valor da OS somado ao `cost_price` do veículo no cálculo de lucro (M3)
+- [x] Migration `service_orders` (`agency_id`, `vehicle_id`, tipo, fornecedor, valor, status, data)
+- [x] RLS restrita a Gestor (dado financeiro, mesma regra da Nota Fiscal — nem por RLS, nem pela UI o Vendedor vê)
+- [x] Valor da OS somado ao `cost_price` do veículo no cálculo de lucro (M3) — venda vinculada a um veículo do estoque herda `cost_price` real via RPC `compute_vehicle_cost` (SECURITY DEFINER, permite Vendedor registrar vendas com custo correto sem ele conseguir ler o valor)
 
 **Commit final:** `feat: backend de ordem de serviço`
 

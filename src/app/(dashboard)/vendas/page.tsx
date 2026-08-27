@@ -23,6 +23,12 @@ export default async function VendasPage() {
     .filter((m): m is { id: string; full_name: string } => !!m.full_name)
     .map((m) => ({ id: m.id, fullName: m.full_name }));
 
+  const { data: availableVehicles } = await supabase
+    .from("vehicles")
+    .select("id, brand, model")
+    .eq("status", "disponivel")
+    .order("brand", { ascending: true });
+
   return (
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between">
@@ -32,7 +38,7 @@ export default async function VendasPage() {
             Todas as vendas registradas pela equipe.
           </p>
         </div>
-        <SaleFormDialog vendedores={vendedores} />
+        <SaleFormDialog vendedores={vendedores} vehicles={availableVehicles ?? []} />
       </div>
       <SalesTable
         sales={sales}
