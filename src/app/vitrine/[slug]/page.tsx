@@ -1,5 +1,5 @@
 import { VitrineGrid } from "@/components/vitrine/vitrine-grid";
-import { mockVitrineVehicles } from "@/lib/mock/vitrine";
+import { fetchVitrineVehicles } from "@/lib/data/vitrine";
 
 export default async function VitrinePage({
   params,
@@ -7,6 +7,7 @@ export default async function VitrinePage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
+  const vehicles = await fetchVitrineVehicles(slug);
 
   return (
     <div className="mx-auto max-w-6xl px-6 py-10">
@@ -18,7 +19,7 @@ export default async function VitrinePage({
           Confira nosso estoque atualizado.
         </p>
       </div>
-      <VitrineGrid slug={slug} vehicles={mockVitrineVehicles} />
+      <VitrineGrid slug={slug} vehicles={vehicles} />
     </div>
   );
 }

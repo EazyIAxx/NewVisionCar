@@ -1,8 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import { Phone } from "lucide-react";
 
-import { mockVitrineSettings } from "@/lib/mock/vitrine";
+import { fetchVitrineAgency } from "@/lib/data/vitrine";
 
 export default async function VitrineLayout({
   children,
@@ -12,6 +13,11 @@ export default async function VitrineLayout({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
+  const settings = await fetchVitrineAgency(slug);
+
+  if (!settings) {
+    notFound();
+  }
 
   return (
     <div className="flex min-h-svh flex-col bg-white text-slate-900">
@@ -38,26 +44,30 @@ export default async function VitrineLayout({
               className="h-6 w-auto"
             />
             <span className="text-lg font-bold tracking-tight text-white">
-              {mockVitrineSettings.displayName}
+              {settings.displayName}
             </span>
           </Link>
 
-          <a
-            href={`https://wa.me/${mockVitrineSettings.whatsapp}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-1.5 rounded-full bg-gradient-to-r from-[#1b2a8f] via-[#2596e0] to-[#56d3f2] px-4 py-2 text-xs font-bold tracking-wide text-white hover:brightness-110"
-          >
-            <Phone className="size-3.5" />
-            FALE NO WHATSAPP
-          </a>
+          {settings.whatsapp ? (
+            <a
+              href={`https://wa.me/${settings.whatsapp}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1.5 rounded-full bg-gradient-to-r from-[#1b2a8f] via-[#2596e0] to-[#56d3f2] px-4 py-2 text-xs font-bold tracking-wide text-white hover:brightness-110"
+            >
+              <Phone className="size-3.5" />
+              FALE NO WHATSAPP
+            </a>
+          ) : (
+            <span />
+          )}
         </div>
       </header>
 
       <main className="flex-1">{children}</main>
 
       <footer className="border-t border-slate-200 px-6 py-8 text-center text-sm text-slate-500">
-        {mockVitrineSettings.displayName} · Feito com{" "}
+        {settings.displayName} · Feito com{" "}
         <span className="bg-gradient-to-r from-[#1b2a8f] via-[#2596e0] to-[#56d3f2] bg-clip-text font-semibold text-transparent">
           NewVisionCar
         </span>

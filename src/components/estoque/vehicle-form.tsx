@@ -15,6 +15,12 @@ import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field
 import type { Role } from "@/components/layout/nav-config";
 import type { Vehicle, VehicleStatus } from "@/lib/types/vehicle";
 import { vehicleStatusLabel } from "@/lib/types/vehicle";
+import {
+  fuelTypeLabel,
+  transmissionLabel,
+  type FuelType,
+  type Transmission,
+} from "@/lib/types/vitrine";
 
 const vehicleSchema = z.object({
   brand: z.string().min(1, "Informe a marca"),
@@ -25,6 +31,10 @@ const vehicleSchema = z.object({
   km: z.number().min(0),
   price: z.number().min(0, "Informe o preço de venda"),
   costPrice: z.number().min(0).optional(),
+  transmission: z.enum(["manual", "automatico", ""]).optional(),
+  fuelType: z.enum(["flex", "gasolina", "diesel", "hibrido", "eletrico", ""]).optional(),
+  description: z.string().optional(),
+  features: z.string().optional(),
 });
 
 type VehicleFormValues = z.infer<typeof vehicleSchema>;
@@ -71,6 +81,10 @@ export function VehicleForm({
           km: initialValues.km,
           price: initialValues.price,
           costPrice: initialValues.costPrice ?? undefined,
+          transmission: initialValues.transmission ?? "",
+          fuelType: initialValues.fuelType ?? "",
+          description: initialValues.description ?? "",
+          features: initialValues.features.join(", "),
         }
       : undefined,
   });
@@ -105,6 +119,10 @@ export function VehicleForm({
       formData.set("costPrice", String(values.costPrice));
     }
     formData.set("status", status);
+    if (values.transmission) formData.set("transmission", values.transmission);
+    if (values.fuelType) formData.set("fuelType", values.fuelType);
+    if (values.description) formData.set("description", values.description);
+    if (values.features) formData.set("features", values.features);
     formData.set(
       "existingPhotos",
       JSON.stringify(
@@ -233,6 +251,57 @@ export function VehicleForm({
                 />
               </Field>
             )}
+            <Field>
+              <FieldLabel htmlFor="transmission">Câmbio</FieldLabel>
+              <select
+                id="transmission"
+                className="h-8 rounded-md border border-input bg-transparent px-3 text-sm dark:bg-input/30"
+                {...register("transmission")}
+              >
+                <option value="">Não informado</option>
+                {(Object.keys(transmissionLabel) as Transmission[]).map((value) => (
+                  <option key={value} value={value}>
+                    {transmissionLabel[value]}
+                  </option>
+                ))}
+              </select>
+            </Field>
+            <Field>
+              <FieldLabel htmlFor="fuelType">Combustível</FieldLabel>
+              <select
+                id="fuelType"
+                className="h-8 rounded-md border border-input bg-transparent px-3 text-sm dark:bg-input/30"
+                {...register("fuelType")}
+              >
+                <option value="">Não informado</option>
+                {(Object.keys(fuelTypeLabel) as FuelType[]).map((value) => (
+                  <option key={value} value={value}>
+                    {fuelTypeLabel[value]}
+                  </option>
+                ))}
+              </select>
+            </Field>
+            <Field className="sm:col-span-2">
+              <FieldLabel htmlFor="features">
+                Opcionais (separados por vírgula)
+              </FieldLabel>
+              <Input
+                id="features"
+                placeholder="Ar condicionado, Central multimídia, Câmera de ré"
+                {...register("features")}
+              />
+            </Field>
+            <Field className="sm:col-span-2">
+              <FieldLabel htmlFor="description">
+                Descrição (exibida na vitrine pública)
+              </FieldLabel>
+              <textarea
+                id="description"
+                rows={3}
+                className="rounded-md border border-input bg-transparent px-3 py-2 text-sm dark:bg-input/30"
+                {...register("description")}
+              />
+            </Field>
             {mode === "edit" && (
               <Field>
                 <FieldLabel htmlFor="status">Status</FieldLabel>
