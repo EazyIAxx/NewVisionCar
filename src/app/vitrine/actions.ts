@@ -1,17 +1,32 @@
 "use server";
 
+import { createClient } from "@/lib/supabase/server";
+
 export type ActionResult = { error: string | null };
 
 type InterestInput = {
-  vehicleId: string;
+  slug: string;
+  vehicleInterest: string;
   name: string;
   email?: string;
   phone: string;
   message?: string;
 };
 
-// TODO(M12 backend): criar lead automaticamente no CRM (M4) com origem "site".
 export async function sendInterest(input: InterestInput): Promise<ActionResult> {
-  console.log("vitrine interest (mock)", input);
-  return { error: null };
+  const supabase = await createClient();
+  const { error } = await supabase.rpc("create_vitrine_lead", {
+    p_slug: input.slug,
+    p_vehicle_interest: input.vehicleInterest,
+    p_name: input.name,
+    p_email: input.email ?? "",
+    p_phone: input.phone,
+    p_message: input.message ?? "",
+  });
+
+  if (error?.message === "agency_not_found") {
+    return { error: "Não foi possível enviar sua proposta." };
+  }
+
+  return { error: error?.message ?? null };
 }

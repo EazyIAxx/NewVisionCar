@@ -106,7 +106,10 @@ export default async function VitrineVehicleDetailPage({
         </div>
 
         <div className="flex flex-col gap-4 lg:sticky lg:top-6 lg:self-start">
-          <ProposalPanel vehicleId={vehicle.id} />
+          <ProposalPanel
+            slug={slug}
+            vehicleInterest={`${vehicle.brand} ${vehicle.model}`}
+          />
           <FinancingSimulator price={vehicle.price} />
         </div>
       </div>

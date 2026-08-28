@@ -1,22 +1,20 @@
 import "server-only";
 
-import { mockLeads } from "@/app/(dashboard)/crm/mock-data";
+import { fetchLeads } from "@/lib/data/leads";
 import { fetchSales } from "@/lib/data/sales";
 import type { Customer } from "@/lib/types/customer";
 import type { Lead } from "@/lib/types/lead";
 import type { Sale } from "@/lib/types/sale";
 
-// TODO(M4 backend): trocar mockLeads por leads reais quando o CRM ganhar
-// backend — Clientes já consolida vendas reais desde o backend de Vendas.
 function pickLatestLead(leads: Lead[]): Lead {
   return [...leads].sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1))[0];
 }
 
 export async function getCustomers(): Promise<Customer[]> {
-  const sales = await fetchSales();
+  const [leads, sales] = await Promise.all([fetchLeads(), fetchSales()]);
 
   const leadsByName = new Map<string, Lead[]>();
-  for (const lead of mockLeads) {
+  for (const lead of leads) {
     leadsByName.set(lead.name, [...(leadsByName.get(lead.name) ?? []), lead]);
   }
 

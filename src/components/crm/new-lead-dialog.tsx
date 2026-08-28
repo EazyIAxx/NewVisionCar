@@ -22,17 +22,28 @@ import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field
 import { leadOriginLabel, type LeadOrigin } from "@/lib/types/lead";
 import { createLead } from "@/app/(dashboard)/crm/actions";
 
+type Vendedor = { id: string; fullName: string };
+
 const leadSchema = z.object({
   name: z.string().min(2, "Informe o nome"),
   phone: z.string().min(8, "Informe o telefone"),
   email: z.string().email("E-mail inválido").optional().or(z.literal("")),
   origin: z.enum(["whatsapp", "site", "indicacao"]),
   vehicleInterest: z.string().optional(),
+  vendedorId: z.string(),
 });
 
 type LeadFormValues = z.infer<typeof leadSchema>;
 
-export function NewLeadDialog() {
+const UNASSIGNED = "nao_atribuido";
+
+export function NewLeadDialog({
+  vendedores,
+  currentProfileId,
+}: {
+  vendedores: Vendedor[];
+  currentProfileId: string;
+}) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -43,12 +54,20 @@ export function NewLeadDialog() {
     formState: { errors },
   } = useForm<LeadFormValues>({
     resolver: zodResolver(leadSchema),
-    defaultValues: { origin: "whatsapp" },
+    defaultValues: {
+      origin: "whatsapp",
+      vendedorId: vendedores.some((v) => v.id === currentProfileId)
+        ? currentProfileId
+        : UNASSIGNED,
+    },
   });
 
   async function onSubmit(values: LeadFormValues) {
     setIsSubmitting(true);
-    const result = await createLead(values);
+    const result = await createLead({
+      ...values,
+      vendedorId: values.vendedorId === UNASSIGNED ? undefined : values.vendedorId,
+    });
     if (result?.error) {
       toast.error(result.error);
       setIsSubmitting(false);
@@ -122,6 +141,21 @@ export function NewLeadDialog() {
                 placeholder="Ex: Toyota Corolla XEi"
                 {...register("vehicleInterest")}
               />
+            </Field>
+            <Field>
+              <FieldLabel htmlFor="vendedorId">Vendedor</FieldLabel>
+              <select
+                id="vendedorId"
+                className="h-8 rounded-md border border-input bg-transparent px-3 text-sm dark:bg-input/30"
+                {...register("vendedorId")}
+              >
+                <option value={UNASSIGNED}>Não atribuído</option>
+                {vendedores.map((vendedor) => (
+                  <option key={vendedor.id} value={vendedor.id}>
+                    {vendedor.fullName}
+                  </option>
+                ))}
+              </select>
             </Field>
           </FieldGroup>
           <Button
