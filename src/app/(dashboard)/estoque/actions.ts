@@ -128,12 +128,20 @@ type ParsedVehicleForm = {
   price: number;
   costPrice?: number;
   status: VehicleStatus;
+  transmission: string | null;
+  fuelType: string | null;
+  description: string | null;
+  features: string[];
   existingPhotos: string[];
   newFiles: File[];
 };
 
 function parseVehicleFormData(formData: FormData): ParsedVehicleForm {
   const costPriceRaw = formData.get("costPrice");
+  const transmissionRaw = formData.get("transmission");
+  const fuelTypeRaw = formData.get("fuelType");
+  const descriptionRaw = formData.get("description");
+  const featuresRaw = String(formData.get("features") ?? "");
   return {
     brand: String(formData.get("brand")),
     model: String(formData.get("model")),
@@ -144,6 +152,13 @@ function parseVehicleFormData(formData: FormData): ParsedVehicleForm {
     price: Number(formData.get("price")),
     costPrice: costPriceRaw ? Number(costPriceRaw) : undefined,
     status: String(formData.get("status")) as VehicleStatus,
+    transmission: transmissionRaw ? String(transmissionRaw) : null,
+    fuelType: fuelTypeRaw ? String(fuelTypeRaw) : null,
+    description: descriptionRaw ? String(descriptionRaw) : null,
+    features: featuresRaw
+      .split(",")
+      .map((f) => f.trim())
+      .filter(Boolean),
     existingPhotos: JSON.parse(String(formData.get("existingPhotos") ?? "[]")),
     newFiles: formData.getAll("newFiles").filter((f): f is File => f instanceof File),
   };
@@ -197,6 +212,10 @@ export async function createVehicle(formData: FormData): Promise<ActionResult> {
       // form nem renderiza esse input para vendedor, mas reforçamos aqui.
       cost_price: profile.role === "gestor" ? form.costPrice ?? null : null,
       status: form.status,
+      transmission: form.transmission,
+      fuel_type: form.fuelType,
+      description: form.description,
+      features: form.features,
     })
     .select("id")
     .single();
@@ -252,6 +271,10 @@ export async function updateVehicle(
       price: form.price,
       cost_price: profile.role === "gestor" ? form.costPrice ?? null : undefined,
       status: form.status,
+      transmission: form.transmission,
+      fuel_type: form.fuelType,
+      description: form.description,
+      features: form.features,
       photos: [...form.existingPhotos, ...newUrls],
     })
     .eq("id", vehicleId);

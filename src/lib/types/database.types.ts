@@ -49,6 +49,8 @@ export type Database = {
           name: string
           regime_tributario: string | null
           slug: string | null
+          vitrine_accent_color: string
+          vitrine_whatsapp: string | null
         }
         Insert: {
           cnpj?: string | null
@@ -59,6 +61,8 @@ export type Database = {
           name: string
           regime_tributario?: string | null
           slug?: string | null
+          vitrine_accent_color?: string
+          vitrine_whatsapp?: string | null
         }
         Update: {
           cnpj?: string | null
@@ -69,6 +73,8 @@ export type Database = {
           name?: string
           regime_tributario?: string | null
           slug?: string | null
+          vitrine_accent_color?: string
+          vitrine_whatsapp?: string | null
         }
         Relationships: []
       }
@@ -411,6 +417,9 @@ export type Database = {
           color: string
           cost_price: number | null
           created_at: string
+          description: string | null
+          features: string[]
+          fuel_type: string | null
           id: string
           km: number
           model: string
@@ -418,6 +427,7 @@ export type Database = {
           plate: string
           price: number
           status: string
+          transmission: string | null
           year: number
         }
         Insert: {
@@ -426,6 +436,9 @@ export type Database = {
           color: string
           cost_price?: number | null
           created_at?: string
+          description?: string | null
+          features?: string[]
+          fuel_type?: string | null
           id?: string
           km?: number
           model: string
@@ -433,6 +446,7 @@ export type Database = {
           plate: string
           price: number
           status?: string
+          transmission?: string | null
           year: number
         }
         Update: {
@@ -441,6 +455,9 @@ export type Database = {
           color?: string
           cost_price?: number | null
           created_at?: string
+          description?: string | null
+          features?: string[]
+          fuel_type?: string | null
           id?: string
           km?: number
           model?: string
@@ -448,6 +465,7 @@ export type Database = {
           plate?: string
           price?: number
           status?: string
+          transmission?: string | null
           year?: number
         }
         Relationships: [
@@ -516,6 +534,9 @@ export type Database = {
           color: string | null
           cost_price: number | null
           created_at: string | null
+          description: string | null
+          features: string[] | null
+          fuel_type: string | null
           id: string | null
           km: number | null
           model: string | null
@@ -523,6 +544,7 @@ export type Database = {
           plate: string | null
           price: number | null
           status: string | null
+          transmission: string | null
           year: number | null
         }
         Insert: {
@@ -531,6 +553,9 @@ export type Database = {
           color?: string | null
           cost_price?: never
           created_at?: string | null
+          description?: string | null
+          features?: string[] | null
+          fuel_type?: string | null
           id?: string | null
           km?: number | null
           model?: string | null
@@ -538,6 +563,7 @@ export type Database = {
           plate?: string | null
           price?: number | null
           status?: string | null
+          transmission?: string | null
           year?: number | null
         }
         Update: {
@@ -546,6 +572,9 @@ export type Database = {
           color?: string | null
           cost_price?: never
           created_at?: string | null
+          description?: string | null
+          features?: string[] | null
+          fuel_type?: string | null
           id?: string | null
           km?: number | null
           model?: string | null
@@ -553,6 +582,7 @@ export type Database = {
           plate?: string | null
           price?: number | null
           status?: string | null
+          transmission?: string | null
           year?: number | null
         }
         Relationships: [
@@ -591,10 +621,39 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      generate_unique_agency_slug: { Args: { p_name: string }; Returns: string }
       get_my_agency_id: { Args: never; Returns: string }
       get_my_role: { Args: never; Returns: string }
+      get_vitrine_agency: {
+        Args: { p_slug: string }
+        Returns: {
+          accent_color: string
+          id: string
+          name: string
+          slug: string
+          whatsapp: string
+        }[]
+      }
+      get_vitrine_vehicles: {
+        Args: { p_slug: string }
+        Returns: {
+          brand: string
+          color: string
+          description: string
+          features: string[]
+          fuel_type: string
+          id: string
+          km: number
+          model: string
+          photos: string[]
+          price: number
+          transmission: string
+          year: number
+        }[]
+      }
       is_gestor: { Args: never; Returns: boolean }
       join_agency_with_invite: { Args: { p_code: string }; Returns: string }
+      slugify: { Args: { p_text: string }; Returns: string }
     }
     Enums: {
       [_ in never]: never

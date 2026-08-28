@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { ArrowLeft, Car } from "lucide-react";
 
 import { formatCurrency, formatKm } from "@/lib/utils";
-import { mockVitrineVehicles } from "@/lib/mock/vitrine";
+import { fetchVitrineVehicles } from "@/lib/data/vitrine";
 import { fuelTypeLabel, transmissionLabel } from "@/lib/types/vitrine";
 import { ProposalPanel } from "@/components/vitrine/proposal-panel";
 import { FinancingSimulator } from "@/components/vitrine/financing-simulator";
@@ -14,7 +14,8 @@ export default async function VitrineVehicleDetailPage({
   params: Promise<{ slug: string; vehicleId: string }>;
 }) {
   const { slug, vehicleId } = await params;
-  const vehicle = mockVitrineVehicles.find((v) => v.id === vehicleId);
+  const vehicles = await fetchVitrineVehicles(slug);
+  const vehicle = vehicles.find((v) => v.id === vehicleId);
 
   if (!vehicle) {
     notFound();
@@ -22,8 +23,8 @@ export default async function VitrineVehicleDetailPage({
 
   const specs = [
     { label: "Ano", value: `${vehicle.year}/${vehicle.year}` },
-    { label: "Câmbio", value: transmissionLabel[vehicle.transmission] },
-    { label: "Combustível", value: fuelTypeLabel[vehicle.fuelType] },
+    { label: "Câmbio", value: vehicle.transmission ? transmissionLabel[vehicle.transmission] : "—" },
+    { label: "Combustível", value: vehicle.fuelType ? fuelTypeLabel[vehicle.fuelType] : "—" },
     { label: "Km", value: formatKm(vehicle.km) },
   ];
 

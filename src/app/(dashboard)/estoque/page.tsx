@@ -50,6 +50,10 @@ export default async function EstoquePage({
     costPrice: row.cost_price === null ? null : Number(row.cost_price),
     status: row.status as Vehicle["status"],
     photos: row.photos ?? [],
+    transmission: row.transmission as Vehicle["transmission"],
+    fuelType: row.fuel_type as Vehicle["fuelType"],
+    description: row.description,
+    features: row.features ?? [],
   }));
 
   return (

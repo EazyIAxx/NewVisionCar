@@ -30,10 +30,10 @@ export type VitrineVehicle = {
   km: number;
   price: number;
   color: string;
-  transmission: Transmission;
-  fuelType: FuelType;
+  transmission: Transmission | null;
+  fuelType: FuelType | null;
   features: string[];
-  description: string;
+  description: string | null;
   photos: string[];
 };
 

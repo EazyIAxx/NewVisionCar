@@ -70,6 +70,17 @@ export function VitrineSettingsPanel({
           </div>
         </Field>
         <Field>
+          <FieldLabel htmlFor="whatsapp">WhatsApp</FieldLabel>
+          <Input
+            id="whatsapp"
+            placeholder="5511988880000"
+            value={settings.whatsapp}
+            onChange={(e) =>
+              setSettings((prev) => ({ ...prev, whatsapp: e.target.value }))
+            }
+          />
+        </Field>
+        <Field>
           <FieldLabel htmlFor="accentColor">Cor de destaque</FieldLabel>
           <div className="flex items-center gap-2">
             <input

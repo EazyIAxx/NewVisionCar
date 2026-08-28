@@ -382,10 +382,10 @@ Expansões pós-MVP. Mesmo fluxo em duas fases das Milestones 3–8: primeiro a 
 **Branch:** `feature/m12-vitrine-publica-backend`
 
 **Entregas:**
-- [ ] Rota pública sem autenticação; RLS liberando leitura pública só de veículos com status "disponível"
-- [ ] "Tenho interesse" cria lead automaticamente no CRM (M4), com origem "site"
+- [x] Rota pública sem autenticação; leitura pública só de veículos com status "disponível" via funções `SECURITY DEFINER` (`get_vitrine_agency`/`get_vitrine_vehicles`, RLS não filtra coluna então evitam expor CNPJ/cost_price a visitante anônimo)
+- [ ] "Tenho interesse" cria lead automaticamente no CRM (M4), com origem "site" — segue mock; depende do backend do M4 (CRM Kanban), que ainda não existe (achado à parte, fora do escopo desta correção)
 
-**Commit final:** `feat: backend da vitrine pública da revenda`
+**Commit final:** `fix: vitrine pública lendo dados reais de estoque e revenda`
 
 ---
 
