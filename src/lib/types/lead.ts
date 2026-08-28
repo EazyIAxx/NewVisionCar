@@ -60,6 +60,9 @@ export type Lead = {
   // — fica visível a todos os vendedores até alguém "pegar" o lead.
   vendedorId: string | null;
   vendedorName: string | null;
+  // true quando o cadastro foi feito pelo agente de IA no WhatsApp (M8), não
+  // por um vendedor humano — puramente informativo.
+  createdByAi: boolean;
   visitDate: string | null; // ISO — só preenchido quando stage === "visita_agendada"
   createdAt: string; // ISO
   activities: LeadActivity[];

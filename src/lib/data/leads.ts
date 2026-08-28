@@ -35,6 +35,7 @@ export async function fetchLeads(): Promise<Lead[]> {
     stage: row.stage as Lead["stage"],
     vendedorId: row.vendedor_id,
     vendedorName: (row.profiles as { full_name: string | null } | null)?.full_name ?? null,
+    createdByAi: row.created_by_ai,
     visitDate: row.visit_date,
     createdAt: row.created_at,
     activities: activitiesByLeadId.get(row.id) ?? [],

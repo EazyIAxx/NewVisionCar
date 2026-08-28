@@ -27,7 +27,11 @@ export default async function CrmPage() {
       <div className="flex justify-end">
         <NewLeadDialog vendedores={vendedores} currentProfileId={profile?.id ?? ""} />
       </div>
-      <KanbanBoard initialLeads={leads} />
+      <KanbanBoard
+        initialLeads={leads}
+        vendedores={vendedores}
+        isGestor={profile?.role === "gestor"}
+      />
     </div>
   );
 }

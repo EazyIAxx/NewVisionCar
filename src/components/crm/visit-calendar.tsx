@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import {
   addMonths,
   addWeeks,
@@ -33,7 +34,8 @@ const START_HOUR = 8;
 const END_HOUR = 19;
 const HOUR_HEIGHT = 56; // px
 
-export function VisitCalendar({ leads }: { leads: Lead[] }) {
+export function VisitCalendar({ leads, isGestor }: { leads: Lead[]; isGestor: boolean }) {
+  const router = useRouter();
   const visits = useMemo(
     () => leads.filter((lead): lead is VisitLead => !!lead.visitDate),
     [leads],
@@ -142,8 +144,13 @@ export function VisitCalendar({ leads }: { leads: Lead[] }) {
         <LeadDetailDialog
           lead={selectedLead}
           open={!!selectedLead}
+          isGestor={isGestor}
           onOpenChange={(open) => {
             if (!open) setSelectedLead(null);
+          }}
+          onDeleted={() => {
+            setSelectedLead(null);
+            router.refresh();
           }}
         />
       )}

@@ -234,6 +234,7 @@ export type Database = {
         Row: {
           agency_id: string
           created_at: string
+          created_by_ai: boolean
           email: string | null
           id: string
           name: string
@@ -247,6 +248,7 @@ export type Database = {
         Insert: {
           agency_id: string
           created_at?: string
+          created_by_ai?: boolean
           email?: string | null
           id?: string
           name: string
@@ -260,6 +262,7 @@ export type Database = {
         Update: {
           agency_id?: string
           created_at?: string
+          created_by_ai?: boolean
           email?: string | null
           id?: string
           name?: string
