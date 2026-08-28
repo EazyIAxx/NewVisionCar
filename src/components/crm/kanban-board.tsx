@@ -44,6 +44,10 @@ export function KanbanBoard({ initialLeads }: { initialLeads: Lead[] }) {
           ),
         );
         toast.error(result.error);
+      } else if (newStage === "visita_agendada" && !lead.visitDate) {
+        // Ainda não tem data/hora marcada — abre o detalhe já pedindo isso,
+        // em vez de deixar a visita "agendada" sem horário nenhum.
+        setSelectedLead({ ...lead, stage: newStage });
       }
     });
   }

@@ -202,6 +202,7 @@ Convenção de branch: `feature/mN-nome-curto` (setup e deploy usam `chore/...`)
 - [x] RLS: Gestor vê todos os leads da agência; Vendedor só os seus (`vendedor_id = auth.uid()`) + os não atribuídos (lead vindo da vitrine sem dono, até alguém "pegar")
 - [x] Server Actions de mudança de estágio, atribuição e histórico — atribuição automática ao vendedor na primeira interação com um lead sem dono
 - [x] "Tenho interesse" da vitrine (M12) cria lead real via RPC `create_vitrine_lead`, origem "site"
+- [x] Marcar data/hora da visita: campo no detalhe do lead (`scheduleVisit`); arrastar um lead pra "Visita agendada" no Kanban abre o detalhe automaticamente pedindo o horário
 
 **Commit final:** `feat: backend do CRM — leads, estágios e RLS`
 

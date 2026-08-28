@@ -62,6 +62,30 @@ export async function createLead(input: LeadInput): Promise<ActionResult> {
   return { error: error?.message ?? null };
 }
 
+export async function scheduleVisit(
+  leadId: string,
+  visitDate: string | null,
+): Promise<ActionResult> {
+  const profile = await getCurrentProfile();
+  if (!profile?.agency_id) return { error: "Sessão inválida." };
+
+  const supabase = await createClient();
+  await claimLeadIfUnassigned(supabase, leadId, profile);
+
+  const { error } = await supabase
+    .from("leads")
+    .update({
+      visit_date: visitDate,
+      // Definir uma data agenda a visita de verdade; limpar a data não força
+      // o estágio de volta (usuário pode ter cancelado só o horário e
+      // continuar negociando).
+      ...(visitDate ? { stage: "visita_agendada" } : {}),
+    })
+    .eq("id", leadId);
+
+  return { error: error?.message ?? null };
+}
+
 type ActivityInput = {
   type: LeadActivityType;
   description: string;
