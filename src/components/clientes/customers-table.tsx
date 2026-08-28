@@ -16,18 +16,13 @@ import type { Customer } from "@/lib/types/customer";
 import { CustomerStatusBadge } from "@/components/clientes/status-badge";
 import { CustomerDetailDialog } from "@/components/clientes/customer-detail-dialog";
 
-export function CustomersTable({ customers: initialCustomers }: { customers: Customer[] }) {
-  const [customers, setCustomers] = useState(initialCustomers);
+export function CustomersTable({ customers }: { customers: Customer[] }) {
   const [selected, setSelected] = useState<Customer | null>(null);
   const [query, setQuery] = useState("");
 
   const filtered = customers.filter((customer) =>
     customer.name.toLowerCase().includes(query.trim().toLowerCase()),
   );
-
-  function handleDelete(customerId: string) {
-    setCustomers((prev) => prev.filter((customer) => customer.id !== customerId));
-  }
 
   return (
     <>
@@ -90,7 +85,6 @@ export function CustomersTable({ customers: initialCustomers }: { customers: Cus
           onOpenChange={(open) => {
             if (!open) setSelected(null);
           }}
-          onDelete={handleDelete}
         />
       )}
     </>

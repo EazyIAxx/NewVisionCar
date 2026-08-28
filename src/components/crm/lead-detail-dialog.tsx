@@ -4,16 +4,28 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { CalendarClock, Loader2, Send } from "lucide-react";
+import { CalendarClock, Loader2, Send, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
 import {
   Dialog,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -25,7 +37,7 @@ import {
   type Lead,
   type LeadActivity,
 } from "@/lib/types/lead";
-import { addLeadActivity, scheduleVisit } from "@/app/(dashboard)/crm/actions";
+import { addLeadActivity, deleteLead, scheduleVisit } from "@/app/(dashboard)/crm/actions";
 
 function toDatetimeLocalValue(isoDate: string | null): string {
   if (!isoDate) return "";
@@ -37,11 +49,15 @@ function toDatetimeLocalValue(isoDate: string | null): string {
 export function LeadDetailDialog({
   lead,
   open,
+  isGestor,
   onOpenChange,
+  onDeleted,
 }: {
   lead: Lead;
   open: boolean;
+  isGestor: boolean;
   onOpenChange: (open: boolean) => void;
+  onDeleted: (leadId: string) => void;
 }) {
   const router = useRouter();
   const [activities, setActivities] = useState<LeadActivity[]>(lead.activities);
@@ -49,6 +65,19 @@ export function LeadDetailDialog({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [visitDateInput, setVisitDateInput] = useState(toDatetimeLocalValue(lead.visitDate));
   const [isSchedulingVisit, setIsSchedulingVisit] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  async function handleDelete() {
+    setIsDeleting(true);
+    const result = await deleteLead(lead.id);
+    if (result?.error) {
+      toast.error(result.error);
+      setIsDeleting(false);
+      return;
+    }
+    toast.success("Lead excluído");
+    onDeleted(lead.id);
+  }
 
   async function handleScheduleVisit() {
     setIsSchedulingVisit(true);
@@ -108,6 +137,11 @@ export function LeadDetailDialog({
             <Badge variant="secondary">{lead.vehicleInterest}</Badge>
           )}
         </div>
+
+        <p className="text-sm text-muted-foreground">
+          Vendedor: {lead.vendedorName ?? "Não atribuído"}
+          {lead.createdByAi && " · Cadastrado pela IA (WhatsApp)"}
+        </p>
 
         <Field>
           <FieldLabel htmlFor="visitDate" className="flex items-center gap-1.5">
@@ -176,6 +210,38 @@ export function LeadDetailDialog({
             )}
           </Button>
         </div>
+
+        {isGestor && (
+          <DialogFooter>
+            <AlertDialog>
+              <AlertDialogTrigger
+                render={<Button variant="destructive" className="cursor-pointer" />}
+              >
+                <Trash2 />
+                Excluir lead
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Excluir {lead.name}?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Essa ação remove o lead e todo o histórico de interações
+                    dele. Não pode ser desfeita.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                  <AlertDialogAction
+                    className="cursor-pointer bg-destructive text-white hover:bg-destructive/90"
+                    disabled={isDeleting}
+                    onClick={handleDelete}
+                  >
+                    {isDeleting ? "Excluindo..." : "Excluir"}
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </DialogFooter>
+        )}
       </DialogContent>
     </Dialog>
   );

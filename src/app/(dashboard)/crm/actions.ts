@@ -42,6 +42,7 @@ type LeadInput = {
   origin: LeadOrigin;
   vehicleInterest?: string;
   vendedorId?: string;
+  createdByAi?: boolean;
 };
 
 export async function createLead(input: LeadInput): Promise<ActionResult> {
@@ -57,8 +58,23 @@ export async function createLead(input: LeadInput): Promise<ActionResult> {
     email: input.email || null,
     origin: input.origin,
     vehicle_interest: input.vehicleInterest || null,
+    created_by_ai: input.createdByAi ?? false,
   });
 
+  return { error: error?.message ?? null };
+}
+
+// RLS já restringe delete a is_gestor() — mensagem amigável em vez de deixar
+// o vendedor bater num erro de policy sem explicação.
+export async function deleteLead(leadId: string): Promise<ActionResult> {
+  const profile = await getCurrentProfile();
+  if (!profile?.agency_id) return { error: "Sessão inválida." };
+  if (profile.role !== "gestor") {
+    return { error: "Apenas o gestor pode excluir leads." };
+  }
+
+  const supabase = await createClient();
+  const { error } = await supabase.from("leads").delete().eq("id", leadId);
   return { error: error?.message ?? null };
 }
 

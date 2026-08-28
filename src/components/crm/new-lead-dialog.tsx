@@ -36,6 +36,7 @@ const leadSchema = z.object({
 type LeadFormValues = z.infer<typeof leadSchema>;
 
 const UNASSIGNED = "nao_atribuido";
+const AI_CREATED = "ia_whatsapp";
 
 export function NewLeadDialog({
   vendedores,
@@ -66,7 +67,11 @@ export function NewLeadDialog({
     setIsSubmitting(true);
     const result = await createLead({
       ...values,
-      vendedorId: values.vendedorId === UNASSIGNED ? undefined : values.vendedorId,
+      vendedorId:
+        values.vendedorId === UNASSIGNED || values.vendedorId === AI_CREATED
+          ? undefined
+          : values.vendedorId,
+      createdByAi: values.vendedorId === AI_CREATED,
     });
     if (result?.error) {
       toast.error(result.error);
@@ -143,13 +148,14 @@ export function NewLeadDialog({
               />
             </Field>
             <Field>
-              <FieldLabel htmlFor="vendedorId">Vendedor</FieldLabel>
+              <FieldLabel htmlFor="vendedorId">Cadastrado por</FieldLabel>
               <select
                 id="vendedorId"
                 className="h-8 rounded-md border border-input bg-transparent px-3 text-sm dark:bg-input/30"
                 {...register("vendedorId")}
               >
                 <option value={UNASSIGNED}>Não atribuído</option>
+                <option value={AI_CREATED}>IA (WhatsApp)</option>
                 {vendedores.map((vendedor) => (
                   <option key={vendedor.id} value={vendedor.id}>
                     {vendedor.fullName}
