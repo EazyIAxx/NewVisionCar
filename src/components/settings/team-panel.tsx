@@ -27,6 +27,7 @@ export type Member = {
 export function TeamPanel({ initialMembers }: { initialMembers: Member[] }) {
   const [isGenerating, setIsGenerating] = useState(false);
   const [inviteCode, setInviteCode] = useState<string | null>(null);
+  const hasVendedor = initialMembers.some((m) => m.role === "vendedor");
 
   async function handleGenerateInvite() {
     setIsGenerating(true);
@@ -52,10 +53,19 @@ export function TeamPanel({ initialMembers }: { initialMembers: Member[] }) {
         <CardHeader>
           <CardTitle>Membros da equipe</CardTitle>
           <CardDescription>
-            Gestores e vendedores com acesso a esta revenda.
+            Gestores e vendedores (profissionais de venda) com acesso a esta
+            revenda.
           </CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col gap-3">
+          {!hasVendedor && (
+            <p className="rounded-md border border-dashed p-3 text-sm text-muted-foreground">
+              Você ainda não tem nenhum vendedor na equipe. Gere um código de
+              convite ao lado e passe pra pessoa — ela usa esse código em
+              "Tenho um código de convite" na tela de cadastro pra entrar
+              como vendedor desta revenda.
+            </p>
+          )}
           {initialMembers.map((member, index) => (
             <div key={member.id}>
               {index > 0 && <Separator className="mb-3" />}
