@@ -1,6 +1,7 @@
 import { VisitCalendar } from "@/components/crm/visit-calendar";
-import { mockLeads } from "@/app/(dashboard)/crm/mock-data";
+import { fetchLeads } from "@/lib/data/leads";
 
-export default function CalendarioPage() {
-  return <VisitCalendar leads={mockLeads} />;
+export default async function CalendarioPage() {
+  const leads = await fetchLeads();
+  return <VisitCalendar leads={leads} />;
 }

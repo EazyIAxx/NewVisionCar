@@ -198,9 +198,10 @@ Convenção de branch: `feature/mN-nome-curto` (setup e deploy usam `chore/...`)
 **Branch:** `feature/m4-crm-backend`
 
 **Entregas:**
-- [ ] Migration `leads` (`agency_id`, `vendedor_id`, estágio, origem, veículo vinculado) + `lead_activities`
-- [ ] RLS: Gestor vê todos os leads da agência; Vendedor só os seus (`vendedor_id = auth.uid()`)
-- [ ] Server Actions de mudança de estágio, atribuição e histórico
+- [x] Migration `leads` (`agency_id`, `vendedor_id`, estágio, origem, veículo vinculado) + `lead_activities`
+- [x] RLS: Gestor vê todos os leads da agência; Vendedor só os seus (`vendedor_id = auth.uid()`) + os não atribuídos (lead vindo da vitrine sem dono, até alguém "pegar")
+- [x] Server Actions de mudança de estágio, atribuição e histórico — atribuição automática ao vendedor na primeira interação com um lead sem dono
+- [x] "Tenho interesse" da vitrine (M12) cria lead real via RPC `create_vitrine_lead`, origem "site"
 
 **Commit final:** `feat: backend do CRM — leads, estágios e RLS`
 
@@ -383,7 +384,7 @@ Expansões pós-MVP. Mesmo fluxo em duas fases das Milestones 3–8: primeiro a 
 
 **Entregas:**
 - [x] Rota pública sem autenticação; leitura pública só de veículos com status "disponível" via funções `SECURITY DEFINER` (`get_vitrine_agency`/`get_vitrine_vehicles`, RLS não filtra coluna então evitam expor CNPJ/cost_price a visitante anônimo)
-- [ ] "Tenho interesse" cria lead automaticamente no CRM (M4), com origem "site" — segue mock; depende do backend do M4 (CRM Kanban), que ainda não existe (achado à parte, fora do escopo desta correção)
+- [x] "Tenho interesse" cria lead automaticamente no CRM (M4), com origem "site" — fechado junto com o backend do M4
 
 **Commit final:** `fix: vitrine pública lendo dados reais de estoque e revenda`
 

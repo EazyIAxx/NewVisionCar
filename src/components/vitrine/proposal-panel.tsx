@@ -21,7 +21,13 @@ const proposalSchema = z.object({
 
 type ProposalFormValues = z.infer<typeof proposalSchema>;
 
-export function ProposalPanel({ vehicleId }: { vehicleId: string }) {
+export function ProposalPanel({
+  slug,
+  vehicleInterest,
+}: {
+  slug: string;
+  vehicleInterest: string;
+}) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const {
     register,
@@ -34,7 +40,7 @@ export function ProposalPanel({ vehicleId }: { vehicleId: string }) {
 
   async function onSubmit(values: ProposalFormValues) {
     setIsSubmitting(true);
-    const result = await sendInterest({ vehicleId, ...values });
+    const result = await sendInterest({ slug, vehicleInterest, ...values });
     if (result?.error) {
       toast.error(result.error);
       setIsSubmitting(false);

@@ -41,7 +41,7 @@ export function LeadCard({
           {leadOriginLabel[lead.origin]}
         </Badge>
         <span className="truncate text-[10px] text-muted-foreground">
-          {lead.vendedorName}
+          {lead.vendedorName ?? "Não atribuído"}
         </span>
       </div>
     </Card>

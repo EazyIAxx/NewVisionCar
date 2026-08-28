@@ -188,6 +188,105 @@ export type Database = {
           },
         ]
       }
+      lead_activities: {
+        Row: {
+          agency_id: string
+          date: string
+          description: string
+          id: string
+          lead_id: string
+          type: string
+        }
+        Insert: {
+          agency_id: string
+          date?: string
+          description: string
+          id?: string
+          lead_id: string
+          type: string
+        }
+        Update: {
+          agency_id?: string
+          date?: string
+          description?: string
+          id?: string
+          lead_id?: string
+          type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lead_activities_agency_id_fkey"
+            columns: ["agency_id"]
+            isOneToOne: false
+            referencedRelation: "agencies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lead_activities_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      leads: {
+        Row: {
+          agency_id: string
+          created_at: string
+          email: string | null
+          id: string
+          name: string
+          origin: string
+          phone: string
+          stage: string
+          vehicle_interest: string | null
+          vendedor_id: string | null
+          visit_date: string | null
+        }
+        Insert: {
+          agency_id: string
+          created_at?: string
+          email?: string | null
+          id?: string
+          name: string
+          origin: string
+          phone: string
+          stage?: string
+          vehicle_interest?: string | null
+          vendedor_id?: string | null
+          visit_date?: string | null
+        }
+        Update: {
+          agency_id?: string
+          created_at?: string
+          email?: string | null
+          id?: string
+          name?: string
+          origin?: string
+          phone?: string
+          stage?: string
+          vehicle_interest?: string | null
+          vendedor_id?: string | null
+          visit_date?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "leads_agency_id_fkey"
+            columns: ["agency_id"]
+            isOneToOne: false
+            referencedRelation: "agencies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "leads_vendedor_id_fkey"
+            columns: ["vendedor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       listings: {
         Row: {
           agency_id: string
@@ -620,6 +719,17 @@ export type Database = {
           isOneToOne: true
           isSetofReturn: false
         }
+      }
+      create_vitrine_lead: {
+        Args: {
+          p_email: string
+          p_message: string
+          p_name: string
+          p_phone: string
+          p_slug: string
+          p_vehicle_interest: string
+        }
+        Returns: undefined
       }
       generate_unique_agency_slug: { Args: { p_name: string }; Returns: string }
       get_my_agency_id: { Args: never; Returns: string }
