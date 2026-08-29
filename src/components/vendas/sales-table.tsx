@@ -18,8 +18,7 @@ import { formatCurrency } from "@/lib/utils";
 import type { Sale } from "@/lib/types/sale";
 import { paymentMethodLabel } from "@/lib/types/sale";
 import type { Invoice } from "@/lib/types/invoice";
-import type { RenaveStatus } from "@/lib/types/renave";
-import { getRenaveTransferForSale } from "@/lib/mock/renave";
+import type { RenaveTransfer } from "@/lib/types/renave";
 import { InvoiceStatusBadge } from "@/components/vendas/invoice-status-badge";
 import { RenaveStatusBadge } from "@/components/vendas/renave-status-badge";
 import { RenaveTransferDialog } from "@/components/vendas/renave-transfer-dialog";
@@ -32,20 +31,17 @@ import {
 export function SalesTable({
   sales,
   invoices,
+  renaveTransfers,
   isGestor,
 }: {
   sales: Sale[];
   invoices: Record<string, Invoice>;
+  renaveTransfers: Record<string, RenaveTransfer>;
   isGestor: boolean;
 }) {
   const [query, setQuery] = useState("");
   const [localInvoices, setLocalInvoices] = useState(invoices);
-  const [renaveStatuses, setRenaveStatuses] = useState<Record<string, RenaveStatus>>(
-    () =>
-      Object.fromEntries(
-        sales.map((sale) => [sale.id, getRenaveTransferForSale(sale.id)?.status ?? "pendente"]),
-      ),
-  );
+  const [localRenaveTransfers, setLocalRenaveTransfers] = useState(renaveTransfers);
   const [emitting, setEmitting] = useState<string | null>(null);
   const [completing, setCompleting] = useState<string | null>(null);
 
@@ -90,7 +86,10 @@ export function SalesTable({
       toast.error(result.error);
     } else {
       toast.success("Transferência RENAVE concluída");
-      setRenaveStatuses((prev) => ({ ...prev, [saleId]: "concluida" }));
+      setLocalRenaveTransfers((prev) => ({
+        ...prev,
+        [saleId]: { ...prev[saleId], status: "concluida" },
+      }));
     }
     setCompleting(null);
   }
@@ -134,7 +133,8 @@ export function SalesTable({
           )}
           {filtered.map((sale) => {
             const invoice = localInvoices[sale.id];
-            const renaveStatus = renaveStatuses[sale.id] ?? "pendente";
+            const renaveTransfer = localRenaveTransfers[sale.id];
+            const renaveStatus = renaveTransfer?.status ?? "pendente";
             return (
               <TableRow key={sale.id}>
                 <TableCell className="text-muted-foreground">
@@ -183,10 +183,19 @@ export function SalesTable({
                   {renaveStatus === "pendente" ? (
                     <RenaveTransferDialog
                       saleId={sale.id}
-                      onStarted={() =>
-                        setRenaveStatuses((prev) => ({
+                      onStarted={(values) =>
+                        setLocalRenaveTransfers((prev) => ({
                           ...prev,
-                          [sale.id]: "em_andamento",
+                          [sale.id]: {
+                            id: "",
+                            saleId: sale.id,
+                            status: "em_andamento",
+                            buyerDocument: values.buyerDocument,
+                            buyerRg: values.buyerRg,
+                            buyerAddress: values.buyerAddress,
+                            protocol: null,
+                            updatedAt: new Date().toISOString(),
+                          },
                         }))
                       }
                     />

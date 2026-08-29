@@ -33,7 +33,7 @@ export function RenaveTransferDialog({
   onStarted,
 }: {
   saleId: string;
-  onStarted: () => void;
+  onStarted: (values: RenaveFormValues) => void;
 }) {
   const [open, setOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -58,7 +58,7 @@ export function RenaveTransferDialog({
     setIsSubmitting(false);
     setOpen(false);
     reset();
-    onStarted();
+    onStarted(values);
   }
 
   return (

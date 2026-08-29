@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import { getCurrentProfile } from "@/lib/auth/get-profile";
 import { fetchSales } from "@/lib/data/sales";
 import { fetchInvoicesBySaleId } from "@/lib/data/invoices";
+import { fetchRenaveTransfersBySaleId } from "@/lib/data/renave";
 import { SaleFormDialog } from "@/components/vendas/sale-form-dialog";
 import { SalesTable } from "@/components/vendas/sales-table";
 
@@ -9,6 +10,7 @@ export default async function VendasPage() {
   const profile = await getCurrentProfile();
   const sales = await fetchSales();
   const invoices = await fetchInvoicesBySaleId();
+  const renaveTransfers = await fetchRenaveTransfersBySaleId();
 
   const supabase = await createClient();
   const { data: members } = profile?.agency_id
@@ -43,6 +45,7 @@ export default async function VendasPage() {
       <SalesTable
         sales={sales}
         invoices={invoices}
+        renaveTransfers={renaveTransfers}
         isGestor={profile?.role === "gestor"}
       />
     </div>
