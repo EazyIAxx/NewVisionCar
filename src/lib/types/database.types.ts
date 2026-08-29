@@ -10,7 +10,7 @@ export type Database = {
   // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
-    PostgrestVersion: "14.17"
+    PostgrestVersion: "14.5"
   }
   graphql_public: {
     Tables: {
@@ -376,6 +376,67 @@ export type Database = {
             columns: ["agency_id"]
             isOneToOne: false
             referencedRelation: "agencies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      renave_transfers: {
+        Row: {
+          agency_id: string
+          buyer_address: string
+          buyer_document: string
+          buyer_rg: string
+          created_at: string
+          id: string
+          protocol: string | null
+          sale_id: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          agency_id: string
+          buyer_address: string
+          buyer_document: string
+          buyer_rg: string
+          created_at?: string
+          id?: string
+          protocol?: string | null
+          sale_id: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          agency_id?: string
+          buyer_address?: string
+          buyer_document?: string
+          buyer_rg?: string
+          created_at?: string
+          id?: string
+          protocol?: string | null
+          sale_id?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "renave_transfers_agency_id_fkey"
+            columns: ["agency_id"]
+            isOneToOne: false
+            referencedRelation: "agencies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "renave_transfers_sale_id_fkey"
+            columns: ["sale_id"]
+            isOneToOne: true
+            referencedRelation: "sales"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "renave_transfers_sale_id_fkey"
+            columns: ["sale_id"]
+            isOneToOne: true
+            referencedRelation: "sales_view"
             referencedColumns: ["id"]
           },
         ]

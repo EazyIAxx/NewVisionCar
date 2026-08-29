@@ -409,8 +409,8 @@ Expansões pós-MVP. Mesmo fluxo em duas fases das Milestones 3–8: primeiro a 
 **Branch:** `feature/m14-renave-backend`
 
 **Entregas:**
-- [ ] Integração com a API do RENAVE (via DETRAN do estado ou provedor homologado — a definir)
-- [ ] Migration `renave_transfers` (`agency_id`, `sale_id`, status, protocolo, payload de resposta)
+- [ ] Integração com a API do RENAVE (via DETRAN do estado ou provedor homologado — a definir); por enquanto, "Iniciar transferência" grava `em_andamento` real no banco (intenção real, não confirmação do órgão) e "Simular conclusão" (gestor/vendedor) simula o retorno
+- [x] Migration `renave_transfers` (`agency_id`, `sale_id`, status, protocolo) — RLS segue o padrão de `sales` (Vendedor gerencia as próprias vendas, Gestor vê tudo)
 
 **Commit final:** `feat: backend de integração com o renave`
 

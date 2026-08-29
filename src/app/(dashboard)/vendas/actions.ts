@@ -98,16 +98,41 @@ type RenaveTransferInput = {
   buyerAddress: string;
 };
 
-// TODO(M14 backend): substituir por chamada real à API do RENAVE (via
-// DETRAN do estado ou provedor homologado) + insert na tabela `renave_transfers`.
+// TODO: substituir por chamada real à API do RENAVE (via DETRAN do estado ou
+// provedor homologado) assim que existir — por enquanto grava o registro
+// real como "em_andamento" (representa a intenção real de iniciar, não uma
+// confirmação do órgão).
 export async function startRenaveTransfer(input: RenaveTransferInput): Promise<ActionResult> {
-  console.log("start renave transfer (mock)", input);
-  return { error: null };
+  const profile = await getCurrentProfile();
+  if (!profile?.agency_id) return { error: "Sessão inválida." };
+
+  const supabase = await createClient();
+  const { error } = await supabase.from("renave_transfers").insert({
+    agency_id: profile.agency_id,
+    sale_id: input.saleId,
+    buyer_document: input.buyerDocument,
+    buyer_rg: input.buyerRg,
+    buyer_address: input.buyerAddress,
+  });
+
+  return { error: error?.message ?? null };
 }
 
-// TODO(M14 backend): status real vem do retorno assíncrono da API do RENAVE
-// (webhook/polling), não de uma ação disparada pelo usuário.
+// TODO: remover quando o provedor real existir — o status "concluída" real
+// vem do retorno assíncrono da API do RENAVE (webhook/polling), não de uma
+// ação disparada pelo usuário.
 export async function completeRenaveTransfer(saleId: string): Promise<ActionResult> {
-  console.log("complete renave transfer (mock)", saleId);
-  return { error: null };
+  const protocol = `RNV-${new Date().getFullYear()}-${String(Math.floor(1000 + Math.random() * 9000))}`;
+
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("renave_transfers")
+    .update({
+      status: "concluida",
+      protocol,
+      updated_at: new Date().toISOString(),
+    })
+    .eq("sale_id", saleId);
+
+  return { error: error?.message ?? null };
 }
