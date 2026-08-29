@@ -133,6 +133,83 @@ export type Database = {
           },
         ]
       }
+      financing_requests: {
+        Row: {
+          agency_id: string
+          created_at: string
+          customer_email: string | null
+          customer_name: string
+          customer_phone: string
+          down_payment: number
+          id: string
+          installment_estimate: number
+          lead_id: string | null
+          status: string
+          term_months: number
+          updated_at: string
+          vehicle_id: string
+        }
+        Insert: {
+          agency_id: string
+          created_at?: string
+          customer_email?: string | null
+          customer_name: string
+          customer_phone: string
+          down_payment: number
+          id?: string
+          installment_estimate: number
+          lead_id?: string | null
+          status?: string
+          term_months: number
+          updated_at?: string
+          vehicle_id: string
+        }
+        Update: {
+          agency_id?: string
+          created_at?: string
+          customer_email?: string | null
+          customer_name?: string
+          customer_phone?: string
+          down_payment?: number
+          id?: string
+          installment_estimate?: number
+          lead_id?: string | null
+          status?: string
+          term_months?: number
+          updated_at?: string
+          vehicle_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "financing_requests_agency_id_fkey"
+            columns: ["agency_id"]
+            isOneToOne: false
+            referencedRelation: "agencies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "financing_requests_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "financing_requests_vehicle_id_fkey"
+            columns: ["vehicle_id"]
+            isOneToOne: false
+            referencedRelation: "vehicles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "financing_requests_vehicle_id_fkey"
+            columns: ["vehicle_id"]
+            isOneToOne: false
+            referencedRelation: "vehicles_view"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       invoices: {
         Row: {
           agency_id: string
@@ -827,6 +904,19 @@ export type Database = {
       }
       is_gestor: { Args: never; Returns: boolean }
       join_agency_with_invite: { Args: { p_code: string }; Returns: string }
+      request_vitrine_financing: {
+        Args: {
+          p_down_payment: number
+          p_email: string
+          p_installment_estimate: number
+          p_name: string
+          p_phone: string
+          p_slug: string
+          p_term_months: number
+          p_vehicle_id: string
+        }
+        Returns: undefined
+      }
       slugify: { Args: { p_text: string }; Returns: string }
     }
     Enums: {

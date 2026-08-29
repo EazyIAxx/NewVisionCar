@@ -9,6 +9,7 @@ import { VehicleForm } from "@/components/estoque/vehicle-form";
 import { ListingPublisher } from "@/components/estoque/listing-publisher";
 import { fetchListingStatuses } from "@/lib/data/listings";
 import { fetchServiceOrders } from "@/lib/data/service-orders";
+import { fetchFinancingRequestsByVehicleId } from "@/lib/data/financing";
 import { ServiceOrdersPanel } from "@/components/estoque/service-orders-panel";
 import { FinancingSimulatorPanel } from "@/components/estoque/financing-simulator-panel";
 import { DeleteVehicleButton } from "@/components/estoque/delete-vehicle-button";
@@ -40,6 +41,7 @@ export default async function EditarVeiculoPage({
   const listingStatuses = await fetchListingStatuses(id);
   const isGestor = profile.role === "gestor";
   const serviceOrders = isGestor ? await fetchServiceOrders(id) : [];
+  const financingRequests = await fetchFinancingRequestsByVehicleId(id);
 
   const vehicle: Vehicle = {
     // Colunas da view vêm tipadas como nullable, mas são NOT NULL na tabela
@@ -94,7 +96,12 @@ export default async function EditarVeiculoPage({
       {isGestor && (
         <ServiceOrdersPanel vehicleId={vehicle.id} initialOrders={serviceOrders} />
       )}
-      <FinancingSimulatorPanel price={vehicle.price} />
+      <FinancingSimulatorPanel
+        vehicleId={vehicle.id}
+        price={vehicle.price}
+        initialRequests={financingRequests}
+        isGestor={isGestor}
+      />
     </div>
   );
 }

@@ -110,7 +110,7 @@ export default async function VitrineVehicleDetailPage({
             slug={slug}
             vehicleInterest={`${vehicle.brand} ${vehicle.model}`}
           />
-          <FinancingSimulator price={vehicle.price} />
+          <FinancingSimulator slug={slug} vehicleId={vehicle.id} price={vehicle.price} />
         </div>
       </div>
     </div>
