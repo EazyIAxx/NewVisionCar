@@ -421,8 +421,8 @@ Expansões pós-MVP. Mesmo fluxo em duas fases das Milestones 3–8: primeiro a 
 **Branch:** `feature/m15-financiamento-backend`
 
 **Entregas:**
-- [ ] Integração com API de parceiro(s) financeiro(s) para simulação com taxas reais (a definir)
-- [ ] Migration `financing_requests` (`agency_id`, `vehicle_id`, `lead_id`/`sale_id`, status, valor solicitado, resposta do parceiro)
+- [ ] Integração com API de parceiro(s) financeiro(s) para simulação com taxas reais (a definir); por enquanto, "Solicitar financiamento" grava um pedido real como "pendente" e o Gestor simula a decisão (Aprovado/Recusado)
+- [x] Migration `financing_requests` (`agency_id`, `vehicle_id`, `lead_id`, status, valores simulados, dados do solicitante) — não existia nenhuma ação de solicitar até agora (só a calculadora), então essa ação foi criada junto do backend; solicitação pela vitrine pública também cria lead real no CRM (origem "site")
 
 **Commit final:** `feat: backend de simulação e integração de financiamento`
 

@@ -7,6 +7,7 @@ import { getCurrentProfile } from "@/lib/auth/get-profile";
 import type { VehicleStatus } from "@/lib/types/vehicle";
 import type { ListingPortal } from "@/lib/types/listing";
 import type { ServiceOrderStatus, ServiceOrderType } from "@/lib/types/service-order";
+import type { FinancingRequestStatus } from "@/lib/types/financing";
 
 export type ActionResult = { error: string | null };
 
@@ -286,4 +287,56 @@ export async function updateVehicle(
   }
 
   return { error: null };
+}
+
+type FinancingRequestInput = {
+  vehicleId: string;
+  customerName: string;
+  customerPhone: string;
+  customerEmail?: string;
+  downPayment: number;
+  termMonths: number;
+  installmentEstimate: number;
+};
+
+// TODO: substituir por integração real com parceiro(s) financeiro(s) assim
+// que existir — por enquanto grava o pedido real como "pendente" (nada foi
+// enviado a um parceiro financeiro real ainda).
+export async function requestFinancing(input: FinancingRequestInput): Promise<ActionResult> {
+  const profile = await getCurrentProfile();
+  if (!profile?.agency_id) return { error: "Sessão inválida." };
+
+  const supabase = await createClient();
+  const { error } = await supabase.from("financing_requests").insert({
+    agency_id: profile.agency_id,
+    vehicle_id: input.vehicleId,
+    customer_name: input.customerName,
+    customer_phone: input.customerPhone,
+    customer_email: input.customerEmail || null,
+    down_payment: input.downPayment,
+    term_months: input.termMonths,
+    installment_estimate: input.installmentEstimate,
+  });
+
+  return { error: error?.message ?? null };
+}
+
+// Decisão de crédito — RLS já restringe a is_gestor(), mensagem amigável em
+// vez de deixar o vendedor bater num erro de policy sem explicação.
+export async function updateFinancingRequestStatus(
+  requestId: string,
+  status: FinancingRequestStatus,
+): Promise<ActionResult> {
+  const profile = await getCurrentProfile();
+  if (profile?.role !== "gestor") {
+    return { error: "Apenas o gestor pode aprovar ou recusar um financiamento." };
+  }
+
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("financing_requests")
+    .update({ status, updated_at: new Date().toISOString() })
+    .eq("id", requestId);
+
+  return { error: error?.message ?? null };
 }
