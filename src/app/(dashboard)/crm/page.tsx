@@ -23,7 +23,7 @@ export default async function CrmPage() {
     .map((m) => ({ id: m.id, fullName: m.full_name }));
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex min-w-0 flex-col gap-4">
       <div className="flex justify-end">
         <NewLeadDialog vendedores={vendedores} currentProfileId={profile?.id ?? ""} />
       </div>
