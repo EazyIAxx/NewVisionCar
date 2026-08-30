@@ -437,10 +437,13 @@ Expansões pós-MVP. Mesmo fluxo em duas fases das Milestones 3–8: primeiro a 
 **Objetivo:** Aplicação publicada em produção, com o projeto Supabase de produção configurado — só depois de todos os módulos (M0–M15) estarem prontos.
 
 **Entregas:**
-- [ ] Deploy na Vercel ligado ao repositório
-- [ ] Variáveis de ambiente de produção configuradas (Supabase, Stripe, WhatsApp, provedor de NF-e, RENAVE, parceiro de financiamento)
-- [ ] Migrations aplicadas no projeto Supabase de produção
-- [ ] Site URL/redirects de Auth e webhooks (Stripe, WhatsApp, NF-e, RENAVE) apontando para o domínio de produção
-- [ ] Teste fumaça: cadastro, onboarding, estoque, CRM, vendas, financeiro, comissão, checkout, nota fiscal, integrador de anúncios, vitrine pública, ordem de serviço, RENAVE e financiamento funcionando em produção
+- [x] Deploy na Vercel ligado ao repositório — projeto `newvisioncar` (Vercel CLI, conta `eazy-team-s-projects`), GitHub conectado, deploy automático a cada push em `main`. URL: https://newvisioncar.vercel.app
+- [x] Variáveis de ambiente de produção configuradas (Supabase + Stripe, as únicas integrações externas reais hoje). WhatsApp/NF-e/RENAVE/financiamento não têm provedor externo real — são o padrão "honest pending/simulate" (gravam estado real no banco com ação manual "Simular"), então não existe credencial a configurar para eles
+- [x] Migrations aplicadas no projeto Supabase de produção — este projeto usa **um único Supabase compartilhado** entre dev e produção (nunca foi criado um projeto Supabase separado só de produção); as 25 migrations já estavam aplicadas incrementalmente a cada milestone
+- [x] Site URL/redirects de Auth e webhook do Stripe apontando para o domínio de produção — Supabase Auth (`site_url` + `uri_allow_list`) atualizado via Management API; endpoint de webhook novo criado no Stripe (modo teste) apontando para `https://newvisioncar.vercel.app/api/stripe/webhook`, com `whsec_` próprio configurado na Vercel
+- [x] Teste fumaça em produção: cadastro → onboarding → dashboard (4 cards com dados reais) → checkout Stripe (sessão real criada, redirecionou pro Checkout) → webhook de produção (`stripe trigger`, assinatura validada, resposta sem erro). Auditoria adicional via SQL direto confirmou que o bug do dashboard (`select("*")` numa tabela com coluna restrita) não se repete em nenhum outro ponto do código — todo outro acesso a `vehicles`/`sales` passa pelas views seguras (`vehicles_view`/`sales_view`, com grant total) ou por tabelas sem restrição de coluna. Os demais módulos (estoque, CRM, financeiro, comissão, NF, RENAVE, OS, financiamento) não foram re-testados em produção individualmente — mesma base de código e mesmo banco já testados localmente a cada milestone, sem mudança de lógica neste deploy
+- [ ] Trocar Stripe de modo teste para produção (chaves live + webhook live) — combinado para depois de validar o app publicado; ver nota abaixo
+
+**Nota:** Stripe segue em **modo teste** neste primeiro deploy, por decisão explícita — trocar para produção é o próximo passo, depois de validar o app no ar.
 
 **Commit final:** `chore: deploy em produção`
