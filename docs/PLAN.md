@@ -184,10 +184,10 @@ Convenção de branch: `feature/mN-nome-curto` (setup e deploy usam `chore/...`)
 **Branch:** `feature/m3-financeiro-backend`
 
 **Entregas:**
-- [ ] Migration `expenses` (`agency_id`, categoria, valor, data)
-- [ ] Cálculo de lucro líquido por veículo (`sale_price - cost_price - despesas vinculadas`)
-- [ ] RLS: acesso total restrito a `is_gestor()` em todas as tabelas financeiras
-- [ ] Server Actions de CRUD de despesas + queries agregadas por período/vendedor
+- [x] Migration `expenses` (`agency_id`, categoria, valor, data)
+- [x] Cálculo de lucro líquido agregado (`faturamento - custo das vendas - despesas`), por mês na Visão Geral — não chegou a ter uma quebra por veículo individual, só agregado
+- [x] RLS: `expenses` restrita a `is_gestor()` (nem por RLS nem pela UI o vendedor vê, mesma regra de Nota Fiscal/Ordem de Serviço)
+- [x] Server Actions de CRUD de despesas (criar + **excluir**, com confirmação) — achado num review pedido pelo usuário: nunca tinha sido implementado, despesas eram 100% mock desde a fase de interface
 
 **Commit final:** `feat: backend do financeiro — despesas, lucro líquido e RLS`
 
@@ -213,8 +213,9 @@ Convenção de branch: `feature/mN-nome-curto` (setup e deploy usam `chore/...`)
 **Branch:** `feature/m5-desempenho-backend`
 
 **Entregas:**
-- [ ] Cálculo de comissão (0,5% do `sale_price` por venda fechada), a partir dos dados de M2 (venda) e M4 (atribuição do fechamento)
-- [ ] RLS: Gestor vê todos; Vendedor só `vendedor_id = auth.uid()`
+- [x] Cálculo de comissão a partir de vendas reais (Backend de Vendas) — percentual configurável por forma de pagamento pelo Gestor (não um valor fixo de 0,5%), agora persistido de verdade em `commission_rates` (achado num review: o Gestor editava a taxa, mas nunca salvava de verdade — sempre voltava pro padrão ao recarregar)
+- [x] RLS: leitura de `commission_rates` liberada pra agência toda (vendedor precisa ver a taxa que se aplica à própria comissão em "Meu desempenho"); só o Gestor edita
+- [x] Ranking/comissão agrupados por `vendedor_id` real, não mais por nome (frágil — corrigido no mesmo review)
 
 **Commit final:** `feat: backend de desempenho e comissões — 0,5% por veículo vendido`
 

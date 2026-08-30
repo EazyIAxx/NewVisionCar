@@ -6,22 +6,22 @@ import type { Sale } from "@/lib/types/sale";
 export function computePerformance(sales: Sale[]): VendedorPerformance[] {
   const totals = new Map<
     string,
-    { id: string; vehiclesSold: number; totalSold: number }
+    { name: string; vehiclesSold: number; totalSold: number }
   >();
   for (const sale of sales) {
-    const current = totals.get(sale.vendedorName) ?? {
-      id: sale.vendedorId,
+    const current = totals.get(sale.vendedorId) ?? {
+      name: sale.vendedorName,
       vehiclesSold: 0,
       totalSold: 0,
     };
     current.vehiclesSold += 1;
     current.totalSold += sale.amount;
-    totals.set(sale.vendedorName, current);
+    totals.set(sale.vendedorId, current);
   }
 
-  return Array.from(totals.entries()).map(([name, stats]) => ({
-    id: stats.id,
-    name,
+  return Array.from(totals.entries()).map(([id, stats]) => ({
+    id,
+    name: stats.name,
     vehiclesSold: stats.vehiclesSold,
     totalSold: stats.totalSold,
   }));
@@ -31,10 +31,10 @@ export function computePerformance(sales: Sale[]): VendedorPerformance[] {
 // não é mais um percentual único sobre o total vendido.
 export function calculateVendedorCommission(
   sales: Sale[],
-  vendedorName: string,
+  vendedorId: string,
   rates: CommissionRates,
 ): number {
   return sales
-    .filter((sale) => sale.vendedorName === vendedorName)
+    .filter((sale) => sale.vendedorId === vendedorId)
     .reduce((sum, sale) => sum + sale.amount * rates[sale.paymentMethod], 0);
 }

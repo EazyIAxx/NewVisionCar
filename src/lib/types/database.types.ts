@@ -148,6 +148,76 @@ export type Database = {
           },
         ]
       }
+      commission_rates: {
+        Row: {
+          agency_id: string
+          id: string
+          payment_method: string
+          rate: number
+          updated_at: string
+        }
+        Insert: {
+          agency_id: string
+          id?: string
+          payment_method: string
+          rate: number
+          updated_at?: string
+        }
+        Update: {
+          agency_id?: string
+          id?: string
+          payment_method?: string
+          rate?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "commission_rates_agency_id_fkey"
+            columns: ["agency_id"]
+            isOneToOne: false
+            referencedRelation: "agencies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      expenses: {
+        Row: {
+          agency_id: string
+          amount: number
+          category: string
+          created_at: string
+          date: string
+          description: string
+          id: string
+        }
+        Insert: {
+          agency_id: string
+          amount: number
+          category: string
+          created_at?: string
+          date: string
+          description: string
+          id?: string
+        }
+        Update: {
+          agency_id?: string
+          amount?: number
+          category?: string
+          created_at?: string
+          date?: string
+          description?: string
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "expenses_agency_id_fkey"
+            columns: ["agency_id"]
+            isOneToOne: false
+            referencedRelation: "agencies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       financing_requests: {
         Row: {
           agency_id: string

@@ -4,16 +4,17 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { formatCurrency } from "@/lib/utils";
 import { FinanceOverviewChart } from "@/components/financeiro/finance-overview-chart";
 import { fetchSales } from "@/lib/data/sales";
-import { mockExpenses, computeMonthlyFinance } from "@/app/(dashboard)/financeiro/mock-data";
+import { fetchExpenses } from "@/lib/data/expenses";
+import { computeMonthlyFinance } from "@/app/(dashboard)/financeiro/mock-data";
 
 export default async function FinanceiroPage() {
-  const sales = await fetchSales();
+  const [sales, expenses] = await Promise.all([fetchSales(), fetchExpenses()]);
 
   const totalRevenue = sales.reduce((sum, sale) => sum + sale.amount, 0);
   const totalCost = sales.reduce((sum, sale) => sum + (sale.costPrice ?? 0), 0);
-  const totalExpenses = mockExpenses.reduce((sum, expense) => sum + expense.amount, 0);
+  const totalExpenses = expenses.reduce((sum, expense) => sum + expense.amount, 0);
   const netProfit = totalRevenue - totalCost - totalExpenses;
-  const monthlyFinance = computeMonthlyFinance(sales, mockExpenses);
+  const monthlyFinance = computeMonthlyFinance(sales, expenses);
 
   return (
     <div className="flex flex-col gap-6">

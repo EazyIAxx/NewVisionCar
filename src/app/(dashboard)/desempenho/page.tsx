@@ -7,7 +7,7 @@ import {
   computePerformance,
   calculateVendedorCommission,
 } from "@/app/(dashboard)/desempenho/mock-data";
-import { defaultCommissionRates } from "@/lib/mock/commission-rates";
+import { fetchCommissionRates } from "@/lib/data/commission-rates";
 import { fetchSales } from "@/lib/data/sales";
 
 export default async function DesempenhoPage() {
@@ -16,7 +16,7 @@ export default async function DesempenhoPage() {
     redirect("/login");
   }
 
-  const sales = await fetchSales();
+  const [sales, rates] = await Promise.all([fetchSales(), fetchCommissionRates()]);
   const performance = computePerformance(sales);
 
   if (profile.role === "vendedor") {
@@ -38,11 +38,7 @@ export default async function DesempenhoPage() {
       );
     }
 
-    const commission = calculateVendedorCommission(
-      sales,
-      vendedor.name,
-      defaultCommissionRates,
-    );
+    const commission = calculateVendedorCommission(sales, vendedor.id, rates);
 
     return (
       <div className="flex flex-col gap-6">
@@ -70,7 +66,7 @@ export default async function DesempenhoPage() {
       <DesempenhoDashboard
         performance={performance}
         sales={sales}
-        initialRates={defaultCommissionRates}
+        initialRates={rates}
       />
     </div>
   );
