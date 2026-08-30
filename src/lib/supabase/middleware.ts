@@ -1,7 +1,12 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
-const PUBLIC_PATHS = ["/login", "/signup", "/auth/confirm", "/vitrine"];
+// /api/* é exclusivamente pra webhooks (Stripe, WhatsApp) — nunca rota
+// autenticada por sessão de usuário (essas usam Server Actions). Sem isso,
+// a chamada do Stripe (sem cookie de sessão nenhum) cai no `!user` abaixo e
+// é redirecionada pro /login com 307, e o corpo do webhook nunca chega no
+// handler de verdade.
+const PUBLIC_PATHS = ["/login", "/signup", "/auth/confirm", "/vitrine", "/api"];
 
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request });
