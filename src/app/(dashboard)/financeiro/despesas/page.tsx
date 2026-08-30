@@ -1,19 +1,10 @@
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
 import { formatCurrency } from "@/lib/utils";
-import { expenseCategoryLabel } from "@/lib/types/finance";
 import { ExpenseFormDialog } from "@/components/financeiro/expense-form-dialog";
-import { mockExpenses } from "@/app/(dashboard)/financeiro/mock-data";
+import { ExpensesTable } from "@/components/financeiro/expenses-table";
+import { fetchExpenses } from "@/lib/data/expenses";
 
-export default function DespesasPage() {
-  const expenses = [...mockExpenses].sort((a, b) => (a.date < b.date ? 1 : -1));
+export default async function DespesasPage() {
+  const expenses = await fetchExpenses();
   const total = expenses.reduce((sum, expense) => sum + expense.amount, 0);
 
   return (
@@ -25,34 +16,7 @@ export default function DespesasPage() {
         <ExpenseFormDialog />
       </div>
 
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Data</TableHead>
-            <TableHead>Categoria</TableHead>
-            <TableHead>Descrição</TableHead>
-            <TableHead className="text-right">Valor</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {expenses.map((expense) => (
-            <TableRow key={expense.id}>
-              <TableCell className="text-muted-foreground">
-                {new Date(expense.date).toLocaleDateString("pt-BR")}
-              </TableCell>
-              <TableCell>
-                <Badge variant="secondary">
-                  {expenseCategoryLabel[expense.category]}
-                </Badge>
-              </TableCell>
-              <TableCell>{expense.description}</TableCell>
-              <TableCell className="text-right font-medium">
-                {formatCurrency(expense.amount)}
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+      <ExpensesTable expenses={expenses} />
     </div>
   );
 }

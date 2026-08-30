@@ -23,7 +23,7 @@ export function DesempenhoDashboard({
   const ranking = performance
     .map((vendedor) => ({
       ...vendedor,
-      commission: calculateVendedorCommission(sales, vendedor.name, rates),
+      commission: calculateVendedorCommission(sales, vendedor.id, rates),
     }))
     .sort((a, b) => b.totalSold - a.totalSold);
 

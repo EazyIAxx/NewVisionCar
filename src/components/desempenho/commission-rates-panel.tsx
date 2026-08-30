@@ -29,7 +29,10 @@ export function CommissionRatesPanel({
   const [percentInputs, setPercentInputs] = useState<Record<PaymentMethod, string>>(
     () =>
       Object.fromEntries(
-        paymentMethods.map((method) => [method, String(rates[method] * 100)]),
+        paymentMethods.map((method) => [
+          method,
+          String(Number((rates[method] * 100).toFixed(4))),
+        ]),
       ) as Record<PaymentMethod, string>,
   );
   const [isSaving, setIsSaving] = useState(false);
