@@ -32,6 +32,11 @@ export async function updateSession(request: NextRequest) {
   } = await supabase.auth.getUser();
 
   const { pathname } = request.nextUrl;
+  // Repassado pro layout do dashboard saber a rota atual sem uma segunda
+  // consulta — usado só pra deixar /settings/billing acessível mesmo com
+  // assinatura inativa (pra dar pra reassinar). Não é gate de papel/negócio
+  // (isso continua responsabilidade do layout), só transporte de dado.
+  supabaseResponse.headers.set("x-pathname", pathname);
   const isPublicPath =
     pathname === "/" ||
     PUBLIC_PATHS.some((path) => pathname.startsWith(path));

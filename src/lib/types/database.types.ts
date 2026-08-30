@@ -47,8 +47,12 @@ export type Database = {
           inscricao_estadual: string | null
           inscricao_municipal: string | null
           name: string
+          plan_status: string
           regime_tributario: string | null
           slug: string | null
+          stripe_customer_id: string | null
+          stripe_subscription_id: string | null
+          trial_ends_at: string | null
           vitrine_accent_color: string
           vitrine_whatsapp: string | null
         }
@@ -59,8 +63,12 @@ export type Database = {
           inscricao_estadual?: string | null
           inscricao_municipal?: string | null
           name: string
+          plan_status?: string
           regime_tributario?: string | null
           slug?: string | null
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          trial_ends_at?: string | null
           vitrine_accent_color?: string
           vitrine_whatsapp?: string | null
         }
@@ -71,8 +79,12 @@ export type Database = {
           inscricao_estadual?: string | null
           inscricao_municipal?: string | null
           name?: string
+          plan_status?: string
           regime_tributario?: string | null
           slug?: string | null
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          trial_ends_at?: string | null
           vitrine_accent_color?: string
           vitrine_whatsapp?: string | null
         }

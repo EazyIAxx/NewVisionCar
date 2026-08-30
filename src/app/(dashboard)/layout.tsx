@@ -1,3 +1,4 @@
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
 import { createClient } from "@/lib/supabase/server";
@@ -24,9 +25,18 @@ export default async function DashboardLayout({
   const supabase = await createClient();
   const { data: agency } = await supabase
     .from("agencies")
-    .select("name")
+    .select("name, plan_status")
     .eq("id", profile.agency_id)
     .single();
+
+  // Bloqueia o resto do dashboard se a assinatura estiver inadimplente ou
+  // cancelada — /settings/billing continua acessível pra dar pra reassinar.
+  const pathname = (await headers()).get("x-pathname") ?? "";
+  const isBillingBlocked =
+    agency?.plan_status === "past_due" || agency?.plan_status === "canceled";
+  if (isBillingBlocked && pathname !== "/settings/billing") {
+    redirect("/settings/billing");
+  }
 
   return (
     <SidebarProvider>
