@@ -28,7 +28,7 @@ export async function createCheckoutSession(): Promise<CheckoutResult> {
       ...(agency?.stripe_customer_id
         ? { customer: agency.stripe_customer_id }
         : { customer_email: profile.email ?? undefined }),
-      line_items: [{ price: process.env.STRIPE_PRICE_ID!, quantity: 1 }],
+      line_items: [{ price: process.env.STRIPE_PRO_PRICE_ID!, quantity: 1 }],
       success_url: `${appUrl}/settings/billing?checkout=success`,
       cancel_url: `${appUrl}/settings/billing?checkout=canceled`,
     });
