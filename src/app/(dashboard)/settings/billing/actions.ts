@@ -3,13 +3,24 @@
 import { createClient } from "@/lib/supabase/server";
 import { getCurrentProfile } from "@/lib/auth/get-profile";
 import { stripe } from "@/lib/stripe/server";
+import type { PlanTier } from "@/lib/types/billing";
 
 export type CheckoutResult = { error: string | null; url?: string };
 
-export async function createCheckoutSession(): Promise<CheckoutResult> {
+const PRICE_ID_BY_TIER: Record<PlanTier, string | undefined> = {
+  basico: process.env.STRIPE_PRICE_ID_BASICO,
+  com_ia: process.env.STRIPE_PRICE_ID_IA,
+};
+
+export async function createCheckoutSession(tier: PlanTier): Promise<CheckoutResult> {
   const profile = await getCurrentProfile();
   if (profile?.role !== "gestor" || !profile.agency_id) {
     return { error: "Apenas o gestor pode assinar." };
+  }
+
+  const priceId = PRICE_ID_BY_TIER[tier];
+  if (!priceId) {
+    return { error: "Plano não configurado." };
   }
 
   const supabase = await createClient();
@@ -24,11 +35,11 @@ export async function createCheckoutSession(): Promise<CheckoutResult> {
   try {
     const session = await stripe.checkout.sessions.create({
       mode: "subscription",
-      client_reference_id: profile.agency_id,
+      metadata: { agency_id: profile.agency_id, plan_tier: tier },
       ...(agency?.stripe_customer_id
         ? { customer: agency.stripe_customer_id }
         : { customer_email: profile.email ?? undefined }),
-      line_items: [{ price: process.env.STRIPE_PRO_PRICE_ID!, quantity: 1 }],
+      line_items: [{ price: priceId, quantity: 1 }],
       success_url: `${appUrl}/settings/billing?checkout=success`,
       cancel_url: `${appUrl}/settings/billing?checkout=canceled`,
     });

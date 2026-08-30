@@ -13,8 +13,8 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
-import { formatCurrency } from "@/lib/utils";
-import { PLAN } from "@/lib/billing/plan";
+import { cn, formatCurrency } from "@/lib/utils";
+import { PLANS } from "@/lib/billing/plan";
 import { subscriptionStatusLabel, type Subscription } from "@/lib/types/billing";
 import {
   createCheckoutSession,
@@ -22,7 +22,8 @@ import {
 } from "@/app/(dashboard)/settings/billing/actions";
 
 export function BillingPanel({ subscription }: { subscription: Subscription }) {
-  const [isRedirecting, setIsRedirecting] = useState(false);
+  const [loadingTier, setLoadingTier] = useState<string | null>(null);
+  const [isRedirectingPortal, setIsRedirectingPortal] = useState(false);
 
   const trialDaysLeft = subscription.trialEndsAt
     ? Math.max(
@@ -33,23 +34,23 @@ export function BillingPanel({ subscription }: { subscription: Subscription }) {
 
   const isSubscribed = subscription.status === "active";
 
-  async function handleSubscribe() {
-    setIsRedirecting(true);
-    const result = await createCheckoutSession();
+  async function handleSubscribe(tier: (typeof PLANS)[number]["tier"]) {
+    setLoadingTier(tier);
+    const result = await createCheckoutSession(tier);
     if (result?.error || !result?.url) {
       toast.error(result?.error ?? "Não foi possível iniciar o checkout.");
-      setIsRedirecting(false);
+      setLoadingTier(null);
       return;
     }
     window.location.href = result.url;
   }
 
   async function handleManage() {
-    setIsRedirecting(true);
+    setIsRedirectingPortal(true);
     const result = await createPortalSession();
     if (result?.error || !result?.url) {
       toast.error(result?.error ?? "Não foi possível abrir o portal.");
-      setIsRedirecting(false);
+      setIsRedirectingPortal(false);
       return;
     }
     window.location.href = result.url;
@@ -74,45 +75,65 @@ export function BillingPanel({ subscription }: { subscription: Subscription }) {
           <Button
             variant="outline"
             className="cursor-pointer"
-            disabled={isRedirecting}
+            disabled={isRedirectingPortal}
             onClick={handleManage}
           >
-            {isRedirecting ? "Abrindo..." : "Gerenciar assinatura"}
+            {isRedirectingPortal ? "Abrindo..." : "Gerenciar assinatura"}
           </Button>
         )}
       </div>
 
-      <div className="mx-auto w-full max-w-sm">
-        <Card className="ring-2 ring-primary">
-          <CardHeader>
-            <CardTitle className="text-lg">{PLAN.name}</CardTitle>
-            <CardDescription>
-              <span className="text-2xl font-semibold text-foreground">
-                {formatCurrency(PLAN.price)}
-              </span>
-              /mês
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="flex flex-col gap-4">
-            <ul className="flex flex-col gap-2 text-sm">
-              {PLAN.features.map((feature) => (
-                <li key={feature} className="flex items-start gap-2">
-                  <Check className="mt-0.5 size-4 shrink-0 text-status-available" />
-                  <span className="text-muted-foreground">{feature}</span>
-                </li>
-              ))}
-            </ul>
-            {!isSubscribed && (
-              <Button
-                className="cursor-pointer bg-gradient-to-r from-[#1b2a8f] via-[#2596e0] to-[#56d3f2] text-white hover:brightness-110"
-                disabled={isRedirecting}
-                onClick={handleSubscribe}
-              >
-                {isRedirecting ? "Redirecionando..." : "Assinar"}
-              </Button>
-            )}
-          </CardContent>
-        </Card>
+      <div className="grid gap-4 sm:grid-cols-2">
+        {PLANS.map((plan) => {
+          const isCurrentPlan = isSubscribed && subscription.planTier === plan.tier;
+          return (
+            <div key={plan.tier} className="relative">
+              {plan.highlight && (
+                <span className="absolute -top-3 left-1/2 z-10 -translate-x-1/2 rounded-full bg-gradient-to-r from-[#1b2a8f] via-[#2596e0] to-[#56d3f2] px-3 py-1 text-xs font-medium text-white">
+                  Mais popular
+                </span>
+              )}
+              <Card className={cn(plan.highlight && "ring-2 ring-primary")}>
+                <CardHeader>
+                  <CardTitle className="text-lg">{plan.name}</CardTitle>
+                  <CardDescription>
+                    <span className="text-2xl font-semibold text-foreground">
+                      {formatCurrency(plan.price)}
+                    </span>
+                    /mês
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="flex flex-col gap-4">
+                  <ul className="flex flex-col gap-2 text-sm">
+                    {plan.features.map((feature) => (
+                      <li key={feature} className="flex items-start gap-2">
+                        <Check className="mt-0.5 size-4 shrink-0 text-status-available" />
+                        <span className="text-muted-foreground">{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <Button
+                    className={cn(
+                      "cursor-pointer",
+                      plan.highlight &&
+                        !isCurrentPlan &&
+                        "bg-gradient-to-r from-[#1b2a8f] via-[#2596e0] to-[#56d3f2] text-white hover:brightness-110",
+                    )}
+                    variant={plan.highlight && !isCurrentPlan ? "default" : "outline"}
+                    disabled={loadingTier === plan.tier || isCurrentPlan}
+                    onClick={() => handleSubscribe(plan.tier)}
+                  >
+                    {loadingTier === plan.tier
+                      ? "Redirecionando..."
+                      : isCurrentPlan
+                        ? "Plano atual"
+                        : "Assinar"}
+                  </Button>
+                </CardContent>
+              </Card>
+            </div>
+          );
+        })}
       </div>
     </div>
   );

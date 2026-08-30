@@ -34,6 +34,18 @@ function mapSubscriptionStatus(
   }
 }
 
+const TIER_BY_PRICE_ID: Record<string, "basico" | "com_ia"> = {
+  ...(process.env.STRIPE_PRICE_ID_BASICO
+    ? { [process.env.STRIPE_PRICE_ID_BASICO]: "basico" }
+    : {}),
+  ...(process.env.STRIPE_PRICE_ID_IA ? { [process.env.STRIPE_PRICE_ID_IA]: "com_ia" } : {}),
+};
+
+function tierFromSubscription(subscription: Stripe.Subscription): "basico" | "com_ia" | null {
+  const priceId = subscription.items.data[0]?.price.id;
+  return priceId ? (TIER_BY_PRICE_ID[priceId] ?? null) : null;
+}
+
 export async function POST(request: NextRequest) {
   const body = await request.text();
   const signature = request.headers.get("stripe-signature");
@@ -59,7 +71,8 @@ export async function POST(request: NextRequest) {
   switch (event.type) {
     case "checkout.session.completed": {
       const session = event.data.object as Stripe.Checkout.Session;
-      const agencyId = session.client_reference_id;
+      const agencyId = session.metadata?.agency_id;
+      const planTier = session.metadata?.plan_tier;
       if (!agencyId || !session.customer || !session.subscription) break;
 
       await supabaseAdmin
@@ -68,6 +81,7 @@ export async function POST(request: NextRequest) {
           stripe_customer_id: String(session.customer),
           stripe_subscription_id: String(session.subscription),
           plan_status: "active",
+          ...(planTier === "basico" || planTier === "com_ia" ? { plan_tier: planTier } : {}),
         })
         .eq("id", agencyId);
       break;
@@ -77,10 +91,15 @@ export async function POST(request: NextRequest) {
       const subscription = event.data.object as Stripe.Subscription;
       const status = mapSubscriptionStatus(subscription.status);
       if (!status) break;
+      const tier = tierFromSubscription(subscription);
 
       await supabaseAdmin
         .from("agencies")
-        .update({ plan_status: status, stripe_subscription_id: subscription.id })
+        .update({
+          plan_status: status,
+          stripe_subscription_id: subscription.id,
+          ...(tier ? { plan_tier: tier } : {}),
+        })
         .eq("stripe_customer_id", String(subscription.customer));
       break;
     }

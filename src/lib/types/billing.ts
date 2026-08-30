@@ -7,7 +7,10 @@ export const subscriptionStatusLabel: Record<SubscriptionStatus, string> = {
   canceled: "Assinatura cancelada",
 };
 
+export type PlanTier = "basico" | "com_ia";
+
 export type Subscription = {
   status: SubscriptionStatus;
+  planTier: PlanTier | null;
   trialEndsAt: string | null; // ISO
 };

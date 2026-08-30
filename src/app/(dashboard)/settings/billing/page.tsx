@@ -15,12 +15,13 @@ export default async function BillingPage() {
   const supabase = await createClient();
   const { data: agency } = await supabase
     .from("agencies")
-    .select("plan_status, trial_ends_at")
+    .select("plan_status, plan_tier, trial_ends_at")
     .eq("id", profile.agency_id)
     .single();
 
   const subscription: Subscription = {
     status: (agency?.plan_status as Subscription["status"]) ?? "trial",
+    planTier: (agency?.plan_tier as Subscription["planTier"]) ?? null,
     trialEndsAt: agency?.trial_ends_at ?? null,
   };
 
