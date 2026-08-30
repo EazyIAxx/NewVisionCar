@@ -226,7 +226,7 @@ Convenção de branch: `feature/mN-nome-curto` (setup e deploy usam `chore/...`)
 
 **Entregas:**
 - [x] Colunas `agencies.stripe_customer_id` / `agencies.plan_status` (+ `stripe_subscription_id`, `trial_ends_at`) — protegidas por GRANT de coluna, só o webhook (service_role) escreve
-- [x] `/api/stripe/webhook`: `checkout.session.completed`, `customer.subscription.updated`, `customer.subscription.deleted`, `invoice.payment_failed` — implementado, verificação de assinatura pendente de teste com chaves reais do Stripe
+- [x] `/api/stripe/webhook`: `checkout.session.completed`, `customer.subscription.updated`, `customer.subscription.deleted`, `invoice.payment_failed` — testado de ponta a ponta com chaves reais (Stripe CLI + checkout de teste completo); achado e corrigido no processo: `/api/*` caía no gate de autenticação do middleware (307 pro /login em vez de processar o evento)
 - [x] Bloqueio de acesso quando assinatura está inativa/inadimplente — testado de ponta a ponta (trial automático, redirect quando past_due/canceled, `/settings/billing` continua acessível, recuperação ao reativar)
 - [x] Simplificado de 3 pra 2 planos (decisão do usuário): Básico e Com IA no WhatsApp — a diferença de IA depende do backend do M8, que ainda não existe (só a cobrança/trava de acesso está pronta)
 
