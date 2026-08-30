@@ -38,7 +38,7 @@ export function PricingSection() {
                 <h3 className="font-semibold text-white">{plan.name}</h3>
                 <p className="mt-2">
                   <span className="text-3xl font-bold text-white">
-                    {formatCurrency(plan.price)}
+                    {formatCurrency(plan.price, { showCents: true })}
                   </span>
                   <span className="text-slate-400">/mês</span>
                 </p>

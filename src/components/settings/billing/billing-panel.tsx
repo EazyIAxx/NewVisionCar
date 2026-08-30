@@ -98,7 +98,7 @@ export function BillingPanel({ subscription }: { subscription: Subscription }) {
                   <CardTitle className="text-lg">{plan.name}</CardTitle>
                   <CardDescription>
                     <span className="text-2xl font-semibold text-foreground">
-                      {formatCurrency(plan.price)}
+                      {formatCurrency(plan.price, { showCents: true })}
                     </span>
                     /mês
                   </CardDescription>
