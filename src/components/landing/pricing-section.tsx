@@ -3,7 +3,7 @@ import { Check } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { cn, formatCurrency } from "@/lib/utils";
-import { mockPlans } from "@/lib/mock/billing";
+import { PLANS } from "@/lib/billing/plan";
 
 export function PricingSection() {
   return (
@@ -11,7 +11,7 @@ export function PricingSection() {
       <div className="mx-auto max-w-6xl">
         <div className="mx-auto max-w-2xl text-center">
           <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
-            Planos por tamanho de revenda
+            Dois planos, sem pegadinha
           </h2>
           <p className="mt-4 text-slate-400">
             14 dias grátis em qualquer plano, sem cartão de crédito. Cancele
@@ -19,10 +19,10 @@ export function PricingSection() {
           </p>
         </div>
 
-        <div className="mt-12 grid gap-6 sm:grid-cols-3">
-          {mockPlans.map((plan) => (
+        <div className="mx-auto mt-12 grid max-w-3xl gap-6 sm:grid-cols-2">
+          {PLANS.map((plan) => (
             <div
-              key={plan.id}
+              key={plan.tier}
               className={cn(
                 "relative flex flex-col gap-6 rounded-3xl border border-white/10 bg-white/[0.03] p-8",
                 plan.highlight && "border-[#2596e0]/60 bg-white/[0.06]",
@@ -38,7 +38,7 @@ export function PricingSection() {
                 <h3 className="font-semibold text-white">{plan.name}</h3>
                 <p className="mt-2">
                   <span className="text-3xl font-bold text-white">
-                    {formatCurrency(plan.price)}
+                    {formatCurrency(plan.price, { showCents: true })}
                   </span>
                   <span className="text-slate-400">/mês</span>
                 </p>

@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { Check } from "lucide-react";
 import { toast } from "sonner";
 import { differenceInCalendarDays } from "date-fns";
@@ -15,22 +14,16 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 import { cn, formatCurrency } from "@/lib/utils";
-import type { Plan, Subscription } from "@/lib/types/billing";
+import { PLANS } from "@/lib/billing/plan";
+import { subscriptionStatusLabel, type Subscription } from "@/lib/types/billing";
 import {
   createCheckoutSession,
   createPortalSession,
 } from "@/app/(dashboard)/settings/billing/actions";
 
-export function BillingPanel({
-  plans,
-  subscription,
-}: {
-  plans: Plan[];
-  subscription: Subscription;
-}) {
-  const router = useRouter();
-  const [loadingPlan, setLoadingPlan] = useState<string | null>(null);
-  const [loadingPortal, setLoadingPortal] = useState(false);
+export function BillingPanel({ subscription }: { subscription: Subscription }) {
+  const [loadingTier, setLoadingTier] = useState<string | null>(null);
+  const [isRedirectingPortal, setIsRedirectingPortal] = useState(false);
 
   const trialDaysLeft = subscription.trialEndsAt
     ? Math.max(
@@ -39,108 +32,108 @@ export function BillingPanel({
       )
     : null;
 
-  async function handleSubscribe(planId: Plan["id"]) {
-    setLoadingPlan(planId);
-    const result = await createCheckoutSession(planId);
-    if (result?.error) {
-      toast.error(result.error);
-    } else {
-      toast.success("Redirecionando para o checkout do Stripe...");
-      router.refresh();
+  const isSubscribed = subscription.status === "active";
+
+  async function handleSubscribe(tier: (typeof PLANS)[number]["tier"]) {
+    setLoadingTier(tier);
+    const result = await createCheckoutSession(tier);
+    if (result?.error || !result?.url) {
+      toast.error(result?.error ?? "Não foi possível iniciar o checkout.");
+      setLoadingTier(null);
+      return;
     }
-    setLoadingPlan(null);
+    window.location.href = result.url;
   }
 
   async function handleManage() {
-    setLoadingPortal(true);
+    setIsRedirectingPortal(true);
     const result = await createPortalSession();
-    if (result?.error) {
-      toast.error(result.error);
-    } else {
-      toast.success("Abrindo o portal de assinatura...");
+    if (result?.error || !result?.url) {
+      toast.error(result?.error ?? "Não foi possível abrir o portal.");
+      setIsRedirectingPortal(false);
+      return;
     }
-    setLoadingPortal(false);
+    window.location.href = result.url;
   }
 
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-col items-start justify-between gap-4 rounded-xl border bg-muted/30 p-4 sm:flex-row sm:items-center">
         <div>
-          {subscription.status === "trial" ? (
-            <>
-              <p className="font-medium">Período de teste</p>
-              <p className="text-sm text-muted-foreground">
-                {trialDaysLeft !== null
-                  ? `${trialDaysLeft} dia${trialDaysLeft === 1 ? "" : "s"} restante${trialDaysLeft === 1 ? "" : "s"} — sem cartão de crédito.`
-                  : "Sem cartão de crédito."}
-              </p>
-            </>
-          ) : (
-            <>
-              <p className="font-medium">Assinatura ativa</p>
-              <p className="text-sm text-muted-foreground">
-                Plano {subscription.planId}
-              </p>
-            </>
-          )}
+          <p className="font-medium">{subscriptionStatusLabel[subscription.status]}</p>
+          <p className="text-sm text-muted-foreground">
+            {subscription.status === "trial" && trialDaysLeft !== null
+              ? `${trialDaysLeft} dia${trialDaysLeft === 1 ? "" : "s"} restante${trialDaysLeft === 1 ? "" : "s"} — sem cartão de crédito.`
+              : subscription.status === "past_due"
+                ? "Regularize o pagamento pra continuar usando a plataforma."
+                : subscription.status === "canceled"
+                  ? "Assine novamente pra recuperar o acesso."
+                  : null}
+          </p>
         </div>
-        <Button
-          variant="outline"
-          className="cursor-pointer"
-          disabled={loadingPortal}
-          onClick={handleManage}
-        >
-          {loadingPortal ? "Abrindo..." : "Gerenciar assinatura"}
-        </Button>
+        {isSubscribed && (
+          <Button
+            variant="outline"
+            className="cursor-pointer"
+            disabled={isRedirectingPortal}
+            onClick={handleManage}
+          >
+            {isRedirectingPortal ? "Abrindo..." : "Gerenciar assinatura"}
+          </Button>
+        )}
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-3">
-        {plans.map((plan) => (
-          <div key={plan.id} className="relative">
-            {plan.highlight && (
-              <span className="absolute -top-3 left-1/2 z-10 -translate-x-1/2 rounded-full bg-gradient-to-r from-[#1b2a8f] via-[#2596e0] to-[#56d3f2] px-3 py-1 text-xs font-medium text-white">
-                Mais popular
-              </span>
-            )}
-            <Card className={cn(plan.highlight && "ring-2 ring-primary")}>
-            <CardHeader>
-              <CardTitle className="text-lg">{plan.name}</CardTitle>
-              <CardDescription>
-                <span className="text-2xl font-semibold text-foreground">
-                  {formatCurrency(plan.price)}
+      <div className="grid gap-4 sm:grid-cols-2">
+        {PLANS.map((plan) => {
+          const isCurrentPlan = isSubscribed && subscription.planTier === plan.tier;
+          return (
+            <div key={plan.tier} className="relative">
+              {plan.highlight && (
+                <span className="absolute -top-3 left-1/2 z-10 -translate-x-1/2 rounded-full bg-gradient-to-r from-[#1b2a8f] via-[#2596e0] to-[#56d3f2] px-3 py-1 text-xs font-medium text-white">
+                  Mais popular
                 </span>
-                /mês
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="flex flex-col gap-4">
-              <ul className="flex flex-col gap-2 text-sm">
-                {plan.features.map((feature) => (
-                  <li key={feature} className="flex items-start gap-2">
-                    <Check className="mt-0.5 size-4 shrink-0 text-status-available" />
-                    <span className="text-muted-foreground">{feature}</span>
-                  </li>
-                ))}
-              </ul>
-              <Button
-                className={cn(
-                  "cursor-pointer",
-                  plan.highlight &&
-                    "bg-gradient-to-r from-[#1b2a8f] via-[#2596e0] to-[#56d3f2] text-white hover:brightness-110",
-                )}
-                variant={plan.highlight ? "default" : "outline"}
-                disabled={loadingPlan === plan.id}
-                onClick={() => handleSubscribe(plan.id)}
-              >
-                {loadingPlan === plan.id
-                  ? "Redirecionando..."
-                  : subscription.planId === plan.id
-                    ? "Plano atual"
-                    : "Assinar"}
-              </Button>
-            </CardContent>
-            </Card>
-          </div>
-        ))}
+              )}
+              <Card className={cn(plan.highlight && "ring-2 ring-primary")}>
+                <CardHeader>
+                  <CardTitle className="text-lg">{plan.name}</CardTitle>
+                  <CardDescription>
+                    <span className="text-2xl font-semibold text-foreground">
+                      {formatCurrency(plan.price, { showCents: true })}
+                    </span>
+                    /mês
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="flex flex-col gap-4">
+                  <ul className="flex flex-col gap-2 text-sm">
+                    {plan.features.map((feature) => (
+                      <li key={feature} className="flex items-start gap-2">
+                        <Check className="mt-0.5 size-4 shrink-0 text-status-available" />
+                        <span className="text-muted-foreground">{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <Button
+                    className={cn(
+                      "cursor-pointer",
+                      plan.highlight &&
+                        !isCurrentPlan &&
+                        "bg-gradient-to-r from-[#1b2a8f] via-[#2596e0] to-[#56d3f2] text-white hover:brightness-110",
+                    )}
+                    variant={plan.highlight && !isCurrentPlan ? "default" : "outline"}
+                    disabled={loadingTier === plan.tier || isCurrentPlan}
+                    onClick={() => handleSubscribe(plan.tier)}
+                  >
+                    {loadingTier === plan.tier
+                      ? "Redirecionando..."
+                      : isCurrentPlan
+                        ? "Plano atual"
+                        : "Assinar"}
+                  </Button>
+                </CardContent>
+              </Card>
+            </div>
+          );
+        })}
       </div>
     </div>
   );

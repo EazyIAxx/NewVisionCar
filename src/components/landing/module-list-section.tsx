@@ -9,10 +9,12 @@ const modules = [
   "Clientes",
   "Financeiro",
   "Desempenho e comissão",
-  "Nota fiscal (em breve)",
-  "Integrador de anúncios (em breve)",
-  "Vitrine pública (em breve)",
-  "RENAVE (em breve)",
+  "Nota fiscal",
+  "Integrador de anúncios",
+  "Vitrine pública",
+  "Ordem de serviço",
+  "RENAVE",
+  "Simulação de financiamento",
 ];
 
 export function ModuleListSection() {

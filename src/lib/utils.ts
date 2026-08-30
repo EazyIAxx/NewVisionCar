@@ -5,11 +5,12 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-export function formatCurrency(value: number) {
+export function formatCurrency(value: number, options?: { showCents?: boolean }) {
   return new Intl.NumberFormat("pt-BR", {
     style: "currency",
     currency: "BRL",
-    maximumFractionDigits: 0,
+    maximumFractionDigits: options?.showCents ? 2 : 0,
+    minimumFractionDigits: options?.showCents ? 2 : 0,
   }).format(value)
 }
 

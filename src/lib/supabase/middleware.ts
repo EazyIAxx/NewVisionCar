@@ -1,7 +1,12 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
-const PUBLIC_PATHS = ["/login", "/signup", "/auth/confirm", "/vitrine"];
+// /api/* é exclusivamente pra webhooks (Stripe, WhatsApp) — nunca rota
+// autenticada por sessão de usuário (essas usam Server Actions). Sem isso,
+// a chamada do Stripe (sem cookie de sessão nenhum) cai no `!user` abaixo e
+// é redirecionada pro /login com 307, e o corpo do webhook nunca chega no
+// handler de verdade.
+const PUBLIC_PATHS = ["/login", "/signup", "/auth/confirm", "/vitrine", "/api"];
 
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request });
@@ -32,6 +37,11 @@ export async function updateSession(request: NextRequest) {
   } = await supabase.auth.getUser();
 
   const { pathname } = request.nextUrl;
+  // Repassado pro layout do dashboard saber a rota atual sem uma segunda
+  // consulta — usado só pra deixar /settings/billing acessível mesmo com
+  // assinatura inativa (pra dar pra reassinar). Não é gate de papel/negócio
+  // (isso continua responsabilidade do layout), só transporte de dado.
+  supabaseResponse.headers.set("x-pathname", pathname);
   const isPublicPath =
     pathname === "/" ||
     PUBLIC_PATHS.some((path) => pathname.startsWith(path));
