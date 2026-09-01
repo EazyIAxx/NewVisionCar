@@ -21,7 +21,12 @@ import {
 const signupSchema = z.object({
   fullName: z.string().min(2, "Informe seu nome"),
   email: z.string().min(1, "Informe o e-mail").email("E-mail inválido"),
-  password: z.string().min(6, "A senha precisa ter ao menos 6 caracteres"),
+  password: z
+    .string()
+    .min(8, "A senha precisa ter ao menos 8 caracteres")
+    .regex(/[A-Z]/, "A senha precisa ter ao menos uma letra maiúscula")
+    .regex(/[0-9]/, "A senha precisa ter ao menos um número")
+    .regex(/[^A-Za-z0-9]/, "A senha precisa ter ao menos um caractere especial"),
 });
 
 type SignupValues = z.infer<typeof signupSchema>;
@@ -140,6 +145,10 @@ export function SignupForm() {
                 )}
               </button>
             </div>
+            <p className="text-xs text-slate-500">
+              Mínimo 8 caracteres, com 1 letra maiúscula, 1 número e 1
+              caractere especial.
+            </p>
             <FieldError
               errors={errors.password ? [errors.password] : undefined}
             />
