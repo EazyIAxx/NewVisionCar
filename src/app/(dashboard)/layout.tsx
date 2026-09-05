@@ -29,6 +29,14 @@ export default async function DashboardLayout({
     .eq("id", profile.agency_id)
     .single();
 
+  // Leads da vitrine ainda não triados — some da contagem assim que alguém
+  // move o card pra outra etapa do Kanban, sem precisar de tabela/flag extra.
+  const { count: pendingLeadsCount } = await supabase
+    .from("leads")
+    .select("id", { count: "exact", head: true })
+    .eq("origin", "site")
+    .eq("stage", "novo");
+
   // Bloqueia o resto do dashboard se a assinatura estiver inadimplente ou
   // cancelada — /settings/billing continua acessível pra dar pra reassinar.
   const pathname = (await headers()).get("x-pathname") ?? "";
@@ -46,7 +54,7 @@ export default async function DashboardLayout({
         agencyName={agency?.name ?? "Minha Revenda"}
       />
       <SidebarInset>
-        <Topbar title="NewVisionCar" />
+        <Topbar title="NewVisionCar" pendingLeadsCount={pendingLeadsCount ?? 0} />
         <div className="flex min-w-0 flex-1 flex-col gap-4 p-4">{children}</div>
       </SidebarInset>
     </SidebarProvider>
